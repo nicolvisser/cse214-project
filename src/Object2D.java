@@ -112,8 +112,6 @@ public class Object2D {
         orientation = Math.atan2(dy, dx);
     }
 
-    //
-
     /**
      * Returns the forward looking unit vector as defined by orientation of object.
      * 
@@ -164,6 +162,18 @@ public class Object2D {
         velocity.y += acceleration.y * dt;
         position.x += velocity.x * dt + 0.5 * acceleration.x * dt * dt;
         position.y += velocity.y * dt + 0.5 * acceleration.y * dt * dt;
+    }
+
+    /**
+     * Function to retrieve orientation (as defined in this Object2D class) from a
+     * Vector2D object.
+     * 
+     * @param vec Vector.
+     * @return Returns counterclockwise angle measured from positive x-axis to
+     *         passed vector.
+     */
+    public static double orientationFromVector(Vector2D vec) {
+        return Math.atan2(vec.x, vec.y);
     }
 
 }
