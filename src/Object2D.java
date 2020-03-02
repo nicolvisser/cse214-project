@@ -4,10 +4,25 @@
  */
 public class Object2D {
 
+    /**
+     * Stores current position of object in vector format
+     */
     public Vector2D position;
+
+    /**
+     * Stores current velocity of object in vector format
+     */
     public Vector2D velocity;
+
+    /**
+     * Stores current acceleration of object in vector format
+     */
     public Vector2D acceleration;
 
+    /**
+     * Stores the orientation of object. This is defined as the angle between the
+     * positive x-axis and the object's line of sight.
+     */
     public double orientation;
 
     /**
@@ -89,7 +104,7 @@ public class Object2D {
     /**
      * Orients the object towards another target object.
      * 
-     * @param other
+     * @param other Target object.
      */
     public void lookAt(Object2D other) {
         double dx = other.position.x - this.position.x;
