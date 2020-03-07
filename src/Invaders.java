@@ -7,5 +7,7 @@ public class Invaders {
 
         // things like get screen size
 
+        System.out.println("TEST");
+
     }
 }
