@@ -50,11 +50,12 @@ public class InvaderGameState {
     private final int dt_ms = 1000 / fps;
     private final double dt = dt_ms / 1000.0;
 
+    StarField starfield;
+
     Shooter shooter;
 
-    Enemy enemy;
-
-    StarField starfield;
+    ArrayList<Enemy> enemies;
+    int numEnemies = 0;
 
     ArrayList<Missile> missiles;
     int numMissiles = 0;
@@ -65,9 +66,13 @@ public class InvaderGameState {
 
         shooter = new Shooter(new Vector2D(0, 100), Math.PI / 2);
 
-        enemy = new Enemy(new Vector2D(0, 700), 3 * Math.PI / 2);
-
         missiles = new ArrayList<>();
+
+        enemies = new ArrayList<>();
+
+        addEnemy(new Vector2D(0, 500));
+        addEnemy(new Vector2D(200, 700));
+        addEnemy(new Vector2D(-300, 600));
 
         starfield = new StarField(canvasXmin, canvasXmax, canvasYmin, canvasYmax);
 
@@ -86,10 +91,16 @@ public class InvaderGameState {
             shooter.renderStep(dt);
             shooter.draw();
 
-            enemy.renderStep(dt);
-
-            if (enemy.isAlive()) {
-                enemy.draw();
+            for (int i = 0; i < numEnemies; i++) {
+                Enemy enemy = enemies.get(i);
+                enemy.renderStep(dt);
+                if (!enemy.isAlive()) {
+                    enemies.remove(enemy);
+                    i--;
+                    numEnemies--;
+                } else {
+                    enemy.draw();
+                }
             }
 
             if (useMouseControl)
@@ -104,12 +115,20 @@ public class InvaderGameState {
                     missiles.remove(missile);
                     i--;
                     numMissiles--;
-                } else if (missile.hasCollidedWith(enemy)) { // detect collision with enemy
-                    enemy.takeDamage(50);
-                    missile.takeDamage(Integer.MAX_VALUE);
-                }
+                } else {
 
-                missile.draw();
+                    // detect collision with enemies
+                    for (int j = 0; j < numEnemies; j++) {
+                        Enemy enemy = enemies.get(j);
+                        if (missile.hasCollidedWith(enemy)) {
+                            enemy.takeDamage(50);
+                            missile.takeDamage(Integer.MAX_VALUE);
+                            break;
+                        }
+                    }
+
+                    missile.draw();
+                }
             }
             timeSinceLastMissile_ms += dt_ms;
 
@@ -202,6 +221,11 @@ public class InvaderGameState {
             Vector2D missileStartPos = new Vector2D(player.position.x, player.position.y);
             missiles.add(new Missile(missileStartPos, player.FWDVector()));
         }
+    }
+
+    public void addEnemy(Vector2D pos) {
+        numEnemies++;
+        enemies.add(new Enemy(pos, 3 * Math.PI / 2));
     }
 
     public boolean isPointOnCanvas(Vector2D pos) {
