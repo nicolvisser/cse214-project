@@ -187,4 +187,9 @@ public class Object2D {
         return Math.atan2(vec.x, vec.y);
     }
 
+    public static double distanceBetween(Object2D obj1, Object2D obj2) {
+        Vector2D displacement = new Vector2D(obj2.position.x - obj1.position.x, obj2.position.y - obj1.position.y);
+        return displacement.magnitude();
+    }
+
 }

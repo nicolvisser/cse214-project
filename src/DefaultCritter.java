@@ -3,16 +3,16 @@
  */
 public class DefaultCritter extends Object2D implements Critter {
 
-    private boolean isAlive;
-    private int healthPoints;
+    public boolean isAlive;
+    public int healthPoints;
 
-    // TODO CONTINUE WITH COLLISION DETECTION STUFF
-    private double collisionRadius;
+    public double collisionRadius;
 
     public DefaultCritter(Vector2D position, double orientation) {
         super(position, orientation);
         isAlive = true;
         healthPoints = 100;
+        collisionRadius = 10;
     }
 
     public boolean isAlive() {
@@ -33,6 +33,14 @@ public class DefaultCritter extends Object2D implements Critter {
     }
 
     public void draw() {
+    }
+
+    public boolean hasCollidedWith(DefaultCritter other) {
+        double centerPointsDistance = distanceBetween(this, other);
+        if (centerPointsDistance <= this.collisionRadius + other.collisionRadius)
+            return true;
+        else
+            return false;
     }
 
 }

@@ -52,6 +52,8 @@ public class InvaderGameState {
 
     Shooter shooter;
 
+    Enemy enemy;
+
     StarField starfield;
 
     ArrayList<Missile> missiles;
@@ -61,7 +63,9 @@ public class InvaderGameState {
     public InvaderGameState() {
         gameState = GameState.PLAYING;
 
-        shooter = new Shooter(new Vector2D(0, 100), Math.PI / 2, 1);
+        shooter = new Shooter(new Vector2D(0, 100), Math.PI / 2);
+
+        enemy = new Enemy(new Vector2D(0, 700), 3 * Math.PI / 2);
 
         missiles = new ArrayList<>();
 
@@ -73,14 +77,17 @@ public class InvaderGameState {
     public void start() {
 
         while (gameState == GameState.PLAYING) {
-            
+
             StdDraw.clear();
 
             starfield.renderStep(dt, shooter.velocity);
             starfield.draw();
 
             shooter.renderStep(dt);
-            shooter.draw();            
+            shooter.draw();
+
+            enemy.renderStep(dt);
+            enemy.draw();
 
             if (useMouseControl)
                 shooter.lookAt(StdDraw.mouseX(), StdDraw.mouseY());
@@ -88,11 +95,19 @@ public class InvaderGameState {
             for (int i = 0; i < numMissiles; i++) {
                 Missile missile = missiles.get(i);
                 missile.renderStep(dt);
+
+                // remove if off screen
                 if (!isPointOnCanvas(missile.position)) {
                     missiles.remove(missile);
                     i--;
                     numMissiles--;
                 }
+
+                // detect collision with enemy
+                if (missile.hasCollidedWith(enemy)) {
+                    StdOut.println("COLLIDED WITH ENEMY");
+                }
+
                 missile.draw();
             }
             timeSinceLastMissile_ms += dt_ms;

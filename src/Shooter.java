@@ -16,11 +16,9 @@ public class Shooter extends DefaultCritter {
     public boolean turretLeftRotateStatus = false;
     public boolean turretRightRotateStatus = false;
 
-    private int playerIdx;
-
-    public Shooter(Vector2D position, double orientation, int playerIdx) {
+    public Shooter(Vector2D position, double orientation) {
         super(position, orientation);
-        this.playerIdx = playerIdx;
+        collisionRadius = 20;
     }
 
     @Override
@@ -75,17 +73,14 @@ public class Shooter extends DefaultCritter {
 
     @Override
     public void draw() {
-
-        Color playerColor = playerIdx == 0 ? StdDraw.BLUE : StdDraw.RED;
-
         // draw line for line of sight
         Vector2D aimTarget = Vector2D.sum(position, Vector2D.scalarMultiplication(500, FWDVector()));
-        StdDraw.setPenColor(playerColor);
+        StdDraw.setPenColor(StdDraw.BLUE);
         StdDraw.line(position.x, position.y, aimTarget.x, aimTarget.y);
 
         // draw circle for body
-        StdDraw.setPenColor(playerColor);
-        StdDraw.filledCircle(position.x, position.y, 10);
+        StdDraw.setPenColor(StdDraw.BLUE);
+        StdDraw.filledCircle(position.x, position.y, collisionRadius);
 
     }
 

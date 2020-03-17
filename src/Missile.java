@@ -10,12 +10,13 @@ public class Missile extends DefaultCritter {
     public Missile(Vector2D position, Vector2D direction) {
         super(position, Object2D.orientationFromVector(direction));
         velocity = new Vector2D(SPEED * direction.x, SPEED * direction.y);
+        collisionRadius = 5;
     }
 
     @Override
     public void draw() {
         StdDraw.setPenColor(StdDraw.ORANGE);
-        StdDraw.filledCircle(position.x, position.y, 5);
+        StdDraw.filledCircle(position.x, position.y, collisionRadius);
     }
 
 }
