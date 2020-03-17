@@ -5,6 +5,7 @@ public class Enemy extends DefaultCritter {
 
     public Enemy(Vector2D position, double orientation) {
         super(position, orientation);
+        healthPoints = 100;
         collisionRadius = 20;
     }
 

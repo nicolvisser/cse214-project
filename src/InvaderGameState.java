@@ -87,7 +87,10 @@ public class InvaderGameState {
             shooter.draw();
 
             enemy.renderStep(dt);
-            enemy.draw();
+
+            if (enemy.isAlive()) {
+                enemy.draw();
+            }
 
             if (useMouseControl)
                 shooter.lookAt(StdDraw.mouseX(), StdDraw.mouseY());
@@ -96,16 +99,14 @@ public class InvaderGameState {
                 Missile missile = missiles.get(i);
                 missile.renderStep(dt);
 
-                // remove if off screen
-                if (!isPointOnCanvas(missile.position)) {
+                // remove missile if off screen or if 'dead'
+                if (!isPointOnCanvas(missile.position) || !missile.isAlive()) {
                     missiles.remove(missile);
                     i--;
                     numMissiles--;
-                }
-
-                // detect collision with enemy
-                if (missile.hasCollidedWith(enemy)) {
-                    StdOut.println("COLLIDED WITH ENEMY");
+                } else if (missile.hasCollidedWith(enemy)) { // detect collision with enemy
+                    enemy.takeDamage(50);
+                    missile.takeDamage(Integer.MAX_VALUE);
                 }
 
                 missile.draw();
