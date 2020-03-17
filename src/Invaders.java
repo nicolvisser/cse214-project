@@ -7,5 +7,9 @@ public class Invaders {
 
         // things like get screen size
 
+        InvaderGameState game = new InvaderGameState();
+
+        game.start();
+
     }
 }

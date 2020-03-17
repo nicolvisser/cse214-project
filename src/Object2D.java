@@ -25,6 +25,10 @@ public class Object2D {
      */
     public double orientation;
 
+    public double angularVelocity;
+
+    public double angularAcceleration;
+
     /**
      * Creates an object in 2D space with specified position. Sets other properties
      * to zero.
@@ -37,6 +41,8 @@ public class Object2D {
         acceleration = new Vector2D(0, 0);
 
         orientation = 0;
+        angularVelocity = 0;
+        angularAcceleration = 0;
     }
 
     /**
@@ -52,6 +58,8 @@ public class Object2D {
         acceleration = new Vector2D(0, 0);
 
         this.orientation = orientation;
+        angularVelocity = 0;
+        angularAcceleration = 0;
     }
 
     /**
@@ -162,6 +170,9 @@ public class Object2D {
         velocity.y += acceleration.y * dt;
         position.x += velocity.x * dt + 0.5 * acceleration.x * dt * dt;
         position.y += velocity.y * dt + 0.5 * acceleration.y * dt * dt;
+
+        angularVelocity += angularAcceleration * dt;
+        orientation += angularVelocity * dt + 0.5 * angularAcceleration * dt * dt;
     }
 
     /**
