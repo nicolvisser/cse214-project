@@ -5,13 +5,6 @@ import java.util.ArrayList;
  */
 public class InvaderGameState {
 
-    /**
-     * Enumeration to define different values of game state.
-     */
-    enum GameState {
-        PLAYING, GAME_OVER
-    }
-
     enum KeyboardKey {
         LEFT(65), RIGHT(68), ROTATE_L(37), ROTATE_R(39), SHOOT(38);
 
@@ -22,20 +15,7 @@ public class InvaderGameState {
             this.keyCode = value;
             this.isDown = false;
         }
-
-        public void press() {
-            this.isDown = true;
-        }
-
-        public void release() {
-            this.isDown = false;
-        }
     }
-
-    /**
-     * Variable to hold different values of game state.
-     */
-    private GameState gameState;
 
     private boolean useMouseControl = false;
 
@@ -62,7 +42,6 @@ public class InvaderGameState {
     long timeSinceLastMissile_ms = Missile.RELOAD_TIME_MS; // i.e. ready for next shot from beginning of game
 
     public InvaderGameState() {
-        gameState = GameState.PLAYING;
 
         shooter = new Shooter(new Vector2D(0, 100), Math.PI / 2);
 
@@ -70,9 +49,12 @@ public class InvaderGameState {
 
         enemies = new ArrayList<>();
 
-        addEnemy(new Vector2D(0, 500));
-        addEnemy(new Vector2D(200, 700));
-        addEnemy(new Vector2D(-300, 600));
+        addEnemy(new Vector2D(-300, 700));
+        addEnemy(new Vector2D(-250, 700));
+        addEnemy(new Vector2D(-200, 700));
+        enemies.get(0).velocity = new Vector2D(0, -50);
+        enemies.get(1).velocity = new Vector2D(0, -50);
+        enemies.get(2).velocity = new Vector2D(0, -50);
 
         starfield = new StarField(canvasXmin, canvasXmax, canvasYmin, canvasYmax);
 
@@ -81,7 +63,7 @@ public class InvaderGameState {
 
     public void start() {
 
-        while (gameState == GameState.PLAYING) {
+        while (true) {
 
             StdDraw.clear();
 
