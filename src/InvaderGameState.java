@@ -16,9 +16,7 @@ public class InvaderGameState {
             this.isDown = false;
         }
     }
-
-    private boolean useMouseControl = false;
-
+    
     private final int canvasWidth = 800;
     private final int canvasHeight = 800;
     private final int canvasXmin = -canvasWidth / 2;
@@ -85,9 +83,6 @@ public class InvaderGameState {
                 }
             }
 
-            if (useMouseControl)
-                shooter.lookAt(StdDraw.mouseX(), StdDraw.mouseY());
-
             for (int i = 0; i < numMissiles; i++) {
                 Missile missile = missiles.get(i);
                 missile.renderStep(dt);
@@ -147,10 +142,6 @@ public class InvaderGameState {
                 onKeyRelease(key);
             }
         }
-
-        if (useMouseControl)
-            if (StdDraw.isMousePressed())
-                shootMissile(shooter);
     }
 
     private void onKeyPress(KeyboardKey key) {
