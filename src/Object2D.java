@@ -1,8 +1,12 @@
+import java.io.Serializable;
+
 /**
  * Represents object in 2D space with properties for kinematics (modelled as a
  * point particle but with orientation).
  */
-public class Object2D {
+public class Object2D implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Stores current position of object in vector format
@@ -28,6 +32,21 @@ public class Object2D {
     public double angularVelocity;
 
     public double angularAcceleration;
+
+    /**
+     * Creates an object in 2D space. Sets all properties to zero.
+     * 
+     * @param position The object's position as a vector.
+     */
+    public Object2D() {
+        position = new Vector2D(0, 0);
+        velocity = new Vector2D(0, 0);
+        acceleration = new Vector2D(0, 0);
+
+        orientation = 0;
+        angularVelocity = 0;
+        angularAcceleration = 0;
+    }
 
     /**
      * Creates an object in 2D space with specified position. Sets other properties

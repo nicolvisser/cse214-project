@@ -1,9 +1,12 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * InvaderGameState
  */
-public class InvaderGameState {
+public class InvaderGameState implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     enum KeyboardKey {
         LEFT(65), RIGHT(68), ROTATE_L(37), ROTATE_R(39), SHOOT(38);
@@ -16,7 +19,7 @@ public class InvaderGameState {
             this.isDown = false;
         }
     }
-    
+
     private final int canvasWidth = 800;
     private final int canvasHeight = 800;
     private final int canvasXmin = -canvasWidth / 2;
@@ -24,9 +27,9 @@ public class InvaderGameState {
     private final int canvasYmin = 0;
     private final int canvasYmax = canvasHeight;
 
-    private final int fps = 60;
-    private final int dt_ms = 1000 / fps;
-    private final double dt = dt_ms / 1000.0;
+    //private final int fps = 60;
+    //private final int dt_ms = 1000 / fps;
+    //private final double dt = dt_ms / 1000.0;
 
     StarField starfield;
 
@@ -37,7 +40,7 @@ public class InvaderGameState {
 
     ArrayList<Missile> missiles;
     int numMissiles = 0;
-    long timeSinceLastMissile_ms = Missile.RELOAD_TIME_MS; // i.e. ready for next shot from beginning of game
+    double timeSinceLastMissile = Missile.RELOAD_TIME; // TODO: Sort out overflow
 
     public InvaderGameState() {
 
@@ -56,76 +59,65 @@ public class InvaderGameState {
 
         starfield = new StarField(canvasXmin, canvasXmax, canvasYmin, canvasYmax);
 
-        setupCanvas();
     }
 
-    public void start() {
+    public void renderStep(double dt) {
 
-        while (true) {
+        starfield.renderStep(dt, shooter.velocity);
 
-            StdDraw.clear();
+        shooter.renderStep(dt);
 
-            starfield.renderStep(dt, shooter.velocity);
-            starfield.draw();
-
-            shooter.renderStep(dt);
-            shooter.draw();
-
-            for (int i = 0; i < numEnemies; i++) {
-                Enemy enemy = enemies.get(i);
-                enemy.renderStep(dt);
-                if (!enemy.isAlive()) {
-                    enemies.remove(enemy);
-                    i--;
-                    numEnemies--;
-                } else {
-                    enemy.draw();
-                }
+        for (int i = 0; i < numEnemies; i++) {
+            Enemy enemy = enemies.get(i);
+            enemy.renderStep(dt);
+            if (!enemy.isAlive()) {
+                enemies.remove(enemy);
+                i--;
+                numEnemies--;
             }
+        }
 
-            for (int i = 0; i < numMissiles; i++) {
-                Missile missile = missiles.get(i);
-                missile.renderStep(dt);
+        for (int i = 0; i < numMissiles; i++) {
+            Missile missile = missiles.get(i);
+            missile.renderStep(dt);
 
-                // remove missile if off screen or if 'dead'
-                if (!isPointOnCanvas(missile.position) || !missile.isAlive()) {
-                    missiles.remove(missile);
-                    i--;
-                    numMissiles--;
-                } else {
+            // remove missile if off screen or if 'dead'
+            if (!isPointOnCanvas(missile.position) || !missile.isAlive()) {
+                missiles.remove(missile);
+                i--;
+                numMissiles--;
+            } else {
 
-                    // detect collision with enemies
-                    for (int j = 0; j < numEnemies; j++) {
-                        Enemy enemy = enemies.get(j);
-                        if (missile.hasCollidedWith(enemy)) {
-                            enemy.takeDamage(50);
-                            missile.takeDamage(Integer.MAX_VALUE);
-                            break;
-                        }
+                // detect collision with enemies
+                for (Enemy enemy : enemies) {
+                    if (missile.hasCollidedWith(enemy)) {
+                        enemy.takeDamage(50);
+                        missile.takeDamage(Integer.MAX_VALUE);
+                        break;
                     }
-
-                    missile.draw();
                 }
             }
-            timeSinceLastMissile_ms += dt_ms;
+        }
+        timeSinceLastMissile += dt;
+    }
 
-            StdDraw.show();
-            StdDraw.pause(dt_ms);
+    public void draw() {
 
-            listenForInputChanges();
+        starfield.draw();
+
+        shooter.draw();
+
+        for (Enemy enemy : enemies) {
+            enemy.draw();
+        }
+
+        for (Missile missile : missiles) {
+            missile.draw();
         }
 
     }
 
-    private void setupCanvas() {
-        StdDraw.enableDoubleBuffering();
-        StdDraw.clear();
-        StdDraw.setCanvasSize(canvasWidth, canvasHeight);
-        StdDraw.setXscale(canvasXmin, canvasXmax);
-        StdDraw.setYscale(canvasYmin, canvasYmax);
-    }
-
-    private void listenForInputChanges() {
+    public void listenForInputChanges() {
         /**
          * for each key in the set of keys used by game, get the key's new state from
          * StdDraw. If the state changed from previous, update the new state and call
@@ -188,9 +180,9 @@ public class InvaderGameState {
     }
 
     public void shootMissile(Shooter player) {
-        if (timeSinceLastMissile_ms > Missile.RELOAD_TIME_MS) {
+        if (timeSinceLastMissile > Missile.RELOAD_TIME) {
             numMissiles++;
-            timeSinceLastMissile_ms = 0;
+            timeSinceLastMissile = 0;
             Vector2D missileStartPos = new Vector2D(player.position.x, player.position.y);
             missiles.add(new Missile(missileStartPos, player.FWDVector()));
         }

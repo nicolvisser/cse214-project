@@ -1,7 +1,14 @@
+import java.io.Serializable;
+
 /**
  * Background
  */
-public class StarField {
+public class StarField implements Serializable {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
     // declare variables to store background position and size as bounds
     private double xmin, xmax, ymin, ymax;

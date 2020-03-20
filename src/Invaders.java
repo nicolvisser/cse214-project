@@ -1,84 +1,161 @@
+import java.awt.event.KeyEvent;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 /**
  * Invaders
  */
 public class Invaders {
 
-    static final int TITLE_SCREEN_OPTIONS_NUM = 3;
-    static final String[] TITLE_SCREEN_OPTIONS_TEXT = { "New Game", "Instructions", "Quit" };
+    enum DisplayState {
+        TITLE_SCREEN, NEW_GAME, PLAYING, PAUSE, SAVE_GAME, LOAD_GAME, INSTRUCTIONS, QUIT;
+    }
 
-    static final int TITLE_SCREEN_BUTTON_WIDTH = 200;
-    static final int TITLE_SCREEN_BUTTON_HEIGHT = 40;
-    static final int TITLE_SCREEN_BUTTON_SPACING = 10;
-
-    static int titleScreenSelectedOption = 0;
+    static DisplayState currentDisplayState;
+    static InvaderGameState loadedInvaderGameState;
+    static int FPS = 60;
+    static int dt_ms = 1000 / FPS;
+    static double dt = dt_ms / 1000.0;
 
     public static void main(String[] args) {
 
         StdDraw.enableDoubleBuffering();
-
         StdDraw.setCanvasSize(800, 800);
         StdDraw.setXscale(-400, 400);
         StdDraw.setYscale(0, 800);
 
-        titleScreenLoop();
+        currentDisplayState = DisplayState.TITLE_SCREEN;
+
+        gameLoop();
+
+        System.exit(0);
 
     }
 
-    public static void titleScreenLoop() {
-        while (true) {
-            drawTitleScreen();
+    public static void gameLoop() {
+        while (currentDisplayState != DisplayState.QUIT) {
+            switch (currentDisplayState) {
+                case TITLE_SCREEN:
+
+                    TitleScreen.draw();
+                    TitleScreen.listenForInputChanges();
+
+                    if (StdDraw.isKeyPressed(KeyEvent.VK_ENTER)) {
+                        switch (TitleScreen.titleScreenSelectedOption) {
+                            case 0:
+                                currentDisplayState = DisplayState.NEW_GAME;
+                                break;
+
+                            case 1:
+                                currentDisplayState = DisplayState.LOAD_GAME;
+                                break;
+
+                            case 2:
+                                currentDisplayState = DisplayState.QUIT;
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
+
+                    break;
+
+                case NEW_GAME:
+
+                    loadedInvaderGameState = new InvaderGameState();
+                    currentDisplayState = DisplayState.PLAYING;
+
+                    break;
+
+                case PLAYING:
+
+                    loadedInvaderGameState.draw();
+                    loadedInvaderGameState.renderStep(dt);
+                    loadedInvaderGameState.listenForInputChanges();
+
+                    if (StdDraw.isKeyPressed(KeyEvent.VK_ESCAPE)) {
+                        currentDisplayState = DisplayState.PAUSE;
+                    }
+
+                    break;
+
+                case PAUSE:
+
+                    PauseScreen.draw();
+                    PauseScreen.listenForInputChanges();
+
+                    if (StdDraw.isKeyPressed(KeyEvent.VK_ENTER)) {
+                        switch (PauseScreen.titleScreenSelectedOption) {
+                            case 0:
+                                currentDisplayState = DisplayState.PLAYING;
+                                break;
+
+                            case 1:
+                                currentDisplayState = DisplayState.SAVE_GAME;
+                                break;
+
+                            case 2:
+                                currentDisplayState = DisplayState.QUIT;
+                                break;
+
+                            default:
+                                break;
+                        }
+                    }
+
+                    break;
+
+                case SAVE_GAME:
+
+                    try {
+                        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("savedata.txt"));
+                        out.writeObject(loadedInvaderGameState);
+                    } catch (FileNotFoundException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
+                    currentDisplayState = DisplayState.PAUSE;
+
+                    break;
+
+                case LOAD_GAME:
+
+                    try {
+                        ObjectInputStream in = new ObjectInputStream(new FileInputStream("savedata.txt"));
+                        loadedInvaderGameState = (InvaderGameState) in.readObject();
+
+                    } catch (FileNotFoundException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (ClassNotFoundException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+
+                    currentDisplayState = DisplayState.PLAYING;
+
+                    break;
+
+                default:
+                    break;
+            }
+
             StdDraw.show();
-            StdDraw.pause(1000 / 10);
+            StdDraw.pause(dt_ms);
 
-            // controls select up
-            if (StdDraw.isKeyPressed(40)) {
-                titleScreenSelectedOption = Math.min(titleScreenSelectedOption + 1, TITLE_SCREEN_OPTIONS_NUM - 1);
-            }
-
-            // controls select down
-            if (StdDraw.isKeyPressed(38)) {
-                titleScreenSelectedOption = Math.max(titleScreenSelectedOption - 1, 0);
-            }
-
-            if (StdDraw.isKeyPressed(10)) {
-
-                switch (titleScreenSelectedOption) {
-                    case 0: // new game
-
-                        InvaderGameState game = new InvaderGameState();
-                        game.start();
-
-                        break;
-
-                    case 1: // instructions
-
-                        // Todo add view instructions logic in here
-
-                        break;
-
-                    case 2: // quit
-
-                        // Todo add quit logic in here
-
-                        break;
-
-                    default:
-                        break;
-                }
-
-            }
         }
     }
 
-    public static void drawTitleScreen() {
-        StdDraw.clear();
-        StdDraw.setPenColor(StdDraw.BLACK);
-        StdDraw.filledRectangle(0, 400, 400, 400);
-        for (int i = 0; i < TITLE_SCREEN_OPTIONS_NUM; i++) {
-            StdDraw.setPenColor(i == titleScreenSelectedOption ? StdDraw.RED : StdDraw.WHITE);
-            int y = 600 - i * (TITLE_SCREEN_BUTTON_HEIGHT + TITLE_SCREEN_BUTTON_SPACING);
-            StdDraw.rectangle(0, y, TITLE_SCREEN_BUTTON_WIDTH / 2, TITLE_SCREEN_BUTTON_HEIGHT / 2);
-            StdDraw.textRight(0, y, TITLE_SCREEN_OPTIONS_TEXT[i]);
-        }
-    }
 }

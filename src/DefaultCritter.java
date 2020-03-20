@@ -6,6 +6,12 @@ public class DefaultCritter extends Object2D implements Critter {
     public int healthPoints;
     public double collisionRadius;
 
+    public DefaultCritter() {
+        super();
+        healthPoints = 100; // Default health points
+        collisionRadius = 10; // Default collision radius
+    }
+
     public DefaultCritter(Vector2D position, double orientation) {
         super(position, orientation);
 
