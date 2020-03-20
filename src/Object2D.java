@@ -184,7 +184,7 @@ public class Object2D {
      *         passed vector.
      */
     public static double orientationFromVector(Vector2D vec) {
-        return Math.atan2(vec.x, vec.y);
+        return Math.atan2(vec.y, vec.x);
     }
 
     public static double distanceBetween(Object2D obj1, Object2D obj2) {
