@@ -4,13 +4,13 @@
 public class DefaultCritter extends Object2D implements Critter {
 
     public int healthPoints;
-
     public double collisionRadius;
 
     public DefaultCritter(Vector2D position, double orientation) {
         super(position, orientation);
-        healthPoints = 100;
-        collisionRadius = 10;
+
+        healthPoints = 100; // Default health points
+        collisionRadius = 10; // Default collision radius
     }
 
     public boolean isAlive() {
@@ -21,12 +21,7 @@ public class DefaultCritter extends Object2D implements Critter {
         healthPoints -= damagePoints;
     }
 
-    public void renderStep(double dt) {
-        super.renderStep(dt);
-    }
-
     public void draw() {
-
         StdDraw.setPenColor(StdDraw.RED);
 
         // draw line for line of sight
@@ -38,8 +33,7 @@ public class DefaultCritter extends Object2D implements Critter {
     }
 
     public boolean hasCollidedWith(DefaultCritter other) {
-        double centerPointsDistance = distanceBetween(this, other);
-        if (centerPointsDistance <= this.collisionRadius + other.collisionRadius)
+        if (distanceBetween(this, other) <= this.collisionRadius + other.collisionRadius)
             return true;
         else
             return false;
