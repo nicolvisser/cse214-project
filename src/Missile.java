@@ -15,8 +15,8 @@ public class Missile extends DefaultCritter {
 
     @Override
     public void draw() {
-        StdDraw.setPenColor(StdDraw.ORANGE);
-        StdDraw.filledCircle(position.x, position.y, collisionRadius);
+        // TODO Auto-generated method stub
+        super.draw();
     }
 
 }

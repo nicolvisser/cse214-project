@@ -71,15 +71,8 @@ public class Shooter extends DefaultCritter {
 
     @Override
     public void draw() {
-        // draw line for line of sight
-        Vector2D aimTarget = Vector2D.sum(position, Vector2D.scalarMultiplication(500, FWDVector()));
-        StdDraw.setPenColor(StdDraw.BLUE);
-        StdDraw.line(position.x, position.y, aimTarget.x, aimTarget.y);
-
-        // draw circle for body
-        StdDraw.setPenColor(StdDraw.BLUE);
-        StdDraw.filledCircle(position.x, position.y, collisionRadius);
-
+        // TODO Auto-generated method stub
+        super.draw();
     }
 
 }
