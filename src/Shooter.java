@@ -3,6 +3,10 @@
  */
 public class Shooter extends DefaultCritter {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
     public final int MOVEMENT_BOUNDARY_XMIN = -350;
     public final int MOVEMENT_BOUNDARY_XMAX = 350;
 

@@ -3,6 +3,10 @@
  */
 public class DefaultCritter extends Object2D implements Critter {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
     public int healthPoints;
     public double collisionRadius;
 

@@ -3,7 +3,7 @@ import java.io.Serializable;
 /**
  * Background
  */
-public class StarField implements Serializable {
+public class Background implements Serializable {
 
     /**
      *
@@ -22,7 +22,7 @@ public class StarField implements Serializable {
     private Vector2D earthPosition = Vector2D.zeroVector();
     private final double EARTH_PARALLAX_SENSITIVITY = 0.1;
 
-    public StarField(double x_min, double x_max, double y_min, double y_max) {
+    public Background(double x_min, double x_max, double y_min, double y_max) {
         xmin = x_min;
         xmax = x_max;
         ymin = y_min;

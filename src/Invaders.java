@@ -1,4 +1,3 @@
-import java.awt.event.KeyEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -21,6 +20,12 @@ public class Invaders {
     static int dt_ms = 1000 / FPS;
     static double dt = dt_ms / 1000.0;
 
+    static String[] titleScreenOptions = { "New Game", "Load Game", "Quit Game" };
+    static MenuScreen titleScreen = new MenuScreen(titleScreenOptions);
+
+    static String[] pauseScreenOptions = { "Resume Game", "Save Game", "Quit To Main Menu" };
+    static MenuScreen pauseScreen = new MenuScreen(pauseScreenOptions);
+
     public static void main(String[] args) {
 
         StdDraw.enableDoubleBuffering();
@@ -41,26 +46,27 @@ public class Invaders {
             switch (currentDisplayState) {
                 case TITLE_SCREEN:
 
-                    TitleScreen.draw();
-                    TitleScreen.listenForInputChanges();
+                    titleScreen.draw();
+                    titleScreen.listenForInputChanges();
 
-                    if (StdDraw.isKeyPressed(KeyEvent.VK_ENTER)) {
-                        switch (TitleScreen.titleScreenSelectedOption) {
-                            case 0:
-                                currentDisplayState = DisplayState.NEW_GAME;
-                                break;
+                    switch (titleScreen.selectedOption) {
+                        case 0:
+                            currentDisplayState = DisplayState.NEW_GAME;
+                            titleScreen.reset();
+                            break;
 
-                            case 1:
-                                currentDisplayState = DisplayState.LOAD_GAME;
-                                break;
+                        case 1:
+                            currentDisplayState = DisplayState.LOAD_GAME;
+                            titleScreen.reset();
+                            break;
 
-                            case 2:
-                                currentDisplayState = DisplayState.QUIT;
-                                break;
+                        case 2:
+                            currentDisplayState = DisplayState.QUIT;
+                            titleScreen.reset();
+                            break;
 
-                            default:
-                                break;
-                        }
+                        default:
+                            break;
                     }
 
                     break;
@@ -78,7 +84,7 @@ public class Invaders {
                     loadedInvaderGameState.renderStep(dt);
                     loadedInvaderGameState.listenForInputChanges();
 
-                    if (StdDraw.isKeyPressed(KeyEvent.VK_ESCAPE)) {
+                    if (loadedInvaderGameState.pauseFlag) {
                         currentDisplayState = DisplayState.PAUSE;
                     }
 
@@ -86,35 +92,40 @@ public class Invaders {
 
                 case PAUSE:
 
-                    PauseScreen.draw();
-                    PauseScreen.listenForInputChanges();
+                    pauseScreen.draw();
+                    pauseScreen.listenForInputChanges();
 
-                    if (StdDraw.isKeyPressed(KeyEvent.VK_ENTER)) {
-                        switch (PauseScreen.titleScreenSelectedOption) {
-                            case 0:
-                                currentDisplayState = DisplayState.PLAYING;
-                                break;
+                    switch (pauseScreen.selectedOption) {
+                        case 0:
+                            loadedInvaderGameState.pauseFlag = false;
+                            currentDisplayState = DisplayState.PLAYING;
+                            pauseScreen.reset();
+                            break;
 
-                            case 1:
-                                currentDisplayState = DisplayState.SAVE_GAME;
-                                break;
+                        case 1:
+                            currentDisplayState = DisplayState.SAVE_GAME;
+                            pauseScreen.reset();
+                            break;
 
-                            case 2:
-                                currentDisplayState = DisplayState.QUIT;
-                                break;
+                        case 2:
+                            currentDisplayState = DisplayState.TITLE_SCREEN;
+                            pauseScreen.reset();
+                            break;
 
-                            default:
-                                break;
-                        }
+                        default:
+                            break;
                     }
 
                     break;
 
                 case SAVE_GAME:
 
+                    loadedInvaderGameState.pauseFlag = false;
+
                     try {
                         ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("savedata.txt"));
                         out.writeObject(loadedInvaderGameState);
+                        out.close();
                     } catch (FileNotFoundException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -132,7 +143,7 @@ public class Invaders {
                     try {
                         ObjectInputStream in = new ObjectInputStream(new FileInputStream("savedata.txt"));
                         loadedInvaderGameState = (InvaderGameState) in.readObject();
-
+                        in.close();
                     } catch (FileNotFoundException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();

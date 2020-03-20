@@ -4,7 +4,7 @@ import java.util.ArrayList;
 /**
  * InvaderGameState
  */
-public class InvaderGameState implements Serializable {
+public class InvaderGameState extends KeyListener implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -27,11 +27,13 @@ public class InvaderGameState implements Serializable {
     private final int canvasYmin = 0;
     private final int canvasYmax = canvasHeight;
 
-    //private final int fps = 60;
-    //private final int dt_ms = 1000 / fps;
-    //private final double dt = dt_ms / 1000.0;
+    public boolean pauseFlag = false;
 
-    StarField starfield;
+    // private final int fps = 60;
+    // private final int dt_ms = 1000 / fps;
+    // private final double dt = dt_ms / 1000.0;
+
+    Background background;
 
     Shooter shooter;
 
@@ -57,13 +59,13 @@ public class InvaderGameState implements Serializable {
         enemies.get(1).velocity = new Vector2D(0, -50);
         enemies.get(2).velocity = new Vector2D(0, -50);
 
-        starfield = new StarField(canvasXmin, canvasXmax, canvasYmin, canvasYmax);
+        background = new Background(canvasXmin, canvasXmax, canvasYmin, canvasYmax);
 
     }
 
     public void renderStep(double dt) {
 
-        starfield.renderStep(dt, shooter.velocity);
+        background.renderStep(dt, shooter.velocity);
 
         shooter.renderStep(dt);
 
@@ -103,7 +105,7 @@ public class InvaderGameState implements Serializable {
 
     public void draw() {
 
-        starfield.draw();
+        background.draw();
 
         shooter.draw();
 
@@ -117,38 +119,23 @@ public class InvaderGameState implements Serializable {
 
     }
 
-    public void listenForInputChanges() {
-        /**
-         * for each key in the set of keys used by game, get the key's new state from
-         * StdDraw. If the state changed from previous, update the new state and call
-         * appropriate function to handle the change event.
-         *
-         **/
-        for (KeyboardKey key : KeyboardKey.values()) {
-            boolean keyIsDownInNewFrame = StdDraw.isKeyPressed(key.keyCode);
-            if (!key.isDown && keyIsDownInNewFrame) {
-                key.isDown = true;
-                onKeyPress(key);
-            } else if (key.isDown && !keyIsDownInNewFrame) {
-                key.isDown = false;
-                onKeyRelease(key);
-            }
-        }
-    }
-
-    private void onKeyPress(KeyboardKey key) {
+    @Override
+    public void onKeyPress(KeyListener.KeyboardKey key) {
         switch (key) {
-            case LEFT:
+            case A_KEY:
                 shooter.thrusterLeftMoveStatus = true;
                 break;
-            case RIGHT:
+            case D_KEY:
                 shooter.thrusterRightMoveStatus = true;
                 break;
-            case ROTATE_L:
+            case LEFT_ARROW:
                 shooter.turretLeftRotateStatus = true;
                 break;
-            case ROTATE_R:
+            case RIGHT_ARROW:
                 shooter.turretRightRotateStatus = true;
+                break;
+            case ESC_KEY:
+                pauseFlag = true;
                 break;
 
             default:
@@ -156,21 +143,22 @@ public class InvaderGameState implements Serializable {
         }
     }
 
-    private void onKeyRelease(KeyboardKey key) {
+    @Override
+    public void onKeyRelease(KeyListener.KeyboardKey key) {
         switch (key) {
-            case LEFT:
+            case A_KEY:
                 shooter.thrusterLeftMoveStatus = false;
                 break;
-            case RIGHT:
+            case D_KEY:
                 shooter.thrusterRightMoveStatus = false;
                 break;
-            case ROTATE_L:
+            case LEFT_ARROW:
                 shooter.turretLeftRotateStatus = false;
                 break;
-            case ROTATE_R:
+            case RIGHT_ARROW:
                 shooter.turretRightRotateStatus = false;
                 break;
-            case SHOOT:
+            case UP_ARROW:
                 shootMissile(shooter);
                 break;
 
