@@ -12,6 +12,8 @@ public class MenuScreen extends KeyListener {
 
     public int selectedOption;
 
+    public boolean flagBack = false;
+
     public MenuScreen(String[] textOptionsArray) {
         textOptions = textOptionsArray;
         highlightedOption = 0;
@@ -21,6 +23,7 @@ public class MenuScreen extends KeyListener {
     public void reset() {
         highlightedOption = 0;
         selectedOption = -1;
+        flagBack = false;
     }
 
     @Override
@@ -34,6 +37,9 @@ public class MenuScreen extends KeyListener {
                 break;
             case ENTER_KEY:
                 selectedOption = highlightedOption;
+                break;
+            case ESC_KEY:
+                flagBack = true;
                 break;
 
             default:

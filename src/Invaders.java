@@ -106,6 +106,13 @@ public class Invaders {
                     pauseScreen.draw();
                     pauseScreen.listenForInputChanges();
 
+                    if (pauseScreen.flagBack) {
+                        currentDisplayState = DisplayState.PLAYING;
+                        // TODO: create reset function for invaderGameState flags
+                        loadedInvaderGameState.pauseFlag = false;
+                        pauseScreen.reset();
+                    }
+
                     switch (pauseScreen.selectedOption) {
                         case 0:
                             loadedInvaderGameState.pauseFlag = false;
