@@ -39,8 +39,10 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
     Shooter shooter;
 
-    ArrayList<Enemy> enemies;
+    ArrayList<Enemy> enemyIndividuals;
     int numEnemies = 0;
+
+    EnemyGrid enemyGrid;
 
     ArrayList<Missile> missiles;
     int numMissiles = 0;
@@ -54,14 +56,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         missiles = new ArrayList<>();
 
-        enemies = new ArrayList<>();
-
-        addEnemy(new Vector2D(-300, 700));
-        addEnemy(new Vector2D(-250, 700));
-        addEnemy(new Vector2D(-200, 700));
-        enemies.get(0).velocity = new Vector2D(0, -50);
-        enemies.get(1).velocity = new Vector2D(0, -50);
-        enemies.get(2).velocity = new Vector2D(0, -50);
+        enemyGrid = new EnemyGrid(0, 600, 4, 3);
 
         background = new Background(canvasXmin, canvasXmax, canvasYmin, canvasYmax);
 
@@ -73,15 +68,8 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         shooter.renderStep(dt);
 
-        for (int i = 0; i < numEnemies; i++) {
-            Enemy enemy = enemies.get(i);
-            enemy.renderStep(dt);
-            if (!enemy.isAlive()) {
-                enemies.remove(enemy);
-                i--;
-                numEnemies--;
-            }
-        }
+        enemyGrid.renderStep(dt);
+        enemyGrid.handleCollisionsWithMissiles(missiles);
 
         for (int i = 0; i < numMissiles; i++) {
             Missile missile = missiles.get(i);
@@ -92,18 +80,6 @@ public class InvaderGameState extends KeyListener implements Serializable {
                 missiles.remove(missile);
                 i--;
                 numMissiles--;
-            } else {
-
-                // detect collision with enemies
-                for (Enemy enemy : enemies) {
-                    if (missile.hasCollidedWith(enemy)) {
-                        int missileDamage = 50; // TODO: put this in a better place
-                        score += missileDamage;
-                        enemy.takeDamage(missileDamage);
-                        missile.takeDamage(Integer.MAX_VALUE);
-                        break;
-                    }
-                }
             }
         }
         timeSinceLastMissile += dt;
@@ -115,9 +91,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         shooter.draw();
 
-        for (Enemy enemy : enemies) {
-            enemy.draw();
-        }
+        enemyGrid.draw();
 
         for (Missile missile : missiles) {
             missile.draw();
@@ -125,10 +99,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         drawHealthBar(shooter.healthPoints);
         drawEnergyBar(50);
-
-        StdDraw.setPenColor(StdDraw.ORANGE);
-        StdDraw.text(200, 50, "SCORE: " + score);
-
+        drawScore(score);
     }
 
     @Override
@@ -191,6 +162,11 @@ public class InvaderGameState extends KeyListener implements Serializable {
         StdDraw.filledRectangle(-150, 50, (50 - 2) * percentage / 100, 15 - 2);
     }
 
+    public void drawScore(int score) {
+        StdDraw.setPenColor(StdDraw.ORANGE);
+        StdDraw.text(200, 50, "SCORE: " + score);
+    }
+
     public void shootMissile(Shooter player) {
         if (timeSinceLastMissile > Missile.RELOAD_TIME) {
             numMissiles++;
@@ -202,7 +178,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
     public void addEnemy(Vector2D pos) {
         numEnemies++;
-        enemies.add(new Enemy(pos, 3 * Math.PI / 2));
+        enemyIndividuals.add(new Enemy(pos, 3 * Math.PI / 2));
     }
 
     public boolean isPointOnCanvas(Vector2D pos) {
