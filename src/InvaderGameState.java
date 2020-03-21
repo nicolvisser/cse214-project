@@ -35,6 +35,8 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
     Background background;
 
+    int score;
+
     Shooter shooter;
 
     ArrayList<Enemy> enemies;
@@ -45,6 +47,8 @@ public class InvaderGameState extends KeyListener implements Serializable {
     double timeSinceLastMissile = Missile.RELOAD_TIME; // TODO: Sort out overflow
 
     public InvaderGameState() {
+
+        score = 0;
 
         shooter = new Shooter(new Vector2D(0, 100), Math.PI / 2);
 
@@ -93,7 +97,9 @@ public class InvaderGameState extends KeyListener implements Serializable {
                 // detect collision with enemies
                 for (Enemy enemy : enemies) {
                     if (missile.hasCollidedWith(enemy)) {
-                        enemy.takeDamage(50);
+                        int missileDamage = 50; // TODO: put this in a better place
+                        score += missileDamage;
+                        enemy.takeDamage(missileDamage);
                         missile.takeDamage(Integer.MAX_VALUE);
                         break;
                     }
@@ -121,7 +127,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
         drawEnergyBar(50);
 
         StdDraw.setPenColor(StdDraw.ORANGE);
-        StdDraw.text(200, 50, "SCORE: " + 1000);
+        StdDraw.text(200, 50, "SCORE: " + score);
 
     }
 
