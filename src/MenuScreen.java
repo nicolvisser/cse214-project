@@ -54,9 +54,6 @@ public class MenuScreen extends KeyListener {
     }
 
     public void draw() {
-        StdDraw.clear();
-        StdDraw.setPenColor(StdDraw.BLACK);
-        StdDraw.filledRectangle(0, 400, 400, 400);
         for (int i = 0; i < textOptions.length; i++) {
             StdDraw.setPenColor(i == highlightedOption ? StdDraw.RED : StdDraw.WHITE);
             int y = 600 - i * (BUTTON_HEIGHT + BUTTON_SPACING);

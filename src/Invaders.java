@@ -20,11 +20,12 @@ public class Invaders {
     static int dt_ms = 1000 / FPS;
     static double dt = dt_ms / 1000.0;
 
-    static String[] titleScreenOptions = { "New Game", "Load Game", "Quit Game" };
+    static String[] titleScreenOptions = { "New Game", "Load Game", "Instructions", "Quit Game" };
     static MenuScreen titleScreen = new MenuScreen(titleScreenOptions);
 
     static String[] pauseScreenOptions = { "Resume Game", "Save Game", "Quit To Main Menu" };
     static MenuScreen pauseScreen = new MenuScreen(pauseScreenOptions);
+    static InstructionsScreen instructionsScreen = new InstructionsScreen();
 
     public static void main(String[] args) {
 
@@ -43,6 +44,11 @@ public class Invaders {
 
     public static void gameLoop() {
         while (currentDisplayState != DisplayState.QUIT) {
+
+            StdDraw.clear();
+            StdDraw.setPenColor(StdDraw.BLACK);
+            StdDraw.filledRectangle(0, 400, 400, 400);
+
             switch (currentDisplayState) {
                 case TITLE_SCREEN:
 
@@ -61,6 +67,11 @@ public class Invaders {
                             break;
 
                         case 2:
+                            currentDisplayState = DisplayState.INSTRUCTIONS;
+                            titleScreen.reset();
+                            break;
+
+                        case 3:
                             currentDisplayState = DisplayState.QUIT;
                             titleScreen.reset();
                             break;
@@ -156,6 +167,18 @@ public class Invaders {
                     }
 
                     currentDisplayState = DisplayState.PLAYING;
+
+                    break;
+
+                case INSTRUCTIONS:
+
+                    instructionsScreen.draw();
+                    instructionsScreen.listenForInputChanges();
+
+                    if (instructionsScreen.flagBack) {
+                        currentDisplayState = DisplayState.TITLE_SCREEN;
+                        instructionsScreen.reset();
+                    }
 
                     break;
 
