@@ -61,7 +61,7 @@ public class MenuScreen extends KeyListener {
             StdDraw.setPenColor(i == highlightedOption ? StdDraw.RED : StdDraw.WHITE);
             int y = 600 - i * (BUTTON_HEIGHT + BUTTON_SPACING);
             StdDraw.rectangle(0, y, BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2);
-            StdDraw.textRight(0, y, textOptions[i]);
+            StdDraw.text(0, y, textOptions[i]);
         }
     }
 
