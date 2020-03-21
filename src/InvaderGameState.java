@@ -117,6 +117,12 @@ public class InvaderGameState extends KeyListener implements Serializable {
             missile.draw();
         }
 
+        drawHealthBar(shooter.healthPoints);
+        drawEnergyBar(50);
+
+        StdDraw.setPenColor(StdDraw.ORANGE);
+        StdDraw.text(200, 50, "SCORE: " + 1000);
+
     }
 
     @Override
@@ -165,6 +171,18 @@ public class InvaderGameState extends KeyListener implements Serializable {
             default:
                 break;
         }
+    }
+
+    public void drawHealthBar(double percentage) {
+        StdDraw.setPenColor(StdDraw.RED);
+        StdDraw.rectangle(-300, 50, 50, 15);
+        StdDraw.filledRectangle(-300, 50, (50 - 2) * percentage / 100, 15 - 2);
+    }
+
+    public void drawEnergyBar(double percentage) {
+        StdDraw.setPenColor(StdDraw.BOOK_LIGHT_BLUE);
+        StdDraw.rectangle(-150, 50, 50, 15);
+        StdDraw.filledRectangle(-150, 50, (50 - 2) * percentage / 100, 15 - 2);
     }
 
     public void shootMissile(Shooter player) {
