@@ -1,9 +1,12 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * InvaderGameState
  */
-public class InvaderGameState {
+public class InvaderGameState extends KeyListener implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     enum KeyboardKey {
         LEFT(65), RIGHT(68), ROTATE_L(37), ROTATE_R(39), SHOOT(38);
@@ -16,7 +19,7 @@ public class InvaderGameState {
             this.isDown = false;
         }
     }
-    
+
     private final int canvasWidth = 800;
     private final int canvasHeight = 800;
     private final int canvasXmin = -canvasWidth / 2;
@@ -24,11 +27,15 @@ public class InvaderGameState {
     private final int canvasYmin = 0;
     private final int canvasYmax = canvasHeight;
 
-    private final int fps = 60;
-    private final int dt_ms = 1000 / fps;
-    private final double dt = dt_ms / 1000.0;
+    public boolean pauseFlag = false;
 
-    StarField starfield;
+    // private final int fps = 60;
+    // private final int dt_ms = 1000 / fps;
+    // private final double dt = dt_ms / 1000.0;
+
+    Background background;
+
+    int score;
 
     Shooter shooter;
 
@@ -37,9 +44,11 @@ public class InvaderGameState {
 
     ArrayList<Missile> missiles;
     int numMissiles = 0;
-    long timeSinceLastMissile_ms = Missile.RELOAD_TIME_MS; // i.e. ready for next shot from beginning of game
+    double timeSinceLastMissile = Missile.RELOAD_TIME; // TODO: Sort out overflow
 
     public InvaderGameState() {
+
+        score = 0;
 
         shooter = new Shooter(new Vector2D(0, 100), Math.PI / 2);
 
@@ -54,109 +63,91 @@ public class InvaderGameState {
         enemies.get(1).velocity = new Vector2D(0, -50);
         enemies.get(2).velocity = new Vector2D(0, -50);
 
-        starfield = new StarField(canvasXmin, canvasXmax, canvasYmin, canvasYmax);
+        background = new Background(canvasXmin, canvasXmax, canvasYmin, canvasYmax);
 
-        setupCanvas();
     }
 
-    public void start() {
+    public void renderStep(double dt) {
 
-        while (true) {
+        background.renderStep(dt, shooter.velocity);
 
-            StdDraw.clear();
+        shooter.renderStep(dt);
 
-            starfield.renderStep(dt, shooter.velocity);
-            starfield.draw();
-
-            shooter.renderStep(dt);
-            shooter.draw();
-
-            for (int i = 0; i < numEnemies; i++) {
-                Enemy enemy = enemies.get(i);
-                enemy.renderStep(dt);
-                if (!enemy.isAlive()) {
-                    enemies.remove(enemy);
-                    i--;
-                    numEnemies--;
-                } else {
-                    enemy.draw();
-                }
+        for (int i = 0; i < numEnemies; i++) {
+            Enemy enemy = enemies.get(i);
+            enemy.renderStep(dt);
+            if (!enemy.isAlive()) {
+                enemies.remove(enemy);
+                i--;
+                numEnemies--;
             }
+        }
 
-            for (int i = 0; i < numMissiles; i++) {
-                Missile missile = missiles.get(i);
-                missile.renderStep(dt);
+        for (int i = 0; i < numMissiles; i++) {
+            Missile missile = missiles.get(i);
+            missile.renderStep(dt);
 
-                // remove missile if off screen or if 'dead'
-                if (!isPointOnCanvas(missile.position) || !missile.isAlive()) {
-                    missiles.remove(missile);
-                    i--;
-                    numMissiles--;
-                } else {
+            // remove missile if off screen or if 'dead'
+            if (!isPointOnCanvas(missile.position) || !missile.isAlive()) {
+                missiles.remove(missile);
+                i--;
+                numMissiles--;
+            } else {
 
-                    // detect collision with enemies
-                    for (int j = 0; j < numEnemies; j++) {
-                        Enemy enemy = enemies.get(j);
-                        if (missile.hasCollidedWith(enemy)) {
-                            enemy.takeDamage(50);
-                            missile.takeDamage(Integer.MAX_VALUE);
-                            break;
-                        }
+                // detect collision with enemies
+                for (Enemy enemy : enemies) {
+                    if (missile.hasCollidedWith(enemy)) {
+                        int missileDamage = 50; // TODO: put this in a better place
+                        score += missileDamage;
+                        enemy.takeDamage(missileDamage);
+                        missile.takeDamage(Integer.MAX_VALUE);
+                        break;
                     }
-
-                    missile.draw();
                 }
             }
-            timeSinceLastMissile_ms += dt_ms;
+        }
+        timeSinceLastMissile += dt;
+    }
 
-            StdDraw.show();
-            StdDraw.pause(dt_ms);
+    public void draw() {
 
-            listenForInputChanges();
+        background.draw();
+
+        shooter.draw();
+
+        for (Enemy enemy : enemies) {
+            enemy.draw();
         }
 
-    }
-
-    private void setupCanvas() {
-        StdDraw.enableDoubleBuffering();
-        StdDraw.clear();
-        StdDraw.setCanvasSize(canvasWidth, canvasHeight);
-        StdDraw.setXscale(canvasXmin, canvasXmax);
-        StdDraw.setYscale(canvasYmin, canvasYmax);
-    }
-
-    private void listenForInputChanges() {
-        /**
-         * for each key in the set of keys used by game, get the key's new state from
-         * StdDraw. If the state changed from previous, update the new state and call
-         * appropriate function to handle the change event.
-         *
-         **/
-        for (KeyboardKey key : KeyboardKey.values()) {
-            boolean keyIsDownInNewFrame = StdDraw.isKeyPressed(key.keyCode);
-            if (!key.isDown && keyIsDownInNewFrame) {
-                key.isDown = true;
-                onKeyPress(key);
-            } else if (key.isDown && !keyIsDownInNewFrame) {
-                key.isDown = false;
-                onKeyRelease(key);
-            }
+        for (Missile missile : missiles) {
+            missile.draw();
         }
+
+        drawHealthBar(shooter.healthPoints);
+        drawEnergyBar(50);
+
+        StdDraw.setPenColor(StdDraw.ORANGE);
+        StdDraw.text(200, 50, "SCORE: " + score);
+
     }
 
-    private void onKeyPress(KeyboardKey key) {
+    @Override
+    public void onKeyPress(KeyListener.KeyboardKey key) {
         switch (key) {
-            case LEFT:
+            case A_KEY:
                 shooter.thrusterLeftMoveStatus = true;
                 break;
-            case RIGHT:
+            case D_KEY:
                 shooter.thrusterRightMoveStatus = true;
                 break;
-            case ROTATE_L:
+            case LEFT_ARROW:
                 shooter.turretLeftRotateStatus = true;
                 break;
-            case ROTATE_R:
+            case RIGHT_ARROW:
                 shooter.turretRightRotateStatus = true;
+                break;
+            case ESC_KEY:
+                pauseFlag = true;
                 break;
 
             default:
@@ -164,21 +155,22 @@ public class InvaderGameState {
         }
     }
 
-    private void onKeyRelease(KeyboardKey key) {
+    @Override
+    public void onKeyRelease(KeyListener.KeyboardKey key) {
         switch (key) {
-            case LEFT:
+            case A_KEY:
                 shooter.thrusterLeftMoveStatus = false;
                 break;
-            case RIGHT:
+            case D_KEY:
                 shooter.thrusterRightMoveStatus = false;
                 break;
-            case ROTATE_L:
+            case LEFT_ARROW:
                 shooter.turretLeftRotateStatus = false;
                 break;
-            case ROTATE_R:
+            case RIGHT_ARROW:
                 shooter.turretRightRotateStatus = false;
                 break;
-            case SHOOT:
+            case UP_ARROW:
                 shootMissile(shooter);
                 break;
 
@@ -187,10 +179,22 @@ public class InvaderGameState {
         }
     }
 
+    public void drawHealthBar(double percentage) {
+        StdDraw.setPenColor(StdDraw.RED);
+        StdDraw.rectangle(-300, 50, 50, 15);
+        StdDraw.filledRectangle(-300, 50, (50 - 2) * percentage / 100, 15 - 2);
+    }
+
+    public void drawEnergyBar(double percentage) {
+        StdDraw.setPenColor(StdDraw.BOOK_LIGHT_BLUE);
+        StdDraw.rectangle(-150, 50, 50, 15);
+        StdDraw.filledRectangle(-150, 50, (50 - 2) * percentage / 100, 15 - 2);
+    }
+
     public void shootMissile(Shooter player) {
-        if (timeSinceLastMissile_ms > Missile.RELOAD_TIME_MS) {
+        if (timeSinceLastMissile > Missile.RELOAD_TIME) {
             numMissiles++;
-            timeSinceLastMissile_ms = 0;
+            timeSinceLastMissile = 0;
             Vector2D missileStartPos = new Vector2D(player.position.x, player.position.y);
             missiles.add(new Missile(missileStartPos, player.FWDVector()));
         }

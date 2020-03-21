@@ -1,7 +1,14 @@
+import java.io.Serializable;
+
 /**
  * Represents a vector in 2D space with two cartesian components.
  */
-public class Vector2D {
+public class Vector2D implements Serializable {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * Stores the x component of vector as in cartesian coordinates

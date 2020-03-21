@@ -1,7 +1,14 @@
+import java.io.Serializable;
+
 /**
  * Background
  */
-public class StarField {
+public class Background implements Serializable {
+
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
     // declare variables to store background position and size as bounds
     private double xmin, xmax, ymin, ymax;
@@ -15,7 +22,7 @@ public class StarField {
     private Vector2D earthPosition = Vector2D.zeroVector();
     private final double EARTH_PARALLAX_SENSITIVITY = 0.1;
 
-    public StarField(double x_min, double x_max, double y_min, double y_max) {
+    public Background(double x_min, double x_max, double y_min, double y_max) {
         xmin = x_min;
         xmax = x_max;
         ymin = y_min;

@@ -3,7 +3,12 @@
  */
 public class Missile extends DefaultCritter {
 
-    public static final int RELOAD_TIME_MS = 150;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+
+    public static final double RELOAD_TIME = 0.15;
 
     private static final int SPEED = 800;
 

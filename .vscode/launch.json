@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - TestKeyListener",
+            "request": "launch",
+            "mainClass": "TestKeyListener",
+            "projectName": "cse214-project_ec900086"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - TestArrayListElementDeletion",
+            "request": "launch",
+            "mainClass": "TestArrayListElementDeletion",
+            "projectName": "cse214-project_ec900086"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - Invaders",
             "request": "launch",
             "mainClass": "Invaders",
