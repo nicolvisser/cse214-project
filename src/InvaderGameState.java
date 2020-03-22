@@ -14,9 +14,11 @@ public class InvaderGameState extends KeyListener implements Serializable {
     private int canvasYmax;
 
     public boolean pauseFlag = false;
+    public boolean quitFlag = false;
 
     public void resetFlags() {
         pauseFlag = false;
+        quitFlag = false;
     }
 
     int score;
@@ -114,6 +116,9 @@ public class InvaderGameState extends KeyListener implements Serializable {
                 break;
             case ESC_KEY:
                 pauseFlag = true;
+                break;
+            case Q_KEY:
+                quitFlag = true;
                 break;
 
             default:

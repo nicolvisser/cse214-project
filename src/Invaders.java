@@ -112,6 +112,12 @@ public class Invaders {
                         break;
                     }
 
+                    if (loadedInvaderGameState.quitFlag) {
+                        loadedInvaderGameState.resetFlags();
+                        currentDisplayState = DisplayState.QUIT;
+                        break;
+                    }
+
                     break;
 
                 case PAUSE:
