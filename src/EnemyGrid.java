@@ -1,9 +1,12 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * EnemyGroup
  */
-public class EnemyGrid {
+public class EnemyGrid implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     int M, N;
     Vector2D center;
