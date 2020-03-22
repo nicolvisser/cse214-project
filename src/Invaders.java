@@ -105,8 +105,9 @@ public class Invaders {
                     loadedInvaderGameState.listenForInputChanges();
 
                     if (loadedInvaderGameState.pauseFlag) {
-                        currentDisplayState = DisplayState.PAUSE;
                         loadedInvaderGameState.resetFlags();
+                        currentDisplayState = DisplayState.PAUSE;
+                        break;
                     }
 
                     break;
@@ -115,6 +116,12 @@ public class Invaders {
 
                     pauseScreen.draw();
                     pauseScreen.listenForInputChanges();
+
+                    if (pauseScreen.flagBack) {
+                        pauseScreen.reset();
+                        currentDisplayState = DisplayState.PLAYING;
+                        break;
+                    }
 
                     switch (pauseScreen.selectedOption) {
                         case -1:
@@ -181,6 +188,7 @@ public class Invaders {
                     if (instructionsScreen.flagBack) {
                         instructionsScreen.reset();
                         currentDisplayState = DisplayState.TITLE_SCREEN;
+                        break;
                     }
 
                     break;
