@@ -1,5 +1,4 @@
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -13,6 +12,13 @@ public class Invaders {
     enum DisplayState {
         TITLE_SCREEN, NEW_GAME, PLAYING, PAUSE, SAVE_GAME, LOAD_GAME, INSTRUCTIONS, QUIT;
     }
+
+    static final int CANVAS_WIDTH = 800;
+    static final int CANVAS_HEIGHT = 800;
+    static final int CANVAS_XMIN = -CANVAS_WIDTH / 2;
+    static final int CANVAS_XMAX = CANVAS_WIDTH / 2;
+    static final int CANVAS_YMIN = 0;
+    static final int CANVAS_YMAX = CANVAS_HEIGHT;
 
     static DisplayState currentDisplayState;
     static InvaderGameState loadedInvaderGameState;
@@ -56,24 +62,27 @@ public class Invaders {
                     titleScreen.listenForInputChanges();
 
                     switch (titleScreen.selectedOption) {
+                        case -1:
+                            break;
                         case 0:
-                            currentDisplayState = DisplayState.NEW_GAME;
                             titleScreen.reset();
+                            currentDisplayState = DisplayState.NEW_GAME;
                             break;
 
                         case 1:
-                            currentDisplayState = DisplayState.LOAD_GAME;
                             titleScreen.reset();
+                            currentDisplayState = DisplayState.LOAD_GAME;
                             break;
 
                         case 2:
-                            currentDisplayState = DisplayState.INSTRUCTIONS;
                             titleScreen.reset();
+                            currentDisplayState = DisplayState.INSTRUCTIONS;
                             break;
 
                         case 3:
-                            currentDisplayState = DisplayState.QUIT;
                             titleScreen.reset();
+                            currentDisplayState = DisplayState.QUIT;
+
                             break;
 
                         default:
@@ -84,7 +93,7 @@ public class Invaders {
 
                 case NEW_GAME:
 
-                    loadedInvaderGameState = new InvaderGameState();
+                    loadedInvaderGameState = new InvaderGameState(CANVAS_XMIN, CANVAS_XMAX, CANVAS_YMIN, CANVAS_YMAX);
                     currentDisplayState = DisplayState.PLAYING;
 
                     break;
@@ -97,6 +106,7 @@ public class Invaders {
 
                     if (loadedInvaderGameState.pauseFlag) {
                         currentDisplayState = DisplayState.PAUSE;
+                        loadedInvaderGameState.resetFlags();
                     }
 
                     break;
@@ -107,20 +117,21 @@ public class Invaders {
                     pauseScreen.listenForInputChanges();
 
                     switch (pauseScreen.selectedOption) {
+                        case -1:
+                            break;
                         case 0:
-                            loadedInvaderGameState.pauseFlag = false;
-                            currentDisplayState = DisplayState.PLAYING;
                             pauseScreen.reset();
+                            currentDisplayState = DisplayState.PLAYING;
                             break;
 
                         case 1:
-                            currentDisplayState = DisplayState.SAVE_GAME;
                             pauseScreen.reset();
+                            currentDisplayState = DisplayState.SAVE_GAME;
                             break;
 
                         case 2:
-                            currentDisplayState = DisplayState.TITLE_SCREEN;
                             pauseScreen.reset();
+                            currentDisplayState = DisplayState.TITLE_SCREEN;
                             break;
 
                         default:
@@ -131,18 +142,16 @@ public class Invaders {
 
                 case SAVE_GAME:
 
-                    loadedInvaderGameState.pauseFlag = false;
+                    loadedInvaderGameState.resetFlags(); // so as not to save true flags in game state
 
+                    ObjectOutputStream out;
                     try {
-                        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("savedata.txt"));
+                        out = new ObjectOutputStream(new FileOutputStream("savedata.txt"));
                         out.writeObject(loadedInvaderGameState);
                         out.close();
-                    } catch (FileNotFoundException e) {
+                    } catch (IOException e1) {
                         // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        e1.printStackTrace();
                     }
 
                     currentDisplayState = DisplayState.PAUSE;
@@ -155,15 +164,9 @@ public class Invaders {
                         ObjectInputStream in = new ObjectInputStream(new FileInputStream("savedata.txt"));
                         loadedInvaderGameState = (InvaderGameState) in.readObject();
                         in.close();
-                    } catch (FileNotFoundException e) {
+                    } catch (IOException | ClassNotFoundException e1) {
                         // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (ClassNotFoundException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        e1.printStackTrace();
                     }
 
                     currentDisplayState = DisplayState.PLAYING;
@@ -176,8 +179,8 @@ public class Invaders {
                     instructionsScreen.listenForInputChanges();
 
                     if (instructionsScreen.flagBack) {
-                        currentDisplayState = DisplayState.TITLE_SCREEN;
                         instructionsScreen.reset();
+                        currentDisplayState = DisplayState.TITLE_SCREEN;
                     }
 
                     break;

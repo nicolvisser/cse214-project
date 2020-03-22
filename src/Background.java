@@ -17,6 +17,7 @@ public class Background implements Serializable {
     private final int NUM_STARS = 1000;
     private Vector2D[] starPositions = new Vector2D[NUM_STARS];
     private double[] starParallaxSensitivities = new double[NUM_STARS];
+    private final double STARS_PARALLAX_SENSITIVITY_MAX = 0.083;
 
     // declare variables associated with earth
     private Vector2D earthPosition = Vector2D.zeroVector();
@@ -36,7 +37,7 @@ public class Background implements Serializable {
             starPositions[i] = new Vector2D(xpos, ypos);
 
             // set random parallax sensitivity for each star
-            starParallaxSensitivities[i] = Math.random() / 12; // TODO get rid of hardcoding
+            starParallaxSensitivities[i] = Math.random() * STARS_PARALLAX_SENSITIVITY_MAX;
         }
 
     }

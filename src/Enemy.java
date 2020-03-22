@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * Enemy
  */
@@ -20,10 +22,26 @@ public class Enemy extends DefaultCritter {
         collisionRadius = 20;
     }
 
-    @Override
-    public void draw() {
-        // TODO Auto-generated method stub
-        super.draw();
+    public int handleCollisionsWithMissiles(ArrayList<Missile> missiles) {
+
+        int points = 0;
+
+        for (Missile missile : missiles) {
+
+            Vector2D relativePositionVector = new Vector2D(position.x - missile.position.x,
+                    position.y - missile.position.y);
+
+            Double distanceBetween = relativePositionVector.magnitude();
+
+            if (distanceBetween <= collisionRadius + missile.collisionRadius) {
+                points += missile.missileDamage; // TODO: Better points system than just missile damage
+                takeDamage(missile.missileDamage);
+                missile.takeDamage(Integer.MAX_VALUE);
+                break;
+            }
+        }
+
+        return points;
     }
 
 }

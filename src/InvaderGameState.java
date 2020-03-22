@@ -8,58 +8,53 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    enum KeyboardKey {
-        LEFT(65), RIGHT(68), ROTATE_L(37), ROTATE_R(39), SHOOT(38);
-
-        public int keyCode;
-        public boolean isDown;
-
-        private KeyboardKey(int value) {
-            this.keyCode = value;
-            this.isDown = false;
-        }
-    }
-
-    private final int canvasWidth = 800;
-    private final int canvasHeight = 800;
-    private final int canvasXmin = -canvasWidth / 2;
-    private final int canvasXmax = canvasWidth / 2;
-    private final int canvasYmin = 0;
-    private final int canvasYmax = canvasHeight;
+    private int canvasXmin;
+    private int canvasXmax;
+    private int canvasYmin;
+    private int canvasYmax;
 
     public boolean pauseFlag = false;
 
-    // private final int fps = 60;
-    // private final int dt_ms = 1000 / fps;
-    // private final double dt = dt_ms / 1000.0;
-
-    Background background;
+    public void resetFlags() {
+        pauseFlag = false;
+    }
 
     int score;
 
+    Background background;
+
     Shooter shooter;
-
-    ArrayList<Enemy> enemyIndividuals;
-    int numEnemies = 0;
-
-    EnemyGrid enemyGrid;
 
     ArrayList<Missile> missiles;
     int numMissiles = 0;
-    double timeSinceLastMissile = Missile.RELOAD_TIME; // TODO: Sort out overflow
+    double timeSinceLastMissile = Missile.RELOAD_TIME; // should not have overflow problems, since game will end soon
+                                                       // enough if you don't shoot missiles often
 
-    public InvaderGameState() {
+    EnemyGroup enemyGroup;
+
+    public InvaderGameState(int xmin, int xmax, int ymin, int ymax) {
+        canvasXmin = xmin;
+        canvasXmax = xmax;
+        canvasYmin = ymin;
+        canvasYmax = ymax;
 
         score = 0;
 
-        shooter = new Shooter(new Vector2D(0, 100), Math.PI / 2);
-
-        missiles = new ArrayList<>();
-
-        enemyGrid = new EnemyGrid(0, 600, 4, 3);
-
         background = new Background(canvasXmin, canvasXmax, canvasYmin, canvasYmax);
 
+        shooter = new Shooter(new Vector2D(0, 100), Math.PI / 2);
+
+        // enemy group ---------------------->>>>>>
+        enemyGroup = new EnemyGroup();
+        enemyGroup.position = new Vector2D(0, 600);
+        enemyGroup.velocity = new Vector2D(0, -25);
+        Enemy enemy1 = new Enemy(new Vector2D(-50, 0), 3 * Math.PI / 2);
+        Enemy enemy2 = new Enemy(new Vector2D(50, 0), 3 * Math.PI / 2);
+        enemyGroup.add(enemy1);
+        enemyGroup.add(enemy2);
+        // <<<<<-----------------------------------
+
+        missiles = new ArrayList<>();
     }
 
     public void renderStep(double dt) {
@@ -68,8 +63,8 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         shooter.renderStep(dt);
 
-        enemyGrid.renderStep(dt);
-        enemyGrid.handleCollisionsWithMissiles(missiles);
+        enemyGroup.renderStep(dt);
+        score += enemyGroup.handleCollisionsWithMissiles(missiles);
 
         for (int i = 0; i < numMissiles; i++) {
             Missile missile = missiles.get(i);
@@ -91,7 +86,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         shooter.draw();
 
-        enemyGrid.draw();
+        enemyGroup.draw();
 
         for (Missile missile : missiles) {
             missile.draw();
@@ -176,15 +171,11 @@ public class InvaderGameState extends KeyListener implements Serializable {
         }
     }
 
-    public void addEnemy(Vector2D pos) {
-        numEnemies++;
-        enemyIndividuals.add(new Enemy(pos, 3 * Math.PI / 2));
-    }
-
     public boolean isPointOnCanvas(Vector2D pos) {
         if ((pos.x >= canvasXmin) && (pos.x <= canvasXmax) && (pos.y >= canvasYmin) && (pos.y <= canvasYmax))
             return true;
         else
             return false;
     }
+
 }

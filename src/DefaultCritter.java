@@ -42,6 +42,19 @@ public class DefaultCritter extends Object2D implements Critter {
         StdDraw.filledCircle(position.x, position.y, collisionRadius);
     }
 
+    public void draw(Vector2D offset) {
+        StdDraw.setPenColor(StdDraw.RED);
+
+        Vector2D newPosition = Vector2D.sum(position, offset);
+
+        // draw line for line of sight
+        Vector2D aimTarget = Vector2D.sum(newPosition, Vector2D.scalarMultiplication(100, FWDVector()));
+        StdDraw.line(newPosition.x, newPosition.y, aimTarget.x, aimTarget.y);
+
+        // draw circle for body
+        StdDraw.filledCircle(newPosition.x, newPosition.y, collisionRadius);
+    }
+
     public boolean hasCollidedWith(DefaultCritter other) {
         if (distanceBetween(this, other) <= this.collisionRadius + other.collisionRadius)
             return true;
