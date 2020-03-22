@@ -20,25 +20,27 @@ public class Invaders {
     static final int CANVAS_YMIN = 0;
     static final int CANVAS_YMAX = CANVAS_HEIGHT;
 
+    static final int FPS = 60;
+    static final int dt_ms = 1000 / FPS;
+    static final double dt = dt_ms / 1000.0;
+
     static DisplayState currentDisplayState;
     static InvaderGameState loadedInvaderGameState;
-    static int FPS = 60;
-    static int dt_ms = 1000 / FPS;
-    static double dt = dt_ms / 1000.0;
 
     static String[] titleScreenOptions = { "New Game", "Load Game", "Instructions", "Quit Game" };
     static MenuScreen titleScreen = new MenuScreen(titleScreenOptions);
 
     static String[] pauseScreenOptions = { "Resume Game", "Save Game", "Quit To Main Menu" };
     static MenuScreen pauseScreen = new MenuScreen(pauseScreenOptions);
+
     static InstructionsScreen instructionsScreen = new InstructionsScreen();
 
     public static void main(String[] args) {
 
         StdDraw.enableDoubleBuffering();
-        StdDraw.setCanvasSize(800, 800);
-        StdDraw.setXscale(-400, 400);
-        StdDraw.setYscale(0, 800);
+        StdDraw.setCanvasSize(CANVAS_WIDTH, CANVAS_HEIGHT);
+        StdDraw.setXscale(CANVAS_XMIN, CANVAS_XMAX);
+        StdDraw.setYscale(CANVAS_YMIN, CANVAS_YMAX);
 
         currentDisplayState = DisplayState.TITLE_SCREEN;
 
