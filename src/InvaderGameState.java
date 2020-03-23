@@ -46,15 +46,8 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         shooter = new Shooter(new Vector2D(0, 100), Math.PI / 2);
 
-        // enemy group ---------------------->>>>>>
-        enemyGroup = new EnemyGroup();
-        enemyGroup.position = new Vector2D(0, 600);
-        enemyGroup.velocity = new Vector2D(0, -25);
-        Enemy enemy1 = new Enemy(new Vector2D(-50, 0), 3 * Math.PI / 2);
-        Enemy enemy2 = new Enemy(new Vector2D(50, 0), 3 * Math.PI / 2);
-        enemyGroup.add(enemy1);
-        enemyGroup.add(enemy2);
-        // <<<<<-----------------------------------
+        enemyGroup = new EnemyGroup(new Vector2D(-300, 700), EnemyGroup.Formation.SQUARE, 16);
+        enemyGroup.velocity = new Vector2D(0, -50);
 
         missiles = new ArrayList<>();
     }

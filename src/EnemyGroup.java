@@ -4,11 +4,42 @@ public class EnemyGroup extends Enemy {
 
     private static final long serialVersionUID = 1L;
 
+    enum Formation {
+        SQUARE;
+    }
+
     ArrayList<Enemy> enemies;
 
     public EnemyGroup() {
         super();
         enemies = new ArrayList<>();
+    }
+
+    public EnemyGroup(Vector2D position, Formation formation, int numEnemies) {
+        super();
+        this.position = position;
+        enemies = new ArrayList<>();
+
+        switch (formation) {
+            case SQUARE:
+                int N = (int) Math.sqrt(numEnemies);
+
+                int radius = 20;
+                int spacing = 10;
+
+                for (int i = 0, x = radius; i < N; i++, x += 2 * radius + spacing) {
+                    for (int j = 0, y = radius; j < N; j++, y += 2 * radius + spacing) {
+                        Enemy enemy = new Enemy(new Vector2D(x, y), 3 * Math.PI / 2);
+                        enemies.add(enemy);
+                    }
+                }
+
+                break;
+
+            default:
+                break;
+        }
+
     }
 
     public void add(Enemy enemy) {
