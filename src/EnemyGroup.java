@@ -104,9 +104,9 @@ public class EnemyGroup extends Enemy {
     }
 
     @Override
-    public boolean isTouchingBottom() {
+    public boolean isTouchingBottomOrShooter(Shooter shooter) {
         for (Enemy enemy : enemies) {
-            if (enemy.isTouchingBottom()) {
+            if (enemy.isTouchingBottomOrShooter(shooter)) {
                 return true;
             }
         }

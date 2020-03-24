@@ -34,7 +34,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
     double timeSinceLastMissile = Missile.RELOAD_TIME; // should not have overflow problems, since game will end soon
                                                        // enough if you don't shoot missiles often
 
-    EnemyGroup enemyGroupSquare, enemyGroupCircle;
+    EnemyWave enemyWave;
 
     public InvaderGameState(int xmin, int xmax, int ymin, int ymax) {
         canvasXmin = xmin;
@@ -48,13 +48,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         shooter = new Shooter(new Vector2D(0, 100), Math.PI / 2);
 
-        enemyGroupSquare = new EnemyGroup();
-        enemyGroupSquare.populateInSquareFormation(new Vector2D(-300, 700), 4);
-        enemyGroupSquare.velocity = new Vector2D(0, -80);
-
-        enemyGroupCircle = new EnemyGroup();
-        enemyGroupCircle.populateInCircleFormation(new Vector2D(0, 1300), 16, 200);
-        enemyGroupCircle.velocity = new Vector2D(0, -80);
+        enemyWave = new EnemyWave();
 
         missiles = new ArrayList<>();
     }
@@ -65,17 +59,9 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         shooter.renderStep(dt);
 
-        enemyGroupSquare.renderStep(dt);
-        score += enemyGroupSquare.handleCollisionsWithMissiles(missiles);
-        if (enemyGroupSquare.isTouchingBottom()) {
-            gameOverFlag = true;
-        }
-
-        enemyGroupCircle.renderStep(dt);
-        score += enemyGroupCircle.handleCollisionsWithMissiles(missiles);
-        if (enemyGroupCircle.isTouchingBottom()) {
-            gameOverFlag = true;
-        }
+        enemyWave.renderStep(dt);
+        score += enemyWave.handleCollisionsWithMissiles(missiles);
+        gameOverFlag = enemyWave.checkGameOverConditions(shooter) || enemyWave.isCleared();
 
         for (int i = 0; i < numMissiles; i++) {
             Missile missile = missiles.get(i);
@@ -97,8 +83,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         shooter.draw();
 
-        enemyGroupSquare.draw();
-        enemyGroupCircle.draw();
+        enemyWave.draw();
 
         for (Missile missile : missiles) {
             missile.draw();

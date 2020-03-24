@@ -37,8 +37,8 @@ public class Enemy extends DefaultCritter {
         return points;
     }
 
-    public boolean isTouchingBottom() {
-        return this.position.y - collisionRadius <= 0;
+    public boolean isTouchingBottomOrShooter(Shooter shooter) {
+        return (this.position.y - collisionRadius <= 0) || (this.isCollidingWith(shooter));
     }
 
 }

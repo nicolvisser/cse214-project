@@ -38,13 +38,11 @@ public class Invaders {
     static InstructionsScreen instructionsScreen = new InstructionsScreen();
 
     public static void main(String[] args) {
-
+        
         StdDraw.enableDoubleBuffering();
         StdDraw.setCanvasSize(CANVAS_WIDTH, CANVAS_HEIGHT);
         StdDraw.setXscale(CANVAS_XMIN, CANVAS_XMAX);
         StdDraw.setYscale(CANVAS_YMIN, CANVAS_YMAX);
-
-        currentDisplayState = DisplayState.TITLE_SCREEN;
 
         gameLoop();
 
@@ -53,6 +51,8 @@ public class Invaders {
     }
 
     public static void gameLoop() {
+        currentDisplayState = DisplayState.TITLE_SCREEN;
+
         while (currentDisplayState != DisplayState.QUIT) {
 
             StdDraw.clear();
