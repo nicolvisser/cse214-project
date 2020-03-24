@@ -7,14 +7,16 @@ public class MenuScreen extends KeyListener {
     static final int BUTTON_HEIGHT = 40;
     static final int BUTTON_SPACING = 10;
 
-    private String[] textOptions;
-    private int highlightedOption;
+    public String title;
+    public String[] textOptions;
+    public int highlightedOption;
 
     public int selectedOption;
 
     public boolean flagBack = false;
 
-    public MenuScreen(String[] textOptionsArray) {
+    public MenuScreen(String title, String[] textOptionsArray) {
+        this.title = title;
         textOptions = textOptionsArray;
         highlightedOption = 0;
         selectedOption = -1;
@@ -60,9 +62,11 @@ public class MenuScreen extends KeyListener {
     }
 
     public void draw() {
+        StdDraw.setPenColor(StdDraw.ORANGE);
+        StdDraw.text(0, 600, title);
         for (int i = 0; i < textOptions.length; i++) {
             StdDraw.setPenColor(i == highlightedOption ? StdDraw.RED : StdDraw.WHITE);
-            int y = 600 - i * (BUTTON_HEIGHT + BUTTON_SPACING);
+            int y = 550 - i * (BUTTON_HEIGHT + BUTTON_SPACING);
             StdDraw.rectangle(0, y, BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2);
             StdDraw.text(0, y, textOptions[i]);
         }

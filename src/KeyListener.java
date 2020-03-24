@@ -8,7 +8,8 @@ public class KeyListener {
     }
 
     enum KeyboardKey {
-        ESC_KEY(27), A_KEY(65), D_KEY(68), LEFT_ARROW(37), RIGHT_ARROW(39), UP_ARROW(38), DOWN_ARROW(40), ENTER_KEY(10);
+        ESC_KEY(27), A_KEY(65), D_KEY(68), Q_KEY(81), LEFT_ARROW(37), RIGHT_ARROW(39), UP_ARROW(38), DOWN_ARROW(40),
+        ENTER_KEY(10);
 
         public int keyCode;
         public boolean isDown;

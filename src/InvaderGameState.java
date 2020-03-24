@@ -8,63 +8,55 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    enum KeyboardKey {
-        LEFT(65), RIGHT(68), ROTATE_L(37), ROTATE_R(39), SHOOT(38);
-
-        public int keyCode;
-        public boolean isDown;
-
-        private KeyboardKey(int value) {
-            this.keyCode = value;
-            this.isDown = false;
-        }
-    }
-
-    private final int canvasWidth = 800;
-    private final int canvasHeight = 800;
-    private final int canvasXmin = -canvasWidth / 2;
-    private final int canvasXmax = canvasWidth / 2;
-    private final int canvasYmin = 0;
-    private final int canvasYmax = canvasHeight;
+    private int canvasXmin;
+    private int canvasXmax;
+    private int canvasYmin;
+    private int canvasYmax;
 
     public boolean pauseFlag = false;
+    public boolean quitFlag = false;
+    public boolean gameOverFlag = false;
 
-    // private final int fps = 60;
-    // private final int dt_ms = 1000 / fps;
-    // private final double dt = dt_ms / 1000.0;
-
-    Background background;
+    public void resetFlags() {
+        pauseFlag = false;
+        quitFlag = false;
+        gameOverFlag = false;
+    }
 
     int score;
 
-    Shooter shooter;
+    Background background;
 
-    ArrayList<Enemy> enemies;
-    int numEnemies = 0;
+    Shooter shooter;
 
     ArrayList<Missile> missiles;
     int numMissiles = 0;
-    double timeSinceLastMissile = Missile.RELOAD_TIME; // TODO: Sort out overflow
+    double timeSinceLastMissile = Missile.RELOAD_TIME; // should not have overflow problems, since game will end soon
+                                                       // enough if you don't shoot missiles often
 
-    public InvaderGameState() {
+    EnemyGroup enemyGroupSquare, enemyGroupCircle;
+
+    public InvaderGameState(int xmin, int xmax, int ymin, int ymax) {
+        canvasXmin = xmin;
+        canvasXmax = xmax;
+        canvasYmin = ymin;
+        canvasYmax = ymax;
 
         score = 0;
 
-        shooter = new Shooter(new Vector2D(0, 100), Math.PI / 2);
-
-        missiles = new ArrayList<>();
-
-        enemies = new ArrayList<>();
-
-        addEnemy(new Vector2D(-300, 700));
-        addEnemy(new Vector2D(-250, 700));
-        addEnemy(new Vector2D(-200, 700));
-        enemies.get(0).velocity = new Vector2D(0, -50);
-        enemies.get(1).velocity = new Vector2D(0, -50);
-        enemies.get(2).velocity = new Vector2D(0, -50);
-
         background = new Background(canvasXmin, canvasXmax, canvasYmin, canvasYmax);
 
+        shooter = new Shooter(new Vector2D(0, 100), Math.PI / 2);
+
+        enemyGroupSquare = new EnemyGroup();
+        enemyGroupSquare.populateInSquareFormation(new Vector2D(-300, 700), 4);
+        enemyGroupSquare.velocity = new Vector2D(0, -80);
+
+        enemyGroupCircle = new EnemyGroup();
+        enemyGroupCircle.populateInCircleFormation(new Vector2D(0, 1300), 16, 200);
+        enemyGroupCircle.velocity = new Vector2D(0, -80);
+
+        missiles = new ArrayList<>();
     }
 
     public void renderStep(double dt) {
@@ -73,14 +65,16 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         shooter.renderStep(dt);
 
-        for (int i = 0; i < numEnemies; i++) {
-            Enemy enemy = enemies.get(i);
-            enemy.renderStep(dt);
-            if (!enemy.isAlive()) {
-                enemies.remove(enemy);
-                i--;
-                numEnemies--;
-            }
+        enemyGroupSquare.renderStep(dt);
+        score += enemyGroupSquare.handleCollisionsWithMissiles(missiles);
+        if (enemyGroupSquare.isTouchingBottom()) {
+            gameOverFlag = true;
+        }
+
+        enemyGroupCircle.renderStep(dt);
+        score += enemyGroupCircle.handleCollisionsWithMissiles(missiles);
+        if (enemyGroupCircle.isTouchingBottom()) {
+            gameOverFlag = true;
         }
 
         for (int i = 0; i < numMissiles; i++) {
@@ -92,18 +86,6 @@ public class InvaderGameState extends KeyListener implements Serializable {
                 missiles.remove(missile);
                 i--;
                 numMissiles--;
-            } else {
-
-                // detect collision with enemies
-                for (Enemy enemy : enemies) {
-                    if (missile.hasCollidedWith(enemy)) {
-                        int missileDamage = 50; // TODO: put this in a better place
-                        score += missileDamage;
-                        enemy.takeDamage(missileDamage);
-                        missile.takeDamage(Integer.MAX_VALUE);
-                        break;
-                    }
-                }
             }
         }
         timeSinceLastMissile += dt;
@@ -115,9 +97,8 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         shooter.draw();
 
-        for (Enemy enemy : enemies) {
-            enemy.draw();
-        }
+        enemyGroupSquare.draw();
+        enemyGroupCircle.draw();
 
         for (Missile missile : missiles) {
             missile.draw();
@@ -125,10 +106,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         drawHealthBar(shooter.healthPoints);
         drawEnergyBar(50);
-
-        StdDraw.setPenColor(StdDraw.ORANGE);
-        StdDraw.text(200, 50, "SCORE: " + score);
-
+        drawScore(score);
     }
 
     @Override
@@ -148,6 +126,9 @@ public class InvaderGameState extends KeyListener implements Serializable {
                 break;
             case ESC_KEY:
                 pauseFlag = true;
+                break;
+            case Q_KEY:
+                quitFlag = true;
                 break;
 
             default:
@@ -191,6 +172,11 @@ public class InvaderGameState extends KeyListener implements Serializable {
         StdDraw.filledRectangle(-150, 50, (50 - 2) * percentage / 100, 15 - 2);
     }
 
+    public void drawScore(int score) {
+        StdDraw.setPenColor(StdDraw.ORANGE);
+        StdDraw.text(200, 50, "SCORE: " + score);
+    }
+
     public void shootMissile(Shooter player) {
         if (timeSinceLastMissile > Missile.RELOAD_TIME) {
             numMissiles++;
@@ -200,15 +186,11 @@ public class InvaderGameState extends KeyListener implements Serializable {
         }
     }
 
-    public void addEnemy(Vector2D pos) {
-        numEnemies++;
-        enemies.add(new Enemy(pos, 3 * Math.PI / 2));
-    }
-
     public boolean isPointOnCanvas(Vector2D pos) {
         if ((pos.x >= canvasXmin) && (pos.x <= canvasXmax) && (pos.y >= canvasYmin) && (pos.y <= canvasYmax))
             return true;
         else
             return false;
     }
+
 }

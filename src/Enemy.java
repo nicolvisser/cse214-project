@@ -1,7 +1,11 @@
+import java.util.ArrayList;
+
 /**
  * Enemy
  */
 public class Enemy extends DefaultCritter {
+
+    public static int DEFAULT_COLLISION_RADIUS = 20;
 
     /**
      *
@@ -11,19 +15,30 @@ public class Enemy extends DefaultCritter {
     public Enemy() {
         super();
         healthPoints = 100;
-        collisionRadius = 20;
+        collisionRadius = DEFAULT_COLLISION_RADIUS;
     }
 
     public Enemy(Vector2D position, double orientation) {
         super(position, orientation);
         healthPoints = 100;
-        collisionRadius = 20;
+        collisionRadius = DEFAULT_COLLISION_RADIUS;
     }
 
-    @Override
-    public void draw() {
-        // TODO Auto-generated method stub
-        super.draw();
+    public int handleCollisionsWithMissiles(ArrayList<Missile> missiles) {
+        int points = 0;
+        for (Missile missile : missiles) {
+            if (this.isCollidingWith(missile)) {
+                points += missile.missileDamage; // TODO: Better points system than just missile damage
+                takeDamage(missile.missileDamage);
+                missile.takeDamage(Integer.MAX_VALUE);
+                break;
+            }
+        }
+        return points;
+    }
+
+    public boolean isTouchingBottom() {
+        return this.position.y - collisionRadius <= 0;
     }
 
 }

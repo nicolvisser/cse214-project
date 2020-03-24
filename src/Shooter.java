@@ -75,8 +75,13 @@ public class Shooter extends DefaultCritter {
 
     @Override
     public void draw() {
-        // TODO Auto-generated method stub
-        super.draw();
+        StdDraw.setPenColor(StdDraw.RED);
+
+        // draw circle for body
+        StdDraw.filledCircle(position.x, position.y, collisionRadius);
+
+        double orientationInDegrees = orientation / Math.PI * 180;
+        StdDraw.picture(position.x, position.y, "resources/turret.png", 100, 40, orientationInDegrees);
     }
 
 }
