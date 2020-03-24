@@ -42,7 +42,7 @@ public class DefaultCritter extends Object2D implements Critter {
         StdDraw.filledCircle(position.x, position.y, collisionRadius);
     }
 
-    public boolean hasCollidedWith(DefaultCritter other) {
+    public boolean isCollidingWith(DefaultCritter other) {
         if (distanceBetween(this, other) <= this.collisionRadius + other.collisionRadius)
             return true;
         else

@@ -25,25 +25,20 @@ public class Enemy extends DefaultCritter {
     }
 
     public int handleCollisionsWithMissiles(ArrayList<Missile> missiles) {
-
         int points = 0;
-
         for (Missile missile : missiles) {
-
-            Vector2D relativePositionVector = new Vector2D(position.x - missile.position.x,
-                    position.y - missile.position.y);
-
-            Double distanceBetween = relativePositionVector.magnitude();
-
-            if (distanceBetween <= collisionRadius + missile.collisionRadius) {
+            if (this.isCollidingWith(missile)) {
                 points += missile.missileDamage; // TODO: Better points system than just missile damage
                 takeDamage(missile.missileDamage);
                 missile.takeDamage(Integer.MAX_VALUE);
                 break;
             }
         }
-
         return points;
+    }
+
+    public boolean isTouchingBottom() {
+        return this.position.y - collisionRadius <= 0;
     }
 
 }

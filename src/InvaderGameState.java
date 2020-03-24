@@ -15,10 +15,12 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
     public boolean pauseFlag = false;
     public boolean quitFlag = false;
+    public boolean gameOverFlag = false;
 
     public void resetFlags() {
         pauseFlag = false;
         quitFlag = false;
+        gameOverFlag = false;
     }
 
     int score;
@@ -65,9 +67,15 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         enemyGroupSquare.renderStep(dt);
         score += enemyGroupSquare.handleCollisionsWithMissiles(missiles);
+        if (enemyGroupSquare.isTouchingBottom()) {
+            gameOverFlag = true;
+        }
 
         enemyGroupCircle.renderStep(dt);
         score += enemyGroupCircle.handleCollisionsWithMissiles(missiles);
+        if (enemyGroupCircle.isTouchingBottom()) {
+            gameOverFlag = true;
+        }
 
         for (int i = 0; i < numMissiles; i++) {
             Missile missile = missiles.get(i);

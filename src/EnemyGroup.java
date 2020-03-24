@@ -91,7 +91,7 @@ public class EnemyGroup extends Enemy {
 
         for (Enemy enemy : enemies) {
             for (Missile missile : missiles) {
-                if (distanceBetween(enemy, missile) <= enemy.collisionRadius + missile.collisionRadius) {
+                if (enemy.isCollidingWith(missile)) {
                     points += missile.missileDamage; // Todo Better points system than just missile damage
                     enemy.takeDamage(missile.missileDamage);
                     missile.takeDamage(Integer.MAX_VALUE);
@@ -101,5 +101,15 @@ public class EnemyGroup extends Enemy {
         }
 
         return points;
+    }
+
+    @Override
+    public boolean isTouchingBottom() {
+        for (Enemy enemy : enemies) {
+            if (enemy.isTouchingBottom()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

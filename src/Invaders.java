@@ -10,7 +10,7 @@ import java.io.ObjectOutputStream;
 public class Invaders {
 
     enum DisplayState {
-        TITLE_SCREEN, NEW_GAME, PLAYING, PAUSE, SAVE_GAME, LOAD_GAME, INSTRUCTIONS, QUIT;
+        TITLE_SCREEN, NEW_GAME, PLAYING, PAUSE, SAVE_GAME, LOAD_GAME, INSTRUCTIONS, GAME_OVER, QUIT;
     }
 
     static final int CANVAS_WIDTH = 800;
@@ -28,10 +28,12 @@ public class Invaders {
     static InvaderGameState loadedInvaderGameState;
 
     static String[] titleScreenOptions = { "New Game", "Load Game", "Instructions", "Quit Game" };
-    static MenuScreen titleScreen = new MenuScreen(titleScreenOptions);
+    static MenuScreen titleScreen = new MenuScreen("Main Menu", titleScreenOptions);
 
     static String[] pauseScreenOptions = { "Resume Game", "Save Game", "Quit To Main Menu" };
-    static MenuScreen pauseScreen = new MenuScreen(pauseScreenOptions);
+    static MenuScreen pauseScreen = new MenuScreen("Paused", pauseScreenOptions);
+
+    static GameOverScreen gameOverScreen = new GameOverScreen();
 
     static InstructionsScreen instructionsScreen = new InstructionsScreen();
 
@@ -118,6 +120,12 @@ public class Invaders {
                         break;
                     }
 
+                    if (loadedInvaderGameState.gameOverFlag) {
+                        loadedInvaderGameState.resetFlags();
+                        currentDisplayState = DisplayState.GAME_OVER;
+                        break;
+                    }
+
                     break;
 
                 case PAUSE:
@@ -197,6 +205,39 @@ public class Invaders {
                         instructionsScreen.reset();
                         currentDisplayState = DisplayState.TITLE_SCREEN;
                         break;
+                    }
+
+                    break;
+
+                case GAME_OVER:
+
+                    gameOverScreen.setScore(loadedInvaderGameState.score);
+                    gameOverScreen.draw();
+                    gameOverScreen.listenForInputChanges();
+
+                    switch (gameOverScreen.selectedOption) {
+                        case -1:
+                            break;
+                        case 0:
+                            gameOverScreen.reset();
+                            currentDisplayState = DisplayState.NEW_GAME;
+                            break;
+
+                        case 1:
+                            gameOverScreen.reset();
+                            currentDisplayState = DisplayState.LOAD_GAME;
+                            break;
+
+                        case 2:
+                            // TODO Save Highscore
+                            break;
+
+                        case 3:
+                            currentDisplayState = DisplayState.QUIT;
+                            break;
+
+                        default:
+                            break;
                     }
 
                     break;
