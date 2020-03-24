@@ -211,4 +211,9 @@ public class Object2D implements Serializable {
         return displacement.magnitude();
     }
 
+    public static double distanceBetween(Vector2D obj1, Vector2D obj2) {
+        Vector2D displacement = new Vector2D(obj2.x - obj1.x, obj2.y - obj1.y);
+        return displacement.magnitude();
+    }
+
 }

@@ -1,5 +1,4 @@
 import java.io.Serializable;
-import java.util.ArrayList;
 
 /**
  * InvaderGameState
@@ -29,10 +28,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
     Shooter shooter;
 
-    ArrayList<Missile> missiles;
-    int numMissiles = 0;
-    double timeSinceLastMissile = Missile.RELOAD_TIME; // should not have overflow problems, since game will end soon
-                                                       // enough if you don't shoot missiles often
+    MissileLauncher missileLauncher;
 
     EnemyWave enemyWave;
 
@@ -48,9 +44,9 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         shooter = new Shooter(new Vector2D(0, 100), Math.PI / 2);
 
-        enemyWave = new EnemyWave();
+        missileLauncher = new MissileLauncher(shooter);
 
-        missiles = new ArrayList<>();
+        enemyWave = new EnemyWave();
     }
 
     public void renderStep(double dt) {
@@ -59,22 +55,13 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         shooter.renderStep(dt);
 
+        missileLauncher.renderStep(dt);
+        missileLauncher.burstDeadMissiles(enemyWave);
+
         enemyWave.renderStep(dt);
-        score += enemyWave.handleCollisionsWithMissiles(missiles);
+        score += enemyWave.handleCollisionsWithMissiles(missileLauncher.missiles);
         gameOverFlag = enemyWave.checkGameOverConditions(shooter) || enemyWave.isCleared();
 
-        for (int i = 0; i < numMissiles; i++) {
-            Missile missile = missiles.get(i);
-            missile.renderStep(dt);
-
-            // remove missile if off screen or if 'dead'
-            if (!isPointOnCanvas(missile.position) || !missile.isAlive()) {
-                missiles.remove(missile);
-                i--;
-                numMissiles--;
-            }
-        }
-        timeSinceLastMissile += dt;
     }
 
     public void draw() {
@@ -85,9 +72,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         enemyWave.draw();
 
-        for (Missile missile : missiles) {
-            missile.draw();
-        }
+        missileLauncher.draw();
 
         drawHealthBar(shooter.healthPoints);
         drawEnergyBar(50);
@@ -115,6 +100,9 @@ public class InvaderGameState extends KeyListener implements Serializable {
             case Q_KEY:
                 quitFlag = true;
                 break;
+            case UP_ARROW:
+                missileLauncher.startCharging();
+                break;
 
             default:
                 break;
@@ -137,7 +125,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
                 shooter.turretRightRotateStatus = false;
                 break;
             case UP_ARROW:
-                shootMissile(shooter);
+                missileLauncher.shootMissile();
                 break;
 
             default:
@@ -160,22 +148,6 @@ public class InvaderGameState extends KeyListener implements Serializable {
     public void drawScore(int score) {
         StdDraw.setPenColor(StdDraw.ORANGE);
         StdDraw.text(200, 50, "SCORE: " + score);
-    }
-
-    public void shootMissile(Shooter player) {
-        if (timeSinceLastMissile > Missile.RELOAD_TIME) {
-            numMissiles++;
-            timeSinceLastMissile = 0;
-            Vector2D missileStartPos = new Vector2D(player.position.x, player.position.y);
-            missiles.add(new Missile(missileStartPos, player.FWDVector()));
-        }
-    }
-
-    public boolean isPointOnCanvas(Vector2D pos) {
-        if ((pos.x >= canvasXmin) && (pos.x <= canvasXmax) && (pos.y >= canvasYmin) && (pos.y <= canvasYmax))
-            return true;
-        else
-            return false;
     }
 
 }

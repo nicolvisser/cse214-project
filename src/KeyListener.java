@@ -35,11 +35,17 @@ public class KeyListener {
             } else if (key.isDown && !keyIsDownInNewFrame) {
                 key.isDown = false;
                 onKeyRelease(key);
+            } else if (key.isDown && keyIsDownInNewFrame) {
+                onKeyHold(key);
             }
         }
     }
 
     public void onKeyPress(KeyboardKey key) {
+
+    }
+
+    public void onKeyHold(KeyboardKey key) {
 
     }
 

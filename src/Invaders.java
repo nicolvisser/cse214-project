@@ -38,7 +38,7 @@ public class Invaders {
     static InstructionsScreen instructionsScreen = new InstructionsScreen();
 
     public static void main(String[] args) {
-        
+
         StdDraw.enableDoubleBuffering();
         StdDraw.setCanvasSize(CANVAS_WIDTH, CANVAS_HEIGHT);
         StdDraw.setXscale(CANVAS_XMIN, CANVAS_XMAX);
@@ -250,6 +250,13 @@ public class Invaders {
             StdDraw.pause(dt_ms);
 
         }
+    }
+
+    public static boolean isPointOnCanvas(Vector2D pos) {
+        if ((pos.x >= CANVAS_XMIN) && (pos.x <= CANVAS_XMAX) && (pos.y >= CANVAS_YMIN) && (pos.y <= CANVAS_YMAX))
+            return true;
+        else
+            return false;
     }
 
 }
