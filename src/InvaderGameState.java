@@ -32,7 +32,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
     double timeSinceLastMissile = Missile.RELOAD_TIME; // should not have overflow problems, since game will end soon
                                                        // enough if you don't shoot missiles often
 
-    EnemyGroup enemyGroup;
+    EnemyGroup enemyGroupSquare, enemyGroupCircle;
 
     public InvaderGameState(int xmin, int xmax, int ymin, int ymax) {
         canvasXmin = xmin;
@@ -46,8 +46,13 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         shooter = new Shooter(new Vector2D(0, 100), Math.PI / 2);
 
-        enemyGroup = new EnemyGroup(new Vector2D(-300, 700), EnemyGroup.Formation.SQUARE, 16);
-        enemyGroup.velocity = new Vector2D(0, -50);
+        enemyGroupSquare = new EnemyGroup();
+        enemyGroupSquare.populateInSquareFormation(new Vector2D(-300, 700), 4);
+        enemyGroupSquare.velocity = new Vector2D(0, -80);
+
+        enemyGroupCircle = new EnemyGroup();
+        enemyGroupCircle.populateInCircleFormation(new Vector2D(0, 1300), 16, 200);
+        enemyGroupCircle.velocity = new Vector2D(0, -80);
 
         missiles = new ArrayList<>();
     }
@@ -58,8 +63,11 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         shooter.renderStep(dt);
 
-        enemyGroup.renderStep(dt);
-        score += enemyGroup.handleCollisionsWithMissiles(missiles);
+        enemyGroupSquare.renderStep(dt);
+        score += enemyGroupSquare.handleCollisionsWithMissiles(missiles);
+
+        enemyGroupCircle.renderStep(dt);
+        score += enemyGroupCircle.handleCollisionsWithMissiles(missiles);
 
         for (int i = 0; i < numMissiles; i++) {
             Missile missile = missiles.get(i);
@@ -81,7 +89,8 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         shooter.draw();
 
-        enemyGroup.draw();
+        enemyGroupSquare.draw();
+        enemyGroupCircle.draw();
 
         for (Missile missile : missiles) {
             missile.draw();

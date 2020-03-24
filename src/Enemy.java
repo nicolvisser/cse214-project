@@ -5,6 +5,8 @@ import java.util.ArrayList;
  */
 public class Enemy extends DefaultCritter {
 
+    public static int DEFAULT_COLLISION_RADIUS = 20;
+
     /**
      *
      */
@@ -13,13 +15,13 @@ public class Enemy extends DefaultCritter {
     public Enemy() {
         super();
         healthPoints = 100;
-        collisionRadius = 20;
+        collisionRadius = DEFAULT_COLLISION_RADIUS;
     }
 
     public Enemy(Vector2D position, double orientation) {
         super(position, orientation);
         healthPoints = 100;
-        collisionRadius = 20;
+        collisionRadius = DEFAULT_COLLISION_RADIUS;
     }
 
     public int handleCollisionsWithMissiles(ArrayList<Missile> missiles) {

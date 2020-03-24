@@ -4,10 +4,6 @@ public class EnemyGroup extends Enemy {
 
     private static final long serialVersionUID = 1L;
 
-    enum Formation {
-        SQUARE;
-    }
-
     ArrayList<Enemy> enemies;
 
     public EnemyGroup() {
@@ -15,29 +11,32 @@ public class EnemyGroup extends Enemy {
         enemies = new ArrayList<>();
     }
 
-    public EnemyGroup(Vector2D position, Formation formation, int numEnemies) {
-        super();
+    public void populateInSquareFormation(Vector2D position, int numEnemiesOnASide) {
         this.position = position;
-        enemies = new ArrayList<>();
 
-        switch (formation) {
-            case SQUARE:
-                int N = (int) Math.sqrt(numEnemies);
+        int radius = Enemy.DEFAULT_COLLISION_RADIUS;
+        int spacing = 10;
 
-                int radius = 20;
-                int spacing = 10;
+        double x = position.x + radius;
+        for (int i = 0; i < numEnemiesOnASide; i++) {
+            double y = position.y + radius;
+            for (int j = 0; j < numEnemiesOnASide; j++) {
+                Enemy enemy = new Enemy(new Vector2D(x, y), 3 * Math.PI / 2);
+                enemies.add(enemy);
+                y += 2 * radius + spacing;
+            }
+            x += 2 * radius + spacing;
+        }
+    }
 
-                for (int i = 0, x = radius; i < N; i++, x += 2 * radius + spacing) {
-                    for (int j = 0, y = radius; j < N; j++, y += 2 * radius + spacing) {
-                        Enemy enemy = new Enemy(new Vector2D(x, y), 3 * Math.PI / 2);
-                        enemies.add(enemy);
-                    }
-                }
+    public void populateInCircleFormation(Vector2D position, int numEnemies, int radius) {
+        this.position = position;
 
-                break;
-
-            default:
-                break;
+        for (double theta = 0; theta < 2 * Math.PI; theta += 2 * Math.PI / numEnemies) {
+            double x = position.x + radius * Math.cos(theta);
+            double y = position.y + radius * Math.sin(theta);
+            Enemy enemy = new Enemy(new Vector2D(x, y), 3 * Math.PI / 2);
+            enemies.add(enemy);
         }
 
     }
@@ -58,16 +57,25 @@ public class EnemyGroup extends Enemy {
     @Override
     public void draw() {
         for (Enemy enemy : enemies) {
-            enemy.draw(position);
+            enemy.draw();
         }
     }
 
     @Override
     public void renderStep(double dt) {
+        super.renderStep(dt);
+
+        // calculate change in position of group object
+        double dx = velocity.x * dt + 0.5 * acceleration.x * dt * dt;
+        double dy = velocity.y * dt + 0.5 * acceleration.y * dt * dt;
 
         for (int i = 0; i < enemies.size(); i++) {
             Enemy enemy = enemies.get(i);
-            enemy.renderStep(dt);
+            enemy.renderStep(dt); // render new position of enemy independent of group
+
+            // add group movement effect to enemy
+            enemy.translateX(dx);
+            enemy.translateY(dy);
 
             // remove enemy if no longer alive
             if (!enemy.isAlive()) {
@@ -75,8 +83,6 @@ public class EnemyGroup extends Enemy {
                 i--;
             }
         }
-
-        super.renderStep(dt);
     }
 
     @Override
@@ -85,15 +91,7 @@ public class EnemyGroup extends Enemy {
 
         for (Enemy enemy : enemies) {
             for (Missile missile : missiles) {
-
-                Vector2D enemyGlobalPosition = Vector2D.sum(position, enemy.position);
-
-                Vector2D relativePositionVector = new Vector2D(enemyGlobalPosition.x - missile.position.x,
-                        enemyGlobalPosition.y - missile.position.y);
-
-                Double distanceBetween = relativePositionVector.magnitude();
-
-                if (distanceBetween <= enemy.collisionRadius + missile.collisionRadius) {
+                if (distanceBetween(enemy, missile) <= enemy.collisionRadius + missile.collisionRadius) {
                     points += missile.missileDamage; // Todo Better points system than just missile damage
                     enemy.takeDamage(missile.missileDamage);
                     missile.takeDamage(Integer.MAX_VALUE);
