@@ -1,8 +1,12 @@
+import java.io.Serializable;
+
 /**
  * Represents object in 2D space with properties for kinematics (modelled as a
  * point particle but with orientation).
  */
-public class Object2D {
+public class Object2D implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Stores current position of object in vector format
@@ -25,6 +29,25 @@ public class Object2D {
      */
     public double orientation;
 
+    public double angularVelocity;
+
+    public double angularAcceleration;
+
+    /**
+     * Creates an object in 2D space. Sets all properties to zero.
+     * 
+     * @param position The object's position as a vector.
+     */
+    public Object2D() {
+        position = new Vector2D(0, 0);
+        velocity = new Vector2D(0, 0);
+        acceleration = new Vector2D(0, 0);
+
+        orientation = 0;
+        angularVelocity = 0;
+        angularAcceleration = 0;
+    }
+
     /**
      * Creates an object in 2D space with specified position. Sets other properties
      * to zero.
@@ -37,6 +60,8 @@ public class Object2D {
         acceleration = new Vector2D(0, 0);
 
         orientation = 0;
+        angularVelocity = 0;
+        angularAcceleration = 0;
     }
 
     /**
@@ -52,6 +77,8 @@ public class Object2D {
         acceleration = new Vector2D(0, 0);
 
         this.orientation = orientation;
+        angularVelocity = 0;
+        angularAcceleration = 0;
     }
 
     /**
@@ -162,6 +189,9 @@ public class Object2D {
         velocity.y += acceleration.y * dt;
         position.x += velocity.x * dt + 0.5 * acceleration.x * dt * dt;
         position.y += velocity.y * dt + 0.5 * acceleration.y * dt * dt;
+
+        angularVelocity += angularAcceleration * dt;
+        orientation += angularVelocity * dt + 0.5 * angularAcceleration * dt * dt;
     }
 
     /**
@@ -173,7 +203,21 @@ public class Object2D {
      *         passed vector.
      */
     public static double orientationFromVector(Vector2D vec) {
-        return Math.atan2(vec.x, vec.y);
+        return Math.atan2(vec.y, vec.x);
+    }
+
+    public static double distanceBetween(Object2D obj1, Object2D obj2) {
+        Vector2D displacement = new Vector2D(obj2.position.x - obj1.position.x, obj2.position.y - obj1.position.y);
+        return displacement.magnitude();
+    }
+
+    public static double distanceBetween(Vector2D obj1, Vector2D obj2) {
+        Vector2D displacement = new Vector2D(obj2.x - obj1.x, obj2.y - obj1.y);
+        return displacement.magnitude();
+    }
+
+    public double orientationInDegrees() {
+        return orientation / Math.PI * 180;
     }
 
 }
