@@ -55,11 +55,11 @@ public class Shooter extends DefaultCritter {
     @Override
     public void draw() {
         if (thrusterLeftMoveStatus & !thrusterRightMoveStatus) {
-            StdDraw.picture(position.x, position.y, "resources/shooterL.png", 80, 80, 0);
+            StdDraw.picture(position.x, position.y, "resources/shooterL.png", 80, 80, orientationInDegrees());
         } else if (thrusterRightMoveStatus & !thrusterLeftMoveStatus) {
-            StdDraw.picture(position.x, position.y, "resources/shooterR.png", 80, 80, 0);
+            StdDraw.picture(position.x, position.y, "resources/shooterR.png", 80, 80, orientationInDegrees());
         } else {
-            StdDraw.picture(position.x, position.y, "resources/shooter.png", 80, 80, 0);
+            StdDraw.picture(position.x, position.y, "resources/shooter.png", 80, 80, orientationInDegrees());
         }
     }
 

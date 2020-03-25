@@ -216,4 +216,8 @@ public class Object2D implements Serializable {
         return displacement.magnitude();
     }
 
+    public double orientationInDegrees() {
+        return orientation / Math.PI * 180;
+    }
+
 }

@@ -70,8 +70,8 @@ public class MissileLauncher extends DefaultCritter {
     }
 
     public void draw() {
-        double orientationInDegrees = orientation / Math.PI * 180;
-        StdDraw.picture(shooter.position.x, shooter.position.y, "resources/turret.png", 100, 40, orientationInDegrees);
+        StdDraw.picture(shooter.position.x, shooter.position.y, "resources/turret.png", 100, 40,
+                orientationInDegrees());
 
         for (Missile missile : missiles) {
             missile.draw();
