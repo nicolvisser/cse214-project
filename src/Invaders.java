@@ -37,9 +37,6 @@ public class Invaders {
 
     static InstructionsScreen instructionsScreen = new InstructionsScreen();
 
-    static AnimatedPicture explosionAnimatedPicture = new AnimatedPicture("resources/explosion", "png", 16,
-            AnimatedPicture.AnimationType.FWD_BWD_REPEAT);
-
     public static void main(String[] args) {
 
         StdDraw.enableDoubleBuffering();
@@ -248,10 +245,6 @@ public class Invaders {
                 default:
                     break;
             }
-
-            // TEST ANIMATION HERE ------>>>>>>>
-            explosionAnimatedPicture.draw(0, 400, 0);
-            // <<<<<<---------------------------
 
             StdDraw.show();
             StdDraw.pause(dt_ms);

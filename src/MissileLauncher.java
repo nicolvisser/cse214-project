@@ -32,7 +32,7 @@ public class MissileLauncher {
 
             missile.renderStep(dt);
 
-            if (!missile.isAlive() || !Invaders.isPointOnCanvas(missile.position)) {
+            if (missile.state == Missile.MissileState.DEAD || !Invaders.isPointOnCanvas(missile.position)) {
                 missiles.remove(missile);
                 i--;
             }
