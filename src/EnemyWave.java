@@ -39,14 +39,6 @@ public class EnemyWave {
         return points;
     }
 
-    public int handleMissileBurst(Vector2D origin, double burstRadius) {
-        int points = 0;
-        for (EnemyGroup enemyGroup : enemyGroups) {
-            points += enemyGroup.handleMissileBurst(origin, burstRadius);
-        }
-        return points;
-    }
-
     public boolean checkGameOverConditions(Shooter shooter) {
         for (EnemyGroup enemyGroup : enemyGroups) {
             if (enemyGroup.isTouchingBottomOrShooter(shooter)) {

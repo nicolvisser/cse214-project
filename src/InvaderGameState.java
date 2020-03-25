@@ -56,7 +56,6 @@ public class InvaderGameState extends KeyListener implements Serializable {
         shooter.renderStep(dt);
 
         missileLauncher.renderStep(dt);
-        missileLauncher.burstDeadMissiles(enemyWave);
 
         enemyWave.renderStep(dt);
         score += enemyWave.handleCollisionsWithMissiles(missileLauncher.missiles);

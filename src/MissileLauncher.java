@@ -15,12 +15,10 @@ public class MissileLauncher {
     double chargeUpTime; // keeps track of how long user held shoot key down
 
     ArrayList<Missile> missiles;
-    ArrayList<Missile> missilesReadyToBurst;
 
     public MissileLauncher(Shooter shooter) {
         this.shooter = shooter;
         missiles = new ArrayList<>();
-        missilesReadyToBurst = new ArrayList<>();
         timeSinceLastMissile = RELOAD_TIME;
 
     }
@@ -34,26 +32,12 @@ public class MissileLauncher {
 
             missile.renderStep(dt);
 
-            if (!missile.isAlive()) {
-                missiles.remove(missile);
-                i--;
-                missilesReadyToBurst.add(missile);
-
-            } else if (!Invaders.isPointOnCanvas(missile.position)) {
+            if (!missile.isAlive() || !Invaders.isPointOnCanvas(missile.position)) {
                 missiles.remove(missile);
                 i--;
             }
 
         }
-    }
-
-    public void burstDeadMissiles(EnemyWave enemyWave) {
-        for (Missile missile : missilesReadyToBurst) {
-            enemyWave.handleMissileBurst(missile.position, missile.burstRadius);
-            StdDraw.setPenColor(StdDraw.WHITE);
-            StdDraw.circle(missile.position.x, missile.position.y, missile.burstRadius);
-        }
-        missilesReadyToBurst.clear();
     }
 
     public void draw() {
@@ -68,12 +52,12 @@ public class MissileLauncher {
 
     public void shootMissile() {
         if (timeSinceLastMissile > RELOAD_TIME) {
-            System.out.println("Power: " + chargeUpTime);
+            System.out.println("Launched Missile With chargeUpTime: " + chargeUpTime);
             timeSinceLastMissile = 0;
             Vector2D missileStartPos = new Vector2D(shooter.position.x, shooter.position.y); // TODO fix missile
                                                                                              // spawning on top of
                                                                                              // player
-            Missile missile = new Missile(missileStartPos, shooter.FWDVector(), 100);
+            Missile missile = new Missile(missileStartPos, shooter.FWDVector());
             missiles.add(missile);
         }
         chargeUpTime = 0;

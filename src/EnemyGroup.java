@@ -103,19 +103,6 @@ public class EnemyGroup extends Enemy {
         return points;
     }
 
-    public int handleMissileBurst(Vector2D origin, double burstRadius) {
-        int points = 0;
-
-        for (Enemy enemy : enemies) {
-            if (distanceBetween(enemy.position, origin) < burstRadius) {
-                points += 100; // Todo Better points system than just missile damage
-                enemy.takeDamage(100); // Todo fix hardcoding of missile damage
-                break;
-            }
-        }
-
-        return points;
-    }
 
     @Override
     public boolean isTouchingBottomOrShooter(Shooter shooter) {
