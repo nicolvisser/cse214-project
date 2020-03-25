@@ -1,9 +1,12 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * EnemyWave
  */
-public class EnemyWave {
+public class EnemyWave implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     EnemyGroup[] enemyGroups;
 

@@ -1,7 +1,11 @@
+import java.io.Serializable;
+
 /**
  * AnimatedPicture
  */
-public class AnimatedPicture {
+public class AnimatedPicture implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     enum AnimationType {
         ONCE, REPEAT, FWD_BWD_ONCE, FWD_BWD_REPEAT;
