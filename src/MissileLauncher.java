@@ -90,6 +90,7 @@ public class MissileLauncher extends DefaultCritter {
                     Vector2D.scalarMultiplication(50, FWDVector()));
             Missile missile = new Missile(missileStartPos, this.FWDVector());
             missiles.add(missile);
+            StdAudio.play("resources/audio/Gun+1.wav");
         }
         chargeUpTime = 0;
     }
