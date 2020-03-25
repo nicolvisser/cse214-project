@@ -41,4 +41,9 @@ public class Enemy extends DefaultCritter {
         return (this.position.y - collisionRadius <= 0) || (this.isCollidingWith(shooter));
     }
 
+    @Override
+    public void draw() {
+        StdDraw.picture(position.x, position.y, "resources/enemy.png", 40, 40, orientationInDegrees());
+    }
+
 }

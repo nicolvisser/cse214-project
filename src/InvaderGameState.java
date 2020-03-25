@@ -88,10 +88,10 @@ public class InvaderGameState extends KeyListener implements Serializable {
                 shooter.thrusterRightMoveStatus = true;
                 break;
             case LEFT_ARROW:
-                shooter.turretLeftRotateStatus = true;
+                missileLauncher.turretLeftRotateStatus = true;
                 break;
             case RIGHT_ARROW:
-                shooter.turretRightRotateStatus = true;
+                missileLauncher.turretRightRotateStatus = true;
                 break;
             case ESC_KEY:
                 pauseFlag = true;
@@ -118,10 +118,10 @@ public class InvaderGameState extends KeyListener implements Serializable {
                 shooter.thrusterRightMoveStatus = false;
                 break;
             case LEFT_ARROW:
-                shooter.turretLeftRotateStatus = false;
+                missileLauncher.turretLeftRotateStatus = false;
                 break;
             case RIGHT_ARROW:
-                shooter.turretRightRotateStatus = false;
+                missileLauncher.turretRightRotateStatus = false;
                 break;
             case UP_ARROW:
                 missileLauncher.shootMissile();

@@ -14,10 +14,6 @@ public class Shooter extends DefaultCritter {
     public boolean thrusterLeftMoveStatus = false;
     public boolean thrusterRightMoveStatus = false;
 
-    private final double TURRET_ANGULAR_ACCELERATION_MAGNITUDE = 40;
-    public boolean turretLeftRotateStatus = false;
-    public boolean turretRightRotateStatus = false;
-
     public Shooter(Vector2D position, double orientation) {
         super(position, orientation);
         collisionRadius = 20;
@@ -41,19 +37,6 @@ public class Shooter extends DefaultCritter {
             velocity = Vector2D.scalarMultiplication(0.5, velocity);
         }
 
-        // determine angular velocity from turret rotation status
-        angularAcceleration = 0;
-        if (turretLeftRotateStatus)
-            angularAcceleration += TURRET_ANGULAR_ACCELERATION_MAGNITUDE;
-        if (turretRightRotateStatus)
-            angularAcceleration -= TURRET_ANGULAR_ACCELERATION_MAGNITUDE;
-
-        // if almost no 'torque' applied or 'torque' applied in opposite direction than
-        // rotation, then slow down turret for fast stopping or turning
-        if (angularVelocity * angularAcceleration < 0.001) {
-            angularVelocity *= 0.5;
-        }
-
         super.renderStep(dt);
 
         // keep player in boundaries
@@ -67,21 +50,17 @@ public class Shooter extends DefaultCritter {
             acceleration.x = 0;
         }
 
-        // keep rotation in [0.2, 2*PI - 0.2] interval
-        orientation = Math.min(orientation, Math.PI - 0.2); // todo fix hardcoding
-        orientation = Math.max(orientation, 0 + 0.2); // todo fix hardcoding
-
     }
 
     @Override
     public void draw() {
-        StdDraw.setPenColor(StdDraw.RED);
-
-        // draw circle for body
-        StdDraw.filledCircle(position.x, position.y, collisionRadius);
-
-        double orientationInDegrees = orientation / Math.PI * 180;
-        StdDraw.picture(position.x, position.y, "resources/turret.png", 100, 40, orientationInDegrees);
+        if (thrusterLeftMoveStatus & !thrusterRightMoveStatus) {
+            StdDraw.picture(position.x, position.y, "resources/shooterL.png", 80, 80, orientationInDegrees());
+        } else if (thrusterRightMoveStatus & !thrusterLeftMoveStatus) {
+            StdDraw.picture(position.x, position.y, "resources/shooterR.png", 80, 80, orientationInDegrees());
+        } else {
+            StdDraw.picture(position.x, position.y, "resources/shooter.png", 80, 80, orientationInDegrees());
+        }
     }
 
 }
