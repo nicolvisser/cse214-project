@@ -1,4 +1,5 @@
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * InvaderGameState
@@ -32,6 +33,8 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
     EnemyWave enemyWave;
 
+    ArrayList<PowerUp> powerUps;
+
     public InvaderGameState(int xmin, int xmax, int ymin, int ymax) {
         canvasXmin = xmin;
         canvasXmax = xmax;
@@ -47,6 +50,10 @@ public class InvaderGameState extends KeyListener implements Serializable {
         missileLauncher = new MissileLauncher(shooter);
 
         enemyWave = new EnemyWave();
+
+        powerUps = new ArrayList<>();
+        powerUps.add(new PowerUp(new Vector2D(0, 400), PowerUp.PowerUpType.FAST_RELOAD));
+
     }
 
     public void renderStep(double dt) {
@@ -56,6 +63,20 @@ public class InvaderGameState extends KeyListener implements Serializable {
         shooter.renderStep(dt);
 
         missileLauncher.renderStep(dt);
+
+        for (int i = 0; i < powerUps.size(); i++) {
+            PowerUp powerUp = powerUps.get(i);
+            if (powerUp.state == PowerUp.PowerUpState.DEACTIVE) {
+                powerUps.remove(powerUp);
+                i--;
+            } else {
+                powerUp.renderStep(dt);
+
+                if (shooter.isCollidingWith(powerUp)) {
+                    powerUp.addEffectTo(shooter);
+                }
+            }
+        }
 
         enemyWave.renderStep(dt);
         score += enemyWave.handleCollisionsWithMissiles(missileLauncher.missiles);
@@ -72,6 +93,10 @@ public class InvaderGameState extends KeyListener implements Serializable {
         enemyWave.draw();
 
         missileLauncher.draw();
+
+        for (PowerUp powerUp : powerUps) {
+            powerUp.draw();
+        }
 
         drawHealthBar(shooter.healthPoints);
         drawEnergyBar(50);

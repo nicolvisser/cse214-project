@@ -7,29 +7,27 @@ public class MissileLauncher extends DefaultCritter {
 
     private static final long serialVersionUID = 1L;
 
-    public static final double RELOAD_TIME = 0.15;
+    public static final double DEFAULT_RELOAD_TIME = 0.15;
+    private static final double TURRET_ANGULAR_ACCELERATION_MAGNITUDE = 40;
 
     Shooter shooter;
-
-    private final double TURRET_ANGULAR_ACCELERATION_MAGNITUDE = 40;
+    ArrayList<Missile> missiles;
+    public double reloadTime;
+    double timeSinceLastMissile;
+    double chargeUpTime; // keeps track of how long user held shoot key down
     public boolean turretLeftRotateStatus;
     public boolean turretRightRotateStatus;
-
-    double timeSinceLastMissile; // should not have overflow problems, since game will end soon enough
-                                 // if you don't shoot missiles often
-
-    double chargeUpTime; // keeps track of how long user held shoot key down
-
-    ArrayList<Missile> missiles;
 
     public MissileLauncher(Shooter shooter) {
         this.shooter = shooter;
         missiles = new ArrayList<>();
-        timeSinceLastMissile = RELOAD_TIME;
+        reloadTime = DEFAULT_RELOAD_TIME;
+        timeSinceLastMissile = DEFAULT_RELOAD_TIME;
         orientation = Math.PI / 2;
-
         turretLeftRotateStatus = false;
         turretRightRotateStatus = false;
+
+        shooter.addMissileLauncherReference(this);
 
     }
 
@@ -83,7 +81,7 @@ public class MissileLauncher extends DefaultCritter {
     }
 
     public void shootMissile() {
-        if (timeSinceLastMissile > RELOAD_TIME) {
+        if (timeSinceLastMissile > reloadTime) {
             System.out.println("Launched Missile With chargeUpTime: " + chargeUpTime);
             timeSinceLastMissile = 0;
             Vector2D missileStartPos = Vector2D.sum(new Vector2D(shooter.position.x, shooter.position.y),
