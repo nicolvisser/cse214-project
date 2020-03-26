@@ -37,7 +37,7 @@ public class Missile extends DefaultCritter {
                 break;
 
             case EXPLODING:
-                explosion.draw(position.x, position.y, 0);
+                explosion.draw(position.x, position.y, 20, 20);
                 break;
 
             case DEAD:

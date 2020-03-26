@@ -39,59 +39,83 @@ public class AnimatedPicture implements Serializable {
         reverseIncrement = false;
     }
 
+    public void draw(double x, double y) {
+        if (!finished) {
+            String filename = String.format("%s%05d.%s", filenameNoIndex, currentFrameIndex, extension);
+            StdDraw.picture(x, y, filename);
+            updateAnimationProgress();
+        }
+    }
+
     public void draw(double x, double y, double degrees) {
         if (!finished) {
             String filename = String.format("%s%05d.%s", filenameNoIndex, currentFrameIndex, extension);
-
-            // StdOut.println(filename);
-
             StdDraw.picture(x, y, filename, degrees);
+            updateAnimationProgress();
+        }
+    }
 
-            if (reverseIncrement) {
-                currentFrameIndex--;
-            } else {
-                currentFrameIndex++;
-            }
+    public void draw(double x, double y, double scaledWidth, double scaledHeight) {
+        if (!finished) {
+            String filename = String.format("%s%05d.%s", filenameNoIndex, currentFrameIndex, extension);
+            StdDraw.picture(x, y, filename, scaledWidth, scaledHeight);
+            updateAnimationProgress();
+        }
+    }
 
-            switch (animationType) {
-                case ONCE:
-                    if (currentFrameIndex == numFrames) {
-                        finished = true;
-                    }
-                    break;
-                case REPEAT:
-                    if (currentFrameIndex == numFrames) {
-                        currentFrameIndex -= numFrames;
-                    }
+    public void draw(double x, double y, double scaledWidth, double scaledHeight, double degrees) {
+        if (!finished) {
+            String filename = String.format("%s%05d.%s", filenameNoIndex, currentFrameIndex, extension);
+            StdDraw.picture(x, y, filename, scaledWidth, scaledHeight, degrees);
+            updateAnimationProgress();
+        }
+    }
 
-                    break;
+    private void updateAnimationProgress() {
+        if (reverseIncrement) {
+            currentFrameIndex--;
+        } else {
+            currentFrameIndex++;
+        }
 
-                case FWD_BWD_ONCE:
-                    if (currentFrameIndex == numFrames) {
-                        currentFrameIndex--;
-                        reverseIncrement = true;
-                    }
-                    if (currentFrameIndex == -1 && reverseIncrement) {
-                        finished = true;
-                    }
+        switch (animationType) {
+            case ONCE:
+                if (currentFrameIndex == numFrames) {
+                    finished = true;
+                }
+                break;
+            case REPEAT:
+                if (currentFrameIndex == numFrames) {
+                    currentFrameIndex -= numFrames;
+                }
 
-                    break;
+                break;
 
-                case FWD_BWD_REPEAT:
-                    if (currentFrameIndex == numFrames && !reverseIncrement) {
-                        currentFrameIndex--;
-                        reverseIncrement = true;
-                    }
-                    if (currentFrameIndex == -1 && reverseIncrement) {
-                        currentFrameIndex++;
-                        reverseIncrement = false;
-                    }
+            case FWD_BWD_ONCE:
+                if (currentFrameIndex == numFrames) {
+                    currentFrameIndex--;
+                    reverseIncrement = true;
+                }
+                if (currentFrameIndex == -1 && reverseIncrement) {
+                    finished = true;
+                }
 
-                    break;
+                break;
 
-                default:
-                    break;
-            }
+            case FWD_BWD_REPEAT:
+                if (currentFrameIndex == numFrames && !reverseIncrement) {
+                    currentFrameIndex--;
+                    reverseIncrement = true;
+                }
+                if (currentFrameIndex == -1 && reverseIncrement) {
+                    currentFrameIndex++;
+                    reverseIncrement = false;
+                }
+
+                break;
+
+            default:
+                break;
         }
     }
 }
