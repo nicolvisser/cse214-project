@@ -113,4 +113,13 @@ public class EnemyGroup extends Enemy {
         return false;
     }
 
+    public Enemy randomEnemy() {
+        if (enemies.size() == 0) {
+            return null;
+        } else {
+            int randomIndex = (int) (Math.random() * enemies.size());
+            return enemies.get(randomIndex);
+        }
+    }
+
 }

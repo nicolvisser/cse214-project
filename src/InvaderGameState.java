@@ -49,7 +49,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         missileLauncher = new MissileLauncher(shooter);
 
-        enemyWave = new EnemyWave();
+        enemyWave = new EnemyWave(shooter);
 
         powerUps = new ArrayList<>();
         powerUps.add(new PowerUp(new Vector2D(0, 400), PowerUp.PowerUpType.FAST_RELOAD));

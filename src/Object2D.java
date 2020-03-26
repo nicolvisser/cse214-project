@@ -206,14 +206,27 @@ public class Object2D implements Serializable {
         return Math.atan2(vec.y, vec.x);
     }
 
-    public static double distanceBetween(Object2D obj1, Object2D obj2) {
-        Vector2D displacement = new Vector2D(obj2.position.x - obj1.position.x, obj2.position.y - obj1.position.y);
-        return displacement.magnitude();
+    /**
+     * Function to calculate relative position vector of second object as seen by
+     * first object
+     * 
+     * @param obj1 Object 1
+     * @param obj2 Object 2
+     * @return Position of object 2 with reference to object 1
+     */
+    public static Vector2D relativePositionVector(Object2D obj1, Object2D obj2) {
+        return new Vector2D(obj2.position.x - obj1.position.x, obj2.position.y - obj1.position.y);
     }
 
-    public static double distanceBetween(Vector2D obj1, Vector2D obj2) {
-        Vector2D displacement = new Vector2D(obj2.x - obj1.x, obj2.y - obj1.y);
-        return displacement.magnitude();
+    /**
+     * Function to calculate distance between positions of two objects
+     * 
+     * @param obj1 Object 1
+     * @param obj2 Object 2
+     * @return Distance between position of two objects
+     */
+    public static double distanceBetween(Object2D obj1, Object2D obj2) {
+        return relativePositionVector(obj1, obj2).magnitude();
     }
 
     public double orientationInDegrees() {

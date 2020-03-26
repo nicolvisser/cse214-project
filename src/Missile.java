@@ -8,7 +8,7 @@ public class Missile extends DefaultCritter {
      */
     private static final long serialVersionUID = 1L;
 
-    private static final int SPEED = 800;
+    public static final int SPEED = 800;
 
     enum MissileState {
         TRAVELLING, EXPLODING, DEAD;
