@@ -48,10 +48,12 @@ public class Missile extends DefaultCritter {
             case TRAVELLING:
                 super.renderStep(dt);
                 if (!this.isAlive()) {
+                    StdAudio.play("resources/audio/Explosion+1.wav");
                     state = MissileState.EXPLODING;
                 }
                 break;
             case EXPLODING:
+
                 velocity = Vector2D.scalarMultiplication(0.85, velocity); // slow down movement speed of explosion
                 super.renderStep(dt);
                 if (explosion.finished) {

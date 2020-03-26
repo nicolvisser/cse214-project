@@ -44,6 +44,8 @@ public class Invaders {
         StdDraw.setXscale(CANVAS_XMIN, CANVAS_XMAX);
         StdDraw.setYscale(CANVAS_YMIN, CANVAS_YMAX);
 
+        StdAudio.play("resources/audio/Cinematic Sci-fi Beat.wav");
+
         gameLoop();
 
         System.exit(0);
