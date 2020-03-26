@@ -3,10 +3,8 @@
  */
 public class DefaultCritter extends Object2D implements Critter {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
+
     public int healthPoints;
     public double collisionRadius;
 
@@ -21,10 +19,6 @@ public class DefaultCritter extends Object2D implements Critter {
 
         healthPoints = 100; // Default health points
         collisionRadius = 10; // Default collision radius
-    }
-
-    public boolean isAlive() {
-        return healthPoints > 0;
     }
 
     public void takeDamage(int damagePoints) {

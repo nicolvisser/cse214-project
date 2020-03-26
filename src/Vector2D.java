@@ -70,8 +70,6 @@ public class Vector2D implements Serializable {
         return new Vector2D(vec1.x + vec2.x, vec1.y + vec2.y);
     }
 
-    // calculates and returns the scalar multiplication of a scalar and vector
-
     /**
      * Calculates and returns the scalar multiplication of a scalar and vector
      * 
