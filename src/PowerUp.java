@@ -3,8 +3,6 @@
  */
 public class PowerUp extends DefaultCritter {
 
-    private static final long serialVersionUID = 1L;
-
     enum PowerUpType {
         FAST_RELOAD, RED, GREEN, YELLOW;
     }
@@ -13,13 +11,15 @@ public class PowerUp extends DefaultCritter {
         TRAVELLING, ACTIVE, DEACTIVE;
     }
 
+    private static final long serialVersionUID = 1L;
     private static final int DEFAULT_LIFETIME = 5;
 
-    PowerUpType type;
-    PowerUpState state;
-    double remainingLifetime;
-    Shooter shooter;
-    AnimatedPicture animatedPicture;
+    public PowerUpState state;
+
+    private PowerUpType type;
+    private double remainingLifetime;
+    private Shooter shooterOwner;
+    private AnimatedPicture animatedPowerUpSprite;
 
     public PowerUp(Vector2D position, PowerUpType type) {
         this.position = position;
@@ -27,7 +27,6 @@ public class PowerUp extends DefaultCritter {
         this.type = type;
         state = PowerUpState.TRAVELLING;
         remainingLifetime = DEFAULT_LIFETIME;
-
         String filename = "";
         switch (type) {
             case FAST_RELOAD:
@@ -43,14 +42,14 @@ public class PowerUp extends DefaultCritter {
                 filename = "resources/powerUpYellow";
                 break;
         }
-        animatedPicture = new AnimatedPicture(filename, "png", 6, AnimatedPicture.AnimationType.REPEAT);
+        animatedPowerUpSprite = new AnimatedPicture(filename, "png", 6, AnimatedPicture.AnimationType.REPEAT);
     }
 
     @Override
     public void draw() {
         switch (state) {
             case TRAVELLING:
-                animatedPicture.draw(position.x, position.y, 0);
+                animatedPowerUpSprite.draw(position.x, position.y, 0);
                 break;
 
             case ACTIVE:
@@ -132,7 +131,7 @@ public class PowerUp extends DefaultCritter {
     }
 
     public void addEffectTo(Shooter shooter) {
-        this.shooter = shooter;
+        this.shooterOwner = shooter;
 
         switch (type) {
             case FAST_RELOAD:
@@ -153,7 +152,7 @@ public class PowerUp extends DefaultCritter {
 
         switch (type) {
             case FAST_RELOAD:
-                shooter.getMissileLauncherReference().reloadTime = MissileLauncher.DEFAULT_RELOAD_TIME;
+                shooterOwner.getMissileLauncherReference().reloadTime = MissileLauncher.DEFAULT_RELOAD_TIME;
                 break;
             case RED:
                 break;

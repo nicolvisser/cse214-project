@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * MissileLauncher
@@ -54,16 +55,13 @@ public class MissileLauncher extends DefaultCritter {
         orientation = Math.min(orientation, Math.PI - 0.2); // todo fix hardcoding
         orientation = Math.max(orientation, 0 + 0.2); // todo fix hardcoding
 
-        for (int i = 0; i < missiles.size(); i++) {
-            Missile missile = missiles.get(i);
-
+        Iterator<Missile> itr = missiles.iterator();
+        while (itr.hasNext()) {
+            Missile missile = itr.next();
             missile.renderStep(dt);
-
             if (missile.state == Missile.MissileState.DEAD || !Invaders.isPointOnCanvas(missile.position)) {
-                missiles.remove(missile);
-                i--;
+                itr.remove();
             }
-
         }
     }
 

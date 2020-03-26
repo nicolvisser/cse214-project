@@ -2,7 +2,8 @@
  * Critter
  */
 public interface Critter {
-    public boolean isAlive();
+
+    // TODO: Think of or go find more things to put here if possible.
 
     public void renderStep(double dt);
 

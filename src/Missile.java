@@ -3,26 +3,28 @@
  */
 public class Missile extends DefaultCritter {
 
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
-
-    public static final int SPEED = 800;
-
     enum MissileState {
         TRAVELLING, EXPLODING, DEAD;
     }
 
+    public static final int SPEED = 800;
+
+    private static final long serialVersionUID = 1L;
+    private static final int DEFAULT_COLLISION_RADIUS = 5;
+    private static final int DEFAULT_MISSILE_DAMAGE = 100;
+    private static final int DEFAULT_HEALTH_POINTS = 10;
+
     public int missileDamage;
     public MissileState state;
+
     private AnimatedPicture explosion;
 
     public Missile(Vector2D position, Vector2D direction) {
         super(position, Object2D.orientationFromVector(direction));
         velocity = new Vector2D(SPEED * direction.x, SPEED * direction.y);
-        collisionRadius = 5;
-        missileDamage = 100;
+        healthPoints = DEFAULT_HEALTH_POINTS;
+        collisionRadius = DEFAULT_COLLISION_RADIUS;
+        missileDamage = DEFAULT_MISSILE_DAMAGE;
         state = MissileState.TRAVELLING;
         explosion = new AnimatedPicture("resources/explosion", "png", 16, AnimatedPicture.AnimationType.FWD_BWD_ONCE);
     }
@@ -33,11 +35,12 @@ public class Missile extends DefaultCritter {
             case TRAVELLING:
                 StdDraw.picture(position.x, position.y, "resources/missile.png", 20, 20, orientationInDegrees());
                 break;
+
             case EXPLODING:
                 explosion.draw(position.x, position.y, 0);
                 break;
-            case DEAD:
 
+            case DEAD:
                 break;
         }
     }
@@ -47,21 +50,21 @@ public class Missile extends DefaultCritter {
         switch (state) {
             case TRAVELLING:
                 super.renderStep(dt);
-                if (!this.isAlive()) {
+                if (healthPoints <= 0) {
                     StdAudio.play("resources/audio/Explosion+1.wav");
                     state = MissileState.EXPLODING;
                 }
                 break;
-            case EXPLODING:
 
+            case EXPLODING:
                 velocity = Vector2D.scalarMultiplication(0.85, velocity); // slow down movement speed of explosion
                 super.renderStep(dt);
                 if (explosion.finished) {
                     state = MissileState.DEAD;
                 }
                 break;
-            case DEAD:
 
+            case DEAD:
                 break;
         }
     }

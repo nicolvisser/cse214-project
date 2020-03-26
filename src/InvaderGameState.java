@@ -1,5 +1,6 @@
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * InvaderGameState
@@ -67,14 +68,13 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         missileLauncher.renderStep(dt);
 
-        for (int i = 0; i < powerUps.size(); i++) {
-            PowerUp powerUp = powerUps.get(i);
+        Iterator<PowerUp> itr = powerUps.iterator();
+        while (itr.hasNext()) {
+            PowerUp powerUp = itr.next();
             if (powerUp.state == PowerUp.PowerUpState.DEACTIVE) {
-                powerUps.remove(powerUp);
-                i--;
+                itr.remove();
             } else {
                 powerUp.renderStep(dt);
-
                 if (shooter.isCollidingWith(powerUp)) {
                     powerUp.addEffectTo(shooter);
                 }

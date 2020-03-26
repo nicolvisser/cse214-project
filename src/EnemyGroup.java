@@ -1,6 +1,7 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 
-public class EnemyGroup extends Enemy {
+public class EnemyGroup extends DefaultCritter {
 
     private static final long serialVersionUID = 1L;
 
@@ -9,6 +10,18 @@ public class EnemyGroup extends Enemy {
     public EnemyGroup() {
         super();
         enemies = new ArrayList<>();
+    }
+
+    public void add(Enemy enemy) {
+        enemies.add(enemy);
+    }
+
+    public void remove(Enemy enemy) {
+        enemies.remove(enemy);
+    }
+
+    public boolean hasEnemies() {
+        return enemies.size() > 0;
     }
 
     public void populateInSquareFormation(Vector2D position, int numEnemiesOnASide) {
@@ -41,19 +54,6 @@ public class EnemyGroup extends Enemy {
 
     }
 
-    public void add(Enemy enemy) {
-        enemies.add(enemy);
-    }
-
-    public void remove(Enemy enemy) {
-        enemies.remove(enemy);
-    }
-
-    @Override
-    public boolean isAlive() {
-        return enemies.size() > 0;
-    }
-
     @Override
     public void draw() {
         for (Enemy enemy : enemies) {
@@ -69,41 +69,34 @@ public class EnemyGroup extends Enemy {
         double dx = velocity.x * dt + 0.5 * acceleration.x * dt * dt;
         double dy = velocity.y * dt + 0.5 * acceleration.y * dt * dt;
 
-        for (int i = 0; i < enemies.size(); i++) {
-            Enemy enemy = enemies.get(i);
-            enemy.renderStep(dt); // render new position of enemy independent of group
+        Iterator<Enemy> itr = enemies.iterator();
+        while (itr.hasNext()) {
+            Enemy enemy = itr.next();
+
+            // render new position of enemy, independent of group
+            enemy.renderStep(dt);
 
             // add group movement effect to enemy
             enemy.translateX(dx);
             enemy.translateY(dy);
 
             // remove enemy if no longer alive
-            if (!enemy.isAlive()) {
-                enemies.remove(enemy);
-                i--;
+            if (enemy.state == Enemy.EnemyState.DEAD) {
+                itr.remove();
             }
         }
     }
 
-    @Override
     public int handleCollisionsWithMissiles(ArrayList<Missile> missiles) {
         int points = 0;
-
         for (Enemy enemy : enemies) {
             for (Missile missile : missiles) {
-                if ((missile.state == Missile.MissileState.TRAVELLING) && enemy.isCollidingWith(missile)) {
-                    points += missile.missileDamage; // Todo Better points system than just missile damage
-                    enemy.takeDamage(missile.missileDamage);
-                    missile.takeDamage(Integer.MAX_VALUE);
-                    break;
-                }
+                points += enemy.handleCollisionWithMissile(missile);
             }
         }
-
         return points;
     }
 
-    @Override
     public boolean isTouchingBottomOrShooter(Shooter shooter) {
         for (Enemy enemy : enemies) {
             if (enemy.isTouchingBottomOrShooter(shooter)) {
@@ -113,7 +106,7 @@ public class EnemyGroup extends Enemy {
         return false;
     }
 
-    public Enemy randomEnemy() {
+    public Enemy getRandomEnemy() {
         if (enemies.size() == 0) {
             return null;
         } else {
