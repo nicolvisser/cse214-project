@@ -14,6 +14,8 @@ public class Shooter extends DefaultCritter {
     public boolean thrusterLeftMoveStatus = false;
     public boolean thrusterRightMoveStatus = false;
 
+    private MissileLauncher missileLauncher;
+
     public Shooter(Vector2D position, double orientation) {
         super(position, orientation);
         collisionRadius = 20;
@@ -61,6 +63,14 @@ public class Shooter extends DefaultCritter {
         } else {
             StdDraw.picture(position.x, position.y, "resources/shooter.png", 80, 80, orientationInDegrees());
         }
+    }
+
+    public void addMissileLauncherReference(MissileLauncher missileLauncher) {
+        this.missileLauncher = missileLauncher;
+    }
+
+    public MissileLauncher getMissileLauncherReference() {
+        return missileLauncher;
     }
 
 }
