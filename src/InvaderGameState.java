@@ -83,7 +83,8 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         enemyWave.renderStep(dt);
         score += enemyWave.handleCollisionsWithMissiles(missileLauncher.missiles);
-        gameOverFlag = enemyWave.checkGameOverConditions(shooter) || enemyWave.isCleared();
+        gameOverFlag = enemyWave.checkGameOverConditions(shooter) || enemyWave.isCleared()
+                || (shooter.state == Shooter.ShooterState.DEAD);
 
     }
 
@@ -101,8 +102,8 @@ public class InvaderGameState extends KeyListener implements Serializable {
             powerUp.draw();
         }
 
-        drawHealthBar(shooter.healthPoints);
-        drawEnergyBar(50);
+        drawHealthBar(Math.max(0, (double) shooter.healthPoints / Shooter.DEFAULT_HEALTH_POINTS));
+        drawEnergyBar(1.0);
         drawScore(score);
     }
 
@@ -163,13 +164,15 @@ public class InvaderGameState extends KeyListener implements Serializable {
     public void drawHealthBar(double percentage) {
         StdDraw.setPenColor(StdDraw.RED);
         StdDraw.rectangle(-300, 50, 50, 15);
-        StdDraw.filledRectangle(-300, 50, (50 - 2) * percentage / 100, 15 - 2);
+        double halfWidth = Math.max(0, (50 * percentage) - 2);
+        StdDraw.filledRectangle(-350 + 50 * percentage, 50, halfWidth, 15 - 2);
     }
 
     public void drawEnergyBar(double percentage) {
         StdDraw.setPenColor(StdDraw.BOOK_LIGHT_BLUE);
         StdDraw.rectangle(-150, 50, 50, 15);
-        StdDraw.filledRectangle(-150, 50, (50 - 2) * percentage / 100, 15 - 2);
+        double halfWidth = Math.max(0, (50 * percentage) - 2);
+        StdDraw.filledRectangle(-200 + 50 * percentage, 50, halfWidth, 15 - 2);
     }
 
     public void drawScore(int score) {

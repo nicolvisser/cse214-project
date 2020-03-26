@@ -50,8 +50,6 @@ public class Invaders {
 
         System.exit(0);
 
-        System.out.println("TEST");
-
     }
 
     public static void gameLoop() {

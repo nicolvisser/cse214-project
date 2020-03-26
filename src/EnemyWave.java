@@ -32,8 +32,6 @@ public class EnemyWave implements Serializable {
     public void renderStep(double dt) {
         timeUntilNextCounterAttack -= dt;
 
-        StdOut.println(enemyMissiles.size());
-
         if (timeUntilNextCounterAttack < 0) {
             counterAttack();
         }
@@ -42,8 +40,18 @@ public class EnemyWave implements Serializable {
             enemyGroup.renderStep(dt);
         }
 
-        for (Missile missile : enemyMissiles) {
+        for (int i = 0; i < enemyMissiles.size(); i++) {
+            Missile missile = enemyMissiles.get(i);
+
             missile.renderStep(dt);
+
+            if (missile.state == Missile.MissileState.DEAD || !Invaders.isPointOnCanvas(missile.position)) {
+                enemyMissiles.remove(i);
+                i--;
+            } else if (missile.state == Missile.MissileState.TRAVELLING && missile.isCollidingWith(shooterRef)) {
+                shooterRef.takeDamage(missile.missileDamage);
+                missile.takeDamage(Integer.MAX_VALUE);
+            }
         }
     }
 
