@@ -6,7 +6,7 @@ public class PowerUp extends DefaultCritter {
     private static final long serialVersionUID = 1L;
 
     enum PowerUpType {
-        FAST_RELOAD;
+        FAST_RELOAD, RED, GREEN, YELLOW;
     }
 
     enum PowerUpState {
@@ -33,6 +33,15 @@ public class PowerUp extends DefaultCritter {
             case FAST_RELOAD:
                 filename = "resources/powerUpBlue";
                 break;
+            case RED:
+                filename = "resources/powerUpRed";
+                break;
+            case GREEN:
+                filename = "resources/powerUpGreen";
+                break;
+            case YELLOW:
+                filename = "resources/powerUpYellow";
+                break;
         }
         animatedPicture = new AnimatedPicture(filename, "png", 6, AnimatedPicture.AnimationType.REPEAT);
     }
@@ -46,17 +55,45 @@ public class PowerUp extends DefaultCritter {
 
             case ACTIVE:
 
+                double frame_scale_factor = 1;
+                int timer_x_pos = 0;
+
+                switch (type) {
+                    case FAST_RELOAD:
+                        StdDraw.setPenColor(StdDraw.BOOK_LIGHT_BLUE);
+                        frame_scale_factor = 0.995;
+                        timer_x_pos = -340;
+                        break;
+                    case RED:
+                        StdDraw.setPenColor(StdDraw.RED);
+                        frame_scale_factor = 0.99;
+                        timer_x_pos = -320;
+                        break;
+                    case GREEN:
+                        StdDraw.setPenColor(StdDraw.GREEN);
+                        frame_scale_factor = 0.985;
+                        timer_x_pos = -300;
+                        break;
+                    case YELLOW:
+                        StdDraw.setPenColor(StdDraw.YELLOW);
+                        frame_scale_factor = 0.98;
+                        timer_x_pos = -280;
+                        break;
+                }
+
                 // draw green box around canvas to indicate a powerup is active
-                StdDraw.setPenColor(StdDraw.BOOK_LIGHT_BLUE);
-                StdDraw.setPenRadius(0.01);
+                StdDraw.setPenRadius(0.005);
                 int x = (Invaders.CANVAS_XMAX + Invaders.CANVAS_XMIN) / 2;
                 int y = (Invaders.CANVAS_YMAX + Invaders.CANVAS_YMIN) / 2;
-                double halfWidth = 0.99 * Invaders.CANVAS_WIDTH / 2;
-                double halfHeight = 0.99 * Invaders.CANVAS_HEIGHT / 2;
+                double halfWidth = frame_scale_factor * Invaders.CANVAS_WIDTH / 2;
+                double halfHeight = frame_scale_factor * Invaders.CANVAS_HEIGHT / 2;
                 StdDraw.rectangle(x, y, halfWidth, halfHeight);
                 StdDraw.setPenRadius();
 
-                // TODO add countdown bar to show remaining time
+                double percentageTimeRemaining = Math.max(remainingLifetime / DEFAULT_LIFETIME, 0);
+                StdDraw.rectangle(timer_x_pos, 150, 5, 50);
+                StdDraw.filledRectangle(timer_x_pos, 100 + percentageTimeRemaining * 50, 5,
+                        percentageTimeRemaining * 50);
 
                 break;
 
@@ -87,12 +124,36 @@ public class PowerUp extends DefaultCritter {
 
     public void addEffectTo(Shooter shooter) {
         this.shooter = shooter;
-        shooter.getMissileLauncherReference().reloadTime = MissileLauncher.DEFAULT_RELOAD_TIME / 2;
+
+        switch (type) {
+            case FAST_RELOAD:
+                shooter.getMissileLauncherReference().reloadTime = MissileLauncher.DEFAULT_RELOAD_TIME / 2;
+                break;
+            case RED:
+                break;
+            case GREEN:
+                break;
+            case YELLOW:
+                break;
+        }
+
         state = PowerUpState.ACTIVE;
     }
 
     public void deactivateEffect() {
-        shooter.getMissileLauncherReference().reloadTime = MissileLauncher.DEFAULT_RELOAD_TIME;
+
+        switch (type) {
+            case FAST_RELOAD:
+                shooter.getMissileLauncherReference().reloadTime = MissileLauncher.DEFAULT_RELOAD_TIME;
+                break;
+            case RED:
+                break;
+            case GREEN:
+                break;
+            case YELLOW:
+                break;
+        }
+
         state = PowerUpState.DEACTIVE;
     }
 

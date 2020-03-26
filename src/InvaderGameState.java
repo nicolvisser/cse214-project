@@ -53,6 +53,9 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         powerUps = new ArrayList<>();
         powerUps.add(new PowerUp(new Vector2D(0, 400), PowerUp.PowerUpType.FAST_RELOAD));
+        powerUps.add(new PowerUp(new Vector2D(0, 800), PowerUp.PowerUpType.GREEN));
+        powerUps.add(new PowerUp(new Vector2D(0, 1000), PowerUp.PowerUpType.RED));
+        powerUps.add(new PowerUp(new Vector2D(0, 1400), PowerUp.PowerUpType.YELLOW));
 
     }
 
