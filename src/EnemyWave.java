@@ -109,7 +109,7 @@ public class EnemyWave implements Serializable {
             if (rEnemy == null) {
                 return null;
             }
-        } while (!Invaders.isPointOnCanvas(rEnemy.position));
+        } while (!Invaders.isPointOnCanvas(rEnemy.position) || rEnemy.state != Enemy.EnemyState.ALIVE);
         return rEnemy;
     }
 
