@@ -57,27 +57,32 @@ public class PowerUp extends DefaultCritter {
 
                 double frame_scale_factor = 1;
                 int timer_x_pos = 0;
+                String iconFilename = "";
 
                 switch (type) {
                     case FAST_RELOAD:
                         StdDraw.setPenColor(StdDraw.BOOK_LIGHT_BLUE);
                         frame_scale_factor = 0.995;
                         timer_x_pos = -340;
+                        iconFilename = "resources/fastReload.png";
                         break;
                     case RED:
                         StdDraw.setPenColor(StdDraw.RED);
                         frame_scale_factor = 0.99;
                         timer_x_pos = -320;
+                        iconFilename = "resources/fastReload.png";
                         break;
                     case GREEN:
                         StdDraw.setPenColor(StdDraw.GREEN);
                         frame_scale_factor = 0.985;
                         timer_x_pos = -300;
+                        iconFilename = "resources/fastReload.png";
                         break;
                     case YELLOW:
                         StdDraw.setPenColor(StdDraw.YELLOW);
                         frame_scale_factor = 0.98;
                         timer_x_pos = -280;
+                        iconFilename = "resources/fastReload.png";
                         break;
                 }
 
@@ -90,10 +95,14 @@ public class PowerUp extends DefaultCritter {
                 StdDraw.rectangle(x, y, halfWidth, halfHeight);
                 StdDraw.setPenRadius();
 
+                // draw timer bar
                 double percentageTimeRemaining = Math.max(remainingLifetime / DEFAULT_LIFETIME, 0);
                 StdDraw.rectangle(timer_x_pos, 150, 5, 50);
                 StdDraw.filledRectangle(timer_x_pos, 100 + percentageTimeRemaining * 50, 5,
                         percentageTimeRemaining * 50);
+
+                // draw icon above timer bar
+                StdDraw.picture(timer_x_pos, 215, iconFilename, 10, 10);
 
                 break;
 
