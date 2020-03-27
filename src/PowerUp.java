@@ -64,25 +64,25 @@ public class PowerUp extends DefaultCritter {
                     case FAST_RELOAD:
                         StdDraw.setPenColor(StdDraw.BOOK_LIGHT_BLUE);
                         frame_scale_factor = 0.995;
-                        timer_x_pos = -340;
+                        timer_x_pos = -85;
                         iconFilename = "resources/fastReload.png";
                         break;
                     case RED:
                         StdDraw.setPenColor(StdDraw.RED);
                         frame_scale_factor = 0.99;
-                        timer_x_pos = -320;
+                        timer_x_pos = -80;
                         iconFilename = "resources/fastReload.png";
                         break;
                     case GREEN:
                         StdDraw.setPenColor(StdDraw.GREEN);
                         frame_scale_factor = 0.985;
-                        timer_x_pos = -300;
+                        timer_x_pos = -75;
                         iconFilename = "resources/fastReload.png";
                         break;
                     case YELLOW:
                         StdDraw.setPenColor(StdDraw.YELLOW);
                         frame_scale_factor = 0.98;
-                        timer_x_pos = -280;
+                        timer_x_pos = -70;
                         iconFilename = "resources/fastReload.png";
                         break;
                 }
@@ -94,12 +94,12 @@ public class PowerUp extends DefaultCritter {
 
                 // draw timer bar
                 double percentageTimeRemaining = Math.max(remainingLifetime / DEFAULT_LIFETIME, 0);
-                StdDraw.rectangle(timer_x_pos, 150, 5, 50);
-                StdDraw.filledRectangle(timer_x_pos, 100 + percentageTimeRemaining * 50, 5,
-                        percentageTimeRemaining * 50);
+                StdDraw.rectangle(timer_x_pos, -80 + 10, 1, 10);
+                StdDraw.filledRectangle(timer_x_pos, -80 + percentageTimeRemaining * 10, 1,
+                        percentageTimeRemaining * 10);
 
                 // draw icon above timer bar
-                StdDraw.picture(timer_x_pos, 215, iconFilename, 10, 10);
+                StdDraw.picture(timer_x_pos, -55, iconFilename, 3, 3);
 
                 break;
 
