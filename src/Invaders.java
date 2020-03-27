@@ -38,9 +38,8 @@ public class Invaders {
     public static void main(String[] args) {
 
         StdDraw.enableDoubleBuffering();
-        StdDraw.setCanvasSize(800, 800);
-        StdDraw.setXscale(canvas.xmin, canvas.xmax);
-        StdDraw.setYscale(canvas.ymin, canvas.ymax);
+
+        setupStdDrawCanvas(800, 800);
 
         StdAudio.play("resources/audio/Cinematic Sci-fi Beat.wav");
 
@@ -48,6 +47,12 @@ public class Invaders {
 
         System.exit(0);
 
+    }
+
+    public static void setupStdDrawCanvas(int width, int height) {
+        StdDraw.setCanvasSize(width, height);
+        StdDraw.setXscale(canvas.xmin, canvas.xmax);
+        StdDraw.setYscale(canvas.ymin, canvas.ymax);
     }
 
     public static void gameLoop() {
@@ -223,23 +228,24 @@ public class Invaders {
 
                     switch (resolutionScreen.selectedOption) {
                         case -1:
-
                             break;
+
                         case 0: // 600x600
-                            StdDraw.setCanvasSize(600, 600);
+                            setupStdDrawCanvas(600, 600);
                             resolutionScreen.reset();
                             currentDisplayState = DisplayState.MAIN_MENU;
                             break;
-                        case 1: // 800x800
-                            StdDraw.setCanvasSize(800, 800);
-                            resolutionScreen.reset();
-                            currentDisplayState = DisplayState.MAIN_MENU;
-                            break;
-                        case 2: // 1000x1000
-                            StdDraw.setCanvasSize(1000, 1000);
-                            resolutionScreen.reset();
-                            currentDisplayState = DisplayState.MAIN_MENU;
 
+                        case 1: // 800x800
+                            setupStdDrawCanvas(800, 800);
+                            resolutionScreen.reset();
+                            currentDisplayState = DisplayState.MAIN_MENU;
+                            break;
+
+                        case 2: // 1000x1000
+                            setupStdDrawCanvas(1000, 1000);
+                            resolutionScreen.reset();
+                            currentDisplayState = DisplayState.MAIN_MENU;
                             break;
 
                         default:
