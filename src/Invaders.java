@@ -10,15 +10,10 @@ import java.io.ObjectOutputStream;
 public class Invaders {
 
     enum DisplayState {
-        TITLE_SCREEN, NEW_GAME, PLAYING, PAUSE, SAVE_GAME, LOAD_GAME, INSTRUCTIONS, GAME_OVER, QUIT;
+        MAIN_MENU, NEW_GAME, PLAYING, PAUSE, SAVE_GAME, LOAD_GAME, INSTRUCTIONS, SET_RESOLUTION, GAME_OVER, QUIT;
     }
 
-    static final int CANVAS_WIDTH = 800;
-    static final int CANVAS_HEIGHT = 800;
-    static final int CANVAS_XMIN = -CANVAS_WIDTH / 2;
-    static final int CANVAS_XMAX = CANVAS_WIDTH / 2;
-    static final int CANVAS_YMIN = 0;
-    static final int CANVAS_YMAX = CANVAS_HEIGHT;
+    static final RectangleDimension canvas = new RectangleDimension(0, 0, 200, 200);
 
     static final int FPS = 60;
     static final int dt_ms = 1000 / FPS;
@@ -27,22 +22,25 @@ public class Invaders {
     static DisplayState currentDisplayState;
     static InvaderGameState loadedInvaderGameState;
 
-    static String[] titleScreenOptions = { "New Game", "Load Game", "Instructions", "Quit Game" };
-    static MenuScreen titleScreen = new MenuScreen("Main Menu", titleScreenOptions);
+    static String[] titleScreenOptions = { "New Game", "Load Game", "Instructions", "Set Resolution", "Quit Game" };
+    static MenuScreen titleScreen = new MenuScreen(canvas, "Main Menu", titleScreenOptions);
 
     static String[] pauseScreenOptions = { "Resume Game", "Save Game", "Quit To Main Menu" };
-    static MenuScreen pauseScreen = new MenuScreen("Paused", pauseScreenOptions);
+    static MenuScreen pauseScreen = new MenuScreen(canvas, "Paused", pauseScreenOptions);
 
-    static GameOverScreen gameOverScreen = new GameOverScreen();
+    static String[] resolutionScreenOptions = { "600x600", "800x800", "1000x1000" };
+    static MenuScreen resolutionScreen = new MenuScreen(canvas, "Change Resolution", resolutionScreenOptions);
 
-    static InstructionsScreen instructionsScreen = new InstructionsScreen();
+    static GameOverScreen gameOverScreen = new GameOverScreen(canvas);
+
+    static InstructionsScreen instructionsScreen = new InstructionsScreen(canvas);
 
     public static void main(String[] args) {
 
         StdDraw.enableDoubleBuffering();
-        StdDraw.setCanvasSize(CANVAS_WIDTH, CANVAS_HEIGHT);
-        StdDraw.setXscale(CANVAS_XMIN, CANVAS_XMAX);
-        StdDraw.setYscale(CANVAS_YMIN, CANVAS_YMAX);
+        StdDraw.setCanvasSize(800, 800);
+        StdDraw.setXscale(canvas.xmin, canvas.xmax);
+        StdDraw.setYscale(canvas.ymin, canvas.ymax);
 
         StdAudio.play("resources/audio/Cinematic Sci-fi Beat.wav");
 
@@ -53,16 +51,16 @@ public class Invaders {
     }
 
     public static void gameLoop() {
-        currentDisplayState = DisplayState.TITLE_SCREEN;
+        currentDisplayState = DisplayState.MAIN_MENU;
 
         while (currentDisplayState != DisplayState.QUIT) {
 
             StdDraw.clear();
             StdDraw.setPenColor(StdDraw.BLACK);
-            StdDraw.filledRectangle(0, 400, 400, 400);
+            StdDraw.filledRectangle(0, 0, canvas.width / 2, canvas.height / 2);
 
             switch (currentDisplayState) {
-                case TITLE_SCREEN:
+                case MAIN_MENU:
 
                     titleScreen.draw();
                     titleScreen.listenForInputChanges();
@@ -87,6 +85,11 @@ public class Invaders {
 
                         case 3:
                             titleScreen.reset();
+                            currentDisplayState = DisplayState.SET_RESOLUTION;
+                            break;
+
+                        case 4:
+                            titleScreen.reset();
                             currentDisplayState = DisplayState.QUIT;
 
                             break;
@@ -99,7 +102,7 @@ public class Invaders {
 
                 case NEW_GAME:
 
-                    loadedInvaderGameState = new InvaderGameState(CANVAS_XMIN, CANVAS_XMAX, CANVAS_YMIN, CANVAS_YMAX);
+                    loadedInvaderGameState = new InvaderGameState(canvas);
                     currentDisplayState = DisplayState.PLAYING;
 
                     break;
@@ -156,7 +159,7 @@ public class Invaders {
 
                         case 2:
                             pauseScreen.reset();
-                            currentDisplayState = DisplayState.TITLE_SCREEN;
+                            currentDisplayState = DisplayState.MAIN_MENU;
                             break;
 
                         default:
@@ -188,6 +191,8 @@ public class Invaders {
                     try {
                         ObjectInputStream in = new ObjectInputStream(new FileInputStream("savedata.txt"));
                         loadedInvaderGameState = (InvaderGameState) in.readObject();
+                        loadedInvaderGameState.setCanvasDimension(canvas); // change saved game canvas dimensions to
+                                                                           // current canvas
                         in.close();
                     } catch (IOException | ClassNotFoundException e1) {
                         // TODO Auto-generated catch block
@@ -205,8 +210,40 @@ public class Invaders {
 
                     if (instructionsScreen.flagBack) {
                         instructionsScreen.reset();
-                        currentDisplayState = DisplayState.TITLE_SCREEN;
+                        currentDisplayState = DisplayState.MAIN_MENU;
                         break;
+                    }
+
+                    break;
+
+                case SET_RESOLUTION:
+
+                    resolutionScreen.draw();
+                    resolutionScreen.listenForInputChanges();
+
+                    switch (resolutionScreen.selectedOption) {
+                        case -1:
+
+                            break;
+                        case 0: // 600x600
+                            StdDraw.setCanvasSize(600, 600);
+                            resolutionScreen.reset();
+                            currentDisplayState = DisplayState.MAIN_MENU;
+                            break;
+                        case 1: // 800x800
+                            StdDraw.setCanvasSize(800, 800);
+                            resolutionScreen.reset();
+                            currentDisplayState = DisplayState.MAIN_MENU;
+                            break;
+                        case 2: // 1000x1000
+                            StdDraw.setCanvasSize(1000, 1000);
+                            resolutionScreen.reset();
+                            currentDisplayState = DisplayState.MAIN_MENU;
+
+                            break;
+
+                        default:
+                            break;
                     }
 
                     break;
@@ -235,7 +272,7 @@ public class Invaders {
                             break;
 
                         case 3:
-                            currentDisplayState = DisplayState.QUIT;
+                            currentDisplayState = DisplayState.MAIN_MENU;
                             break;
 
                         default:
@@ -252,13 +289,6 @@ public class Invaders {
             StdDraw.pause(dt_ms);
 
         }
-    }
-
-    public static boolean isPointOnCanvas(Vector2D pos) {
-        if ((pos.x >= CANVAS_XMIN) && (pos.x <= CANVAS_XMAX) && (pos.y >= CANVAS_YMIN) && (pos.y <= CANVAS_YMAX))
-            return true;
-        else
-            return false;
     }
 
 }

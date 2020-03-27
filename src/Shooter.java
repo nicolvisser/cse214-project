@@ -8,12 +8,12 @@ public class Shooter extends DefaultCritter {
     }
 
     public static final int DEFAULT_HEALTH_POINTS = 300;
-    public static final int DEFAULT_COLLISION_RADIUS = 30;
+    public static final int DEFAULT_COLLISION_RADIUS = 7;
 
     private static final long serialVersionUID = 1L;
-    private static final int MOVEMENT_BOUNDARY_XMIN = -350;
-    private static final int MOVEMENT_BOUNDARY_XMAX = 350;
-    private static final int THRUSTER_ACCELERATION_MAGNITUDE = 4000;
+    private static final int MOVEMENT_BOUNDARY_XMIN = -95;
+    private static final int MOVEMENT_BOUNDARY_XMAX = 95;
+    private static final int THRUSTER_ACCELERATION_MAGNITUDE = 1000;
 
     public boolean thrusterLeftMoveStatus = false;
     public boolean thrusterRightMoveStatus = false;
@@ -86,11 +86,11 @@ public class Shooter extends DefaultCritter {
         switch (state) {
             case ALIVE:
                 if (thrusterLeftMoveStatus & !thrusterRightMoveStatus) {
-                    StdDraw.picture(position.x, position.y, "resources/shooterL.png", 80, 80, orientationInDegrees());
+                    StdDraw.picture(position.x, position.y, "resources/shooterL.png", 20, 20, orientationInDegrees());
                 } else if (thrusterRightMoveStatus & !thrusterLeftMoveStatus) {
-                    StdDraw.picture(position.x, position.y, "resources/shooterR.png", 80, 80, orientationInDegrees());
+                    StdDraw.picture(position.x, position.y, "resources/shooterR.png", 20, 20, orientationInDegrees());
                 } else {
-                    StdDraw.picture(position.x, position.y, "resources/shooter.png", 80, 80, orientationInDegrees());
+                    StdDraw.picture(position.x, position.y, "resources/shooter.png", 20, 20, orientationInDegrees());
                 }
                 break;
 

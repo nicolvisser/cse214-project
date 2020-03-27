@@ -13,6 +13,7 @@ public class PowerUp extends DefaultCritter {
 
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_LIFETIME = 5;
+    private static final int DEFAULT_COLLISION_RADIUS = 3;
 
     public PowerUpState state;
 
@@ -23,10 +24,11 @@ public class PowerUp extends DefaultCritter {
 
     public PowerUp(Vector2D position, PowerUpType type) {
         this.position = position;
-        velocity = new Vector2D(0, -200);
+        velocity = new Vector2D(0, -50);
         this.type = type;
         state = PowerUpState.TRAVELLING;
         remainingLifetime = DEFAULT_LIFETIME;
+        collisionRadius = DEFAULT_COLLISION_RADIUS;
         String filename = "";
         switch (type) {
             case FAST_RELOAD:
@@ -87,11 +89,7 @@ public class PowerUp extends DefaultCritter {
 
                 // draw green box around canvas to indicate a powerup is active
                 StdDraw.setPenRadius(0.005);
-                int x = (Invaders.CANVAS_XMAX + Invaders.CANVAS_XMIN) / 2;
-                int y = (Invaders.CANVAS_YMAX + Invaders.CANVAS_YMIN) / 2;
-                double halfWidth = frame_scale_factor * Invaders.CANVAS_WIDTH / 2;
-                double halfHeight = frame_scale_factor * Invaders.CANVAS_HEIGHT / 2;
-                StdDraw.rectangle(x, y, halfWidth, halfHeight);
+                StdDraw.rectangle(0, 0, frame_scale_factor * 100, frame_scale_factor * 100);
                 StdDraw.setPenRadius();
 
                 // draw timer bar

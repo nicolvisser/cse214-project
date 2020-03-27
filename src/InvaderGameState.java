@@ -9,10 +9,11 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private int canvasXmin;
-    private int canvasXmax;
-    private int canvasYmin;
-    private int canvasYmax;
+    /*
+     * // Todo see how we can use this variable rather than directly accessing
+     * Invaders.canvas which is bad practice
+     */
+    private final RectangleDimension canvas;
 
     public boolean pauseFlag = false;
     public boolean quitFlag = false;
@@ -36,28 +37,30 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
     ArrayList<PowerUp> powerUps;
 
-    public InvaderGameState(int xmin, int xmax, int ymin, int ymax) {
-        canvasXmin = xmin;
-        canvasXmax = xmax;
-        canvasYmin = ymin;
-        canvasYmax = ymax;
+    public InvaderGameState(RectangleDimension canvas) {
+        this.canvas = canvas;
 
         score = 0;
 
-        background = new Background(canvasXmin, canvasXmax, canvasYmin, canvasYmax);
+        background = new Background(canvas);
 
-        shooter = new Shooter(new Vector2D(0, 100), Math.PI / 2);
+        shooter = new Shooter(new Vector2D(0, -75), Math.PI / 2);
 
-        missileLauncher = new MissileLauncher(shooter);
+        missileLauncher = new MissileLauncher(canvas, shooter);
 
-        enemyWave = new EnemyWave(shooter);
+        enemyWave = new EnemyWave(canvas, shooter);
 
         powerUps = new ArrayList<>();
-        powerUps.add(new PowerUp(new Vector2D(0, 400), PowerUp.PowerUpType.FAST_RELOAD));
-        powerUps.add(new PowerUp(new Vector2D(-200, 800), PowerUp.PowerUpType.GREEN));
-        powerUps.add(new PowerUp(new Vector2D(200, 1200), PowerUp.PowerUpType.RED));
-        powerUps.add(new PowerUp(new Vector2D(100, 1600), PowerUp.PowerUpType.YELLOW));
+        powerUps.add(new PowerUp(new Vector2D(0, 0), PowerUp.PowerUpType.FAST_RELOAD));
+        powerUps.add(new PowerUp(new Vector2D(0, 100), PowerUp.PowerUpType.GREEN));
+        powerUps.add(new PowerUp(new Vector2D(0, 200), PowerUp.PowerUpType.RED));
+        powerUps.add(new PowerUp(new Vector2D(0, 300), PowerUp.PowerUpType.YELLOW));
 
+    }
+
+    // change values of canvas dimensions, e.g. for on change of game resolution
+    public void setCanvasDimension(RectangleDimension otherCanvas) {
+        this.canvas.setFrom(otherCanvas);
     }
 
     public void renderStep(double dt) {
@@ -164,21 +167,21 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
     public void drawHealthBar(double percentage) {
         StdDraw.setPenColor(StdDraw.RED);
-        StdDraw.rectangle(-300, 50, 50, 15);
-        double halfWidth = Math.max(0, (50 * percentage) - 2);
-        StdDraw.filledRectangle(-350 + 50 * percentage, 50, halfWidth, 15 - 2);
+        StdDraw.rectangle(-87.5 + 12.5, -87.5, 12.5, 3.75);
+        double halfWidth = Math.max(0, (12.5 * percentage));
+        StdDraw.filledRectangle(-87.5 + 12.5 * percentage, -87.5, halfWidth, 3.75);
     }
 
     public void drawEnergyBar(double percentage) {
         StdDraw.setPenColor(StdDraw.BOOK_LIGHT_BLUE);
-        StdDraw.rectangle(-150, 50, 50, 15);
-        double halfWidth = Math.max(0, (50 * percentage) - 2);
-        StdDraw.filledRectangle(-200 + 50 * percentage, 50, halfWidth, 15 - 2);
+        StdDraw.rectangle(-50 + 12.5, -87.5, 12.5, 3.75);
+        double halfWidth = Math.max(0, (12.5 * percentage));
+        StdDraw.filledRectangle(-50 + 12.5 * percentage, -87.5, halfWidth, 3.75);
     }
 
     public void drawScore(int score) {
         StdDraw.setPenColor(StdDraw.ORANGE);
-        StdDraw.text(200, 50, "SCORE: " + score);
+        StdDraw.text(50, -87.5, "SCORE: " + score);
     }
 
 }

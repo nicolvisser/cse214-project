@@ -6,9 +6,11 @@ public class EnemyGroup extends DefaultCritter {
     private static final long serialVersionUID = 1L;
 
     ArrayList<Enemy> enemies;
+    RectangleDimension canvas;
 
-    public EnemyGroup() {
+    public EnemyGroup(RectangleDimension canvas) {
         super();
+        this.canvas = canvas;
         enemies = new ArrayList<>();
     }
 
@@ -28,13 +30,13 @@ public class EnemyGroup extends DefaultCritter {
         this.position = position;
 
         int radius = Enemy.DEFAULT_COLLISION_RADIUS;
-        int spacing = 10;
+        int spacing = 3;
 
         double x = position.x + radius;
         for (int i = 0; i < numEnemiesOnASide; i++) {
             double y = position.y + radius;
             for (int j = 0; j < numEnemiesOnASide; j++) {
-                Enemy enemy = new Enemy(new Vector2D(x, y), 3 * Math.PI / 2);
+                Enemy enemy = new Enemy(canvas, new Vector2D(x, y), 3 * Math.PI / 2);
                 enemies.add(enemy);
                 y += 2 * radius + spacing;
             }
@@ -48,7 +50,7 @@ public class EnemyGroup extends DefaultCritter {
         for (double theta = 0; theta < 2 * Math.PI; theta += 2 * Math.PI / numEnemies) {
             double x = position.x + radius * Math.cos(theta);
             double y = position.y + radius * Math.sin(theta);
-            Enemy enemy = new Enemy(new Vector2D(x, y), 3 * Math.PI / 2);
+            Enemy enemy = new Enemy(canvas, new Vector2D(x, y), 3 * Math.PI / 2);
             enemies.add(enemy);
         }
 
@@ -100,6 +102,7 @@ public class EnemyGroup extends DefaultCritter {
     public boolean isTouchingBottomOrShooter(Shooter shooter) {
         for (Enemy enemy : enemies) {
             if (enemy.isTouchingBottomOrShooter(shooter)) {
+                System.out.println("An Enemy Reached The Ground.");
                 return true;
             }
         }
