@@ -35,6 +35,7 @@ public class Shooter extends DefaultCritter {
         switch (state) {
             case ALIVE:
                 if (healthPoints <= 0) {
+                    StdAudio.play("resources/audio/Explosion+1.wav");
                     state = ShooterState.EXPLODING;
                     break;
                 }

@@ -85,8 +85,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         enemyWave.renderStep(dt);
         score += enemyWave.handleCollisionsWithMissiles(missileLauncher.missiles);
-        gameOverFlag = enemyWave.checkGameOverConditions(shooter) || enemyWave.isCleared()
-                || (shooter.state == Shooter.ShooterState.DEAD);
+        gameOverFlag = enemyWave.isCleared() || (shooter.state == Shooter.ShooterState.DEAD);
 
     }
 

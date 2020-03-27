@@ -33,6 +33,10 @@ public class EnemyWave implements Serializable {
     public void renderStep(double dt) {
         timeUntilNextCounterAttack -= dt;
 
+        if (checkGameOverConditions(shooterRef)) {
+            shooterRef.takeDamage(Integer.MAX_VALUE);
+        }
+
         if (timeUntilNextCounterAttack < 0) {
             counterAttack();
         }
