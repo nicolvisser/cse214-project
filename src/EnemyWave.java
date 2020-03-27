@@ -62,7 +62,11 @@ public class EnemyWave implements Serializable {
                 enemyMissileIterator.remove();
             } else if (enemyMissile.state == Missile.MissileState.TRAVELLING
                     && enemyMissile.isCollidingWith(shooterRef)) {
-                shooterRef.takeDamage(enemyMissile.missileDamage);
+                if (shooterRef.getShieldState() == false) {
+                    shooterRef.takeDamage(enemyMissile.missileDamage);
+                } else {
+                    StdAudio.play("resources/audio/shieldUp.wav");
+                }
                 enemyMissile.takeDamage(Integer.MAX_VALUE);
             } else if (enemyMissile.state == Missile.MissileState.TRAVELLING) {
 

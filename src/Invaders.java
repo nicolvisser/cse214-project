@@ -41,7 +41,9 @@ public class Invaders {
 
         setupStdDrawCanvas(800, 800);
 
-        StdAudio.play("resources/audio/Cinematic Sci-fi Beat.wav");
+        // stopped music for now, since irritating, will get beter music and add
+        // feautures later
+        // StdAudio.play("resources/audio/Cinematic Sci-fi Beat.wav");
 
         gameLoop();
 

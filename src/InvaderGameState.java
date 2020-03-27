@@ -107,8 +107,8 @@ public class InvaderGameState extends KeyListener implements Serializable {
             powerUp.draw();
         }
 
-        drawHealthBar(Math.max(0, (double) shooter.healthPoints / Shooter.DEFAULT_HEALTH_POINTS));
-        drawEnergyBar(1.0);
+        drawHealthBar((double) shooter.healthPoints / Shooter.DEFAULT_HEALTH_POINTS);
+        drawEnergyBar(shooter.energyPoints / Shooter.DEFAULT_ENERGY_POINTS);
         drawScore(score);
     }
 
@@ -136,6 +136,9 @@ public class InvaderGameState extends KeyListener implements Serializable {
             case UP_ARROW:
                 missileLauncher.startCharging();
                 break;
+            case DOWN_ARROW:
+                shooter.activateShield();
+                break;
 
             default:
                 break;
@@ -159,6 +162,9 @@ public class InvaderGameState extends KeyListener implements Serializable {
                 break;
             case UP_ARROW:
                 missileLauncher.shootMissile();
+                break;
+            case DOWN_ARROW:
+                shooter.deactivateShield();
                 break;
 
             default:
