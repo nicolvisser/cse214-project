@@ -26,6 +26,7 @@ public class Shooter extends DefaultCritter {
     private boolean shieldActive;
 
     double energyPoints;
+    double energyGainPerTimeStep;
 
     private MissileLauncher missileLauncherRef;
     private AnimatedPicture explosion;
@@ -34,6 +35,7 @@ public class Shooter extends DefaultCritter {
         super(position, orientation);
         healthPoints = DEFAULT_HEALTH_POINTS;
         energyPoints = DEFAULT_ENERGY_POINTS;
+        energyGainPerTimeStep = DEFAULT_ENERGY_GAIN_PER_TIMESTEP;
         collisionRadius = DEFAULT_COLLISION_RADIUS;
         state = ShooterState.ALIVE;
         shieldActive = false;
@@ -56,7 +58,7 @@ public class Shooter extends DefaultCritter {
                     }
                 }
 
-                energyPoints = Math.min(energyPoints + DEFAULT_ENERGY_GAIN_PER_TIMESTEP, DEFAULT_ENERGY_POINTS);
+                energyPoints = Math.min(energyPoints + energyGainPerTimeStep, DEFAULT_ENERGY_POINTS);
 
                 if (shieldActive) {
                     energyPoints -= SHIELD_ENERGY_USAGE_PER_TIMESTEP;

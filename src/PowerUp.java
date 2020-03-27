@@ -4,7 +4,7 @@
 public class PowerUp extends DefaultCritter {
 
     enum PowerUpType {
-        FAST_RELOAD, RED, GREEN, YELLOW;
+        FAST_ENERGY_GAIN, RED, GREEN, FAST_RELOAD;
     }
 
     enum PowerUpState {
@@ -31,7 +31,7 @@ public class PowerUp extends DefaultCritter {
         collisionRadius = DEFAULT_COLLISION_RADIUS;
         String filename = "";
         switch (type) {
-            case FAST_RELOAD:
+            case FAST_ENERGY_GAIN:
                 filename = "resources/powerUpBlue";
                 break;
             case RED:
@@ -40,7 +40,7 @@ public class PowerUp extends DefaultCritter {
             case GREEN:
                 filename = "resources/powerUpGreen";
                 break;
-            case YELLOW:
+            case FAST_RELOAD:
                 filename = "resources/powerUpYellow";
                 break;
         }
@@ -61,11 +61,11 @@ public class PowerUp extends DefaultCritter {
                 String iconFilename = "";
 
                 switch (type) {
-                    case FAST_RELOAD:
+                    case FAST_ENERGY_GAIN:
                         StdDraw.setPenColor(StdDraw.BOOK_LIGHT_BLUE);
                         frame_scale_factor = 0.995;
                         timer_x_pos = -85;
-                        iconFilename = "resources/fastReload.png";
+                        iconFilename = "resources/energy.png";
                         break;
                     case RED:
                         StdDraw.setPenColor(StdDraw.RED);
@@ -79,7 +79,7 @@ public class PowerUp extends DefaultCritter {
                         timer_x_pos = -75;
                         iconFilename = "resources/fastReload.png";
                         break;
-                    case YELLOW:
+                    case FAST_RELOAD:
                         StdDraw.setPenColor(StdDraw.YELLOW);
                         frame_scale_factor = 0.98;
                         timer_x_pos = -70;
@@ -132,14 +132,15 @@ public class PowerUp extends DefaultCritter {
         this.shooterOwner = shooter;
 
         switch (type) {
-            case FAST_RELOAD:
-                shooter.getMissileLauncherReference().reloadTime = MissileLauncher.DEFAULT_RELOAD_TIME / 2;
+            case FAST_ENERGY_GAIN:
+                shooterOwner.energyGainPerTimeStep = Shooter.DEFAULT_ENERGY_GAIN_PER_TIMESTEP * 5;
                 break;
             case RED:
                 break;
             case GREEN:
                 break;
-            case YELLOW:
+            case FAST_RELOAD:
+                shooter.getMissileLauncherReference().reloadTime = MissileLauncher.DEFAULT_RELOAD_TIME / 2;
                 break;
         }
 
@@ -149,14 +150,15 @@ public class PowerUp extends DefaultCritter {
     public void deactivateEffect() {
 
         switch (type) {
-            case FAST_RELOAD:
-                shooterOwner.getMissileLauncherReference().reloadTime = MissileLauncher.DEFAULT_RELOAD_TIME;
+            case FAST_ENERGY_GAIN:
+                shooterOwner.energyGainPerTimeStep = Shooter.DEFAULT_ENERGY_GAIN_PER_TIMESTEP;
                 break;
             case RED:
                 break;
             case GREEN:
                 break;
-            case YELLOW:
+            case FAST_RELOAD:
+                shooterOwner.getMissileLauncherReference().reloadTime = MissileLauncher.DEFAULT_RELOAD_TIME;
                 break;
         }
 
