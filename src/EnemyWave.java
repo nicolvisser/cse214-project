@@ -41,15 +41,29 @@ public class EnemyWave implements Serializable {
             enemyGroup.renderStep(dt);
         }
 
-        Iterator<Missile> itr = enemyMissiles.iterator();
-        while (itr.hasNext()) {
-            Missile missile = itr.next();
-            missile.renderStep(dt);
-            if (missile.state == Missile.MissileState.DEAD || !Invaders.isPointOnCanvas(missile.position)) {
-                itr.remove();
-            } else if (missile.state == Missile.MissileState.TRAVELLING && missile.isCollidingWith(shooterRef)) {
-                shooterRef.takeDamage(missile.missileDamage);
-                missile.takeDamage(Integer.MAX_VALUE);
+        Iterator<Missile> enemyMissileIterator = enemyMissiles.iterator();
+        while (enemyMissileIterator.hasNext()) {
+            Missile enemyMissile = enemyMissileIterator.next();
+            enemyMissile.renderStep(dt);
+            if (enemyMissile.state == Missile.MissileState.DEAD || !Invaders.isPointOnCanvas(enemyMissile.position)) {
+                enemyMissileIterator.remove();
+            } else if (enemyMissile.state == Missile.MissileState.TRAVELLING
+                    && enemyMissile.isCollidingWith(shooterRef)) {
+                shooterRef.takeDamage(enemyMissile.missileDamage);
+                enemyMissile.takeDamage(Integer.MAX_VALUE);
+            } else if (enemyMissile.state == Missile.MissileState.TRAVELLING) {
+
+                Iterator<Missile> shooterMissileIterator = shooterRef.getMissileLauncherReference().missiles.iterator();
+
+                while (shooterMissileIterator.hasNext()) {
+                    Missile shooterMissile = shooterMissileIterator.next();
+                    if (shooterMissile.state == Missile.MissileState.TRAVELLING
+                            && enemyMissile.isCollidingWith(shooterMissile)) {
+                        shooterMissile.takeDamage(Integer.MAX_VALUE);
+                        enemyMissile.takeDamage(Integer.MAX_VALUE);
+                    }
+                }
+
             }
         }
     }
