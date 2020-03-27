@@ -9,7 +9,7 @@ public class MissileLauncher extends DefaultCritter {
     private static final long serialVersionUID = 1L;
 
     public static final double DEFAULT_RELOAD_TIME = 0.15;
-    private static final double TURRET_ANGULAR_ACCELERATION_MAGNITUDE = 10;
+    private static final double TURRET_ANGULAR_ACCELERATION_MAGNITUDE = 40;
 
     RectangleDimension canvas;
     Shooter shooterRef;

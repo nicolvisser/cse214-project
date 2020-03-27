@@ -1,6 +1,7 @@
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.awt.Color;
 
 /**
  * InvaderGameState
@@ -166,17 +167,30 @@ public class InvaderGameState extends KeyListener implements Serializable {
     }
 
     public void drawHealthBar(double percentage) {
-        StdDraw.setPenColor(StdDraw.RED);
-        StdDraw.rectangle(-87.5 + 12.5, -87.5, 12.5, 3.75);
-        double halfWidth = Math.max(0, (12.5 * percentage));
-        StdDraw.filledRectangle(-87.5 + 12.5 * percentage, -87.5, halfWidth, 3.75);
+        final Color MAROON = new Color(128, 0, 0);
+        drawStatusBar(percentage, -92.5, -87.5, MAROON, Color.RED, "resources/heart.png");
     }
 
     public void drawEnergyBar(double percentage) {
-        StdDraw.setPenColor(StdDraw.BOOK_LIGHT_BLUE);
-        StdDraw.rectangle(-50 + 12.5, -87.5, 12.5, 3.75);
-        double halfWidth = Math.max(0, (12.5 * percentage));
-        StdDraw.filledRectangle(-50 + 12.5 * percentage, -87.5, halfWidth, 3.75);
+        final Color NAVY = new Color(0, 0, 128);
+        final Color LIGHT_BLUE = new Color(128, 223, 255);
+        drawStatusBar(percentage, -92.5, -92.5, NAVY, LIGHT_BLUE, "resources/energy.png");
+    }
+
+    public void drawStatusBar(double percentage, double x, double y, Color back, Color front, String iconFilename) {
+        final int SPACING_ICON_BAR = 5;
+        final int BAR_WIDTH = 80;
+
+        StdDraw.picture(x, y, iconFilename, 4, 4);
+
+        StdDraw.setPenColor(back);
+        StdDraw.filledRectangle(x + SPACING_ICON_BAR + BAR_WIDTH / 2 * 1, y, BAR_WIDTH / 2, 1);
+
+        if (percentage > 0) {
+            StdDraw.setPenColor(front);
+            StdDraw.filledRectangle(x + SPACING_ICON_BAR + BAR_WIDTH / 2 * percentage, y, BAR_WIDTH / 2 * percentage,
+                    1);
+        }
     }
 
     public void drawScore(int score) {
