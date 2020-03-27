@@ -10,7 +10,7 @@ public class Missile extends DefaultCritter {
     public static final int SPEED = 200;
 
     private static final long serialVersionUID = 1L;
-    private static final double DEFAULT_COLLISION_RADIUS = 2.5;
+    private static final double DEFAULT_COLLISION_RADIUS = 1.5;
     private static final int DEFAULT_MISSILE_DAMAGE = 100;
     private static final int DEFAULT_HEALTH_POINTS = 10;
 
