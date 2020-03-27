@@ -54,9 +54,9 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         powerUps = new ArrayList<>();
         powerUps.add(new PowerUp(new Vector2D(0, 400), PowerUp.PowerUpType.FAST_RELOAD));
-        powerUps.add(new PowerUp(new Vector2D(0, 800), PowerUp.PowerUpType.GREEN));
-        powerUps.add(new PowerUp(new Vector2D(0, 1000), PowerUp.PowerUpType.RED));
-        powerUps.add(new PowerUp(new Vector2D(0, 1400), PowerUp.PowerUpType.YELLOW));
+        powerUps.add(new PowerUp(new Vector2D(-200, 800), PowerUp.PowerUpType.GREEN));
+        powerUps.add(new PowerUp(new Vector2D(200, 1200), PowerUp.PowerUpType.RED));
+        powerUps.add(new PowerUp(new Vector2D(100, 1600), PowerUp.PowerUpType.YELLOW));
 
     }
 
@@ -80,6 +80,8 @@ public class InvaderGameState extends KeyListener implements Serializable {
                 }
             }
         }
+
+        missileLauncher.addAbilityToEquipPowerUp(powerUps);
 
         enemyWave.renderStep(dt);
         score += enemyWave.handleCollisionsWithMissiles(missileLauncher.missiles);

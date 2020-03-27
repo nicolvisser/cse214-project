@@ -11,7 +11,7 @@ public class MissileLauncher extends DefaultCritter {
     public static final double DEFAULT_RELOAD_TIME = 0.15;
     private static final double TURRET_ANGULAR_ACCELERATION_MAGNITUDE = 40;
 
-    Shooter shooter;
+    Shooter shooterRef;
     ArrayList<Missile> missiles;
     public double reloadTime;
     double timeSinceLastMissile;
@@ -19,8 +19,10 @@ public class MissileLauncher extends DefaultCritter {
     public boolean turretLeftRotateStatus;
     public boolean turretRightRotateStatus;
 
-    public MissileLauncher(Shooter shooter) {
-        this.shooter = shooter;
+    private ArrayList<PowerUp> powerUpsRef;
+
+    public MissileLauncher(Shooter shooterRef) {
+        this.shooterRef = shooterRef;
         missiles = new ArrayList<>();
         reloadTime = DEFAULT_RELOAD_TIME;
         timeSinceLastMissile = DEFAULT_RELOAD_TIME;
@@ -28,7 +30,7 @@ public class MissileLauncher extends DefaultCritter {
         turretLeftRotateStatus = false;
         turretRightRotateStatus = false;
 
-        shooter.addMissileLauncherReference(this);
+        shooterRef.addMissileLauncherReference(this);
 
     }
 
@@ -55,20 +57,28 @@ public class MissileLauncher extends DefaultCritter {
         orientation = Math.min(orientation, Math.PI - 0.2); // todo fix hardcoding
         orientation = Math.max(orientation, 0 + 0.2); // todo fix hardcoding
 
-        Iterator<Missile> itr = missiles.iterator();
-        while (itr.hasNext()) {
-            Missile missile = itr.next();
+        Iterator<Missile> missileIterator = missiles.iterator();
+        while (missileIterator.hasNext()) {
+            Missile missile = missileIterator.next();
             missile.renderStep(dt);
             if (missile.state == Missile.MissileState.DEAD || !Invaders.isPointOnCanvas(missile.position)) {
-                itr.remove();
+                missileIterator.remove();
+            } else if (missile.state == Missile.MissileState.TRAVELLING && powerUpsRef != null) {
+                Iterator<PowerUp> powerUpIterator = powerUpsRef.iterator();
+                while (powerUpIterator.hasNext()) {
+                    PowerUp powerUp = powerUpIterator.next();
+                    if (powerUp.state == PowerUp.PowerUpState.TRAVELLING && missile.isCollidingWith(powerUp)) {
+                        powerUp.addEffectTo(shooterRef);
+                    }
+                }
             }
         }
     }
 
     public void draw() {
 
-        if (shooter.state == Shooter.ShooterState.ALIVE) {
-            StdDraw.picture(shooter.position.x, shooter.position.y, "resources/turret.png", 100, 40,
+        if (shooterRef.state == Shooter.ShooterState.ALIVE) {
+            StdDraw.picture(shooterRef.position.x, shooterRef.position.y, "resources/turret.png", 100, 40,
                     orientationInDegrees());
         }
 
@@ -85,13 +95,21 @@ public class MissileLauncher extends DefaultCritter {
         if (timeSinceLastMissile > reloadTime) {
             System.out.println("Launched Missile With chargeUpTime: " + chargeUpTime);
             timeSinceLastMissile = 0;
-            Vector2D missileStartPos = Vector2D.sum(new Vector2D(shooter.position.x, shooter.position.y),
+            Vector2D missileStartPos = Vector2D.sum(new Vector2D(shooterRef.position.x, shooterRef.position.y),
                     Vector2D.scalarMultiplication(50, FWDVector()));
             Missile missile = new Missile(missileStartPos, this.FWDVector());
             missiles.add(missile);
             StdAudio.play("resources/audio/Gun+1.wav");
         }
         chargeUpTime = 0;
+    }
+
+    public void addAbilityToEquipPowerUp(ArrayList<PowerUp> powerUpsRef) {
+        this.powerUpsRef = powerUpsRef;
+    }
+
+    public ArrayList<PowerUp> getPowerUpsRef() {
+        return this.powerUpsRef;
     }
 
 }
