@@ -37,6 +37,10 @@ public class MenuScreen extends KeyListener {
         this.subtitle = subtitle;
     }
 
+    public void setOptions(String[] textOptionsArray) {
+        textOptions = textOptionsArray;
+    }
+
     public void reset() {
         highlightedOption = 0;
         selectedOption = -1;

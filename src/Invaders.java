@@ -1,3 +1,4 @@
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -47,6 +48,18 @@ public class Invaders {
 
         StdDraw.enableDoubleBuffering();
 
+        // Test saving stuff here -------->
+
+        String ts = getPlainTimestamp();
+
+        System.out.println(ts);
+
+        System.out.println(formatTimestamp(ts));
+
+        System.out.println(filenameOfSaveFile(3));
+
+        // <<--------------
+
         setupStdDrawCanvas(800, 800);
 
         StdAudio.loop("resources/audio/Mercury.wav");
@@ -89,6 +102,7 @@ public class Invaders {
                         case 1: // loadgame
                             mainMenuScreen.reset();
                             currentDisplayState = DisplayState.LOAD_GAME;
+                            setMenuScreenOptionsFromSaveFiles(loadGameScreen);
                             break;
 
                         case 2: // settings
@@ -163,6 +177,7 @@ public class Invaders {
                         case 1:
                             pauseScreen.reset();
                             currentDisplayState = DisplayState.SAVE_GAME;
+                            setMenuScreenOptionsFromSaveFiles(saveGameScreen);
                             break;
 
                         case 2:
@@ -215,6 +230,7 @@ public class Invaders {
 
                     if (loadGameScreen.flagBack) {
                         loadGameScreen.reset();
+                        loadGameScreen.setSubtitle(""); // clear error message if any
                         currentDisplayState = DisplayState.MAIN_MENU;
                         break;
                     }
@@ -232,9 +248,7 @@ public class Invaders {
                             loadGameScreen.reset();
                             break;
                         case 4: // cancel
-                            loadGameScreen.reset();
-                            loadGameScreen.setSubtitle(""); // clear error message if any
-                            currentDisplayState = DisplayState.MAIN_MENU;
+                            loadGameScreen.flagToGoBack();
                             break;
 
                         default:
@@ -385,12 +399,23 @@ public class Invaders {
     static void saveInvaderGameState(int slot) {
         loadedInvaderGameState.resetFlags(); // so as not to save true flags in game state
         try {
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("savedata_slot" + slot + ".dat"));
+            // delete old savegame (if any) of this slot first:
+            String existingFilename = filenameOfSaveFile(slot);
+            if (existingFilename != null) {
+                File file = new File(existingFilename);
+                if (file.delete()) {
+                    System.out.println("Old savegame, " + existingFilename + ", deleted successfully.");
+                }
+            }
+
+            String filename = "savedata_slot" + slot + "_" + getPlainTimestamp() + ".dat";
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename));
             out.writeObject(loadedInvaderGameState);
             out.close();
+            System.out.println("New savegame, " + filename + ", created successfully.");
             currentDisplayState = DisplayState.PLAYING;
         } catch (Exception e1) {
-            // TODO Show message if game failed to save
+            // TODO Show message if game failed to saves
             e1.printStackTrace();
         }
 
@@ -398,10 +423,9 @@ public class Invaders {
 
     static void loadInvaderGameState(int slot) {
         try {
-            ObjectInputStream in = new ObjectInputStream(new FileInputStream("savedata_slot" + slot + ".dat"));
+            String filename = filenameOfSaveFile(slot);
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename));
             loadedInvaderGameState = (InvaderGameState) in.readObject();
-            loadedInvaderGameState.setCanvasDimension(canvas); // change saved game canvas dimensions to
-                                                               // current canvas
             in.close();
             loadGameScreen.setSubtitle(""); // clear error message if any
             currentDisplayState = DisplayState.PLAYING;
@@ -410,6 +434,51 @@ public class Invaders {
             loadGameScreen.setSubtitle("Failed to load game from slot " + slot + ".");
             e1.printStackTrace();
         }
+    }
+
+    static String getPlainTimestamp() {
+        String date = java.time.LocalDate.now().toString().replaceAll("-", "");
+        String time = java.time.LocalTime.now().toString().substring(0, 6).replaceAll(":", "");
+        return date + time;
+    }
+
+    static String formatTimestamp(String plainTimestamp) {
+        String date = plainTimestamp.substring(0, 4) + "-" + plainTimestamp.substring(4, 6) + "-"
+                + plainTimestamp.substring(6, 8);
+        String time = plainTimestamp.substring(8, 10) + ":" + plainTimestamp.substring(10, 12);
+        return date + " " + time;
+    }
+
+    static String filenameOfSaveFile(int slot) {
+        File folder = new File(System.getProperty("user.dir")); // gets "working directory"
+        File[] listOfFiles = folder.listFiles();
+
+        for (int i = 0; i < listOfFiles.length; i++) {
+            if (listOfFiles[i].isFile()) {
+                String filename = listOfFiles[i].getName();
+                if (filename.startsWith("savedata_slot" + slot)) {
+                    return filename;
+                }
+            }
+        }
+        return null;
+    }
+
+    static void setMenuScreenOptionsFromSaveFiles(MenuScreen menuScreen) {
+        String[] options = new String[5];
+
+        for (int i = 0; i < 4; i++) {
+            String filename = filenameOfSaveFile(i + 1);
+            if (filename != null) {
+                options[i] = "Slot " + (i + 1) + " - " + formatTimestamp(filename.substring(15));
+            } else {
+                options[i] = "Slot " + (i + 1) + " - Empty";
+            }
+        }
+
+        options[4] = "Cancel";
+
+        menuScreen.setOptions(options);
 
     }
 
