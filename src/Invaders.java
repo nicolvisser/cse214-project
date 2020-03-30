@@ -10,7 +10,8 @@ import java.io.ObjectOutputStream;
 public class Invaders {
 
     enum DisplayState {
-        MAIN_MENU, NEW_GAME, PLAYING, PAUSE, SAVE_GAME, LOAD_GAME, SETTINGS, CONTROLS, SET_RESOLUTION, GAME_OVER, QUIT;
+        MAIN_MENU, NEW_GAME, PLAYING, PAUSE, SAVE_GAME, LOAD_GAME, HIGH_SCORES, SETTINGS, CONTROLS, SET_RESOLUTION,
+        GAME_OVER, QUIT;
     }
 
     static final RectangleDimension canvas = new RectangleDimension(0, 0, 200, 200);
@@ -22,7 +23,7 @@ public class Invaders {
     static DisplayState currentDisplayState;
     static InvaderGameState loadedInvaderGameState;
 
-    static String[] mainMenuScreenOptions = { "New Game", "Load Game", "Settings", "Quit Game" };
+    static String[] mainMenuScreenOptions = { "New Game", "Load Game", "High Scores", "Settings", "Quit Game" };
     static MenuScreen mainMenuScreen = new MenuScreen("Main Menu", mainMenuScreenOptions);
 
     static String[] pauseScreenOptions = { "Resume Game", "Save Game", "Quit To Main Menu" };
@@ -39,6 +40,8 @@ public class Invaders {
 
     static String[] loadGameScreenOptions = { "Slot 1", "Slot 2", "Slot 3", "Slot 4", "Cancel" };
     static MenuScreen loadGameScreen = new MenuScreen("Load Game", loadGameScreenOptions);
+
+    static HighScoreScreen highScoreScreen = new HighScoreScreen();
 
     static GameOverScreen gameOverScreen = new GameOverScreen();
 
@@ -102,12 +105,17 @@ public class Invaders {
                             setMenuScreenOptionsFromSaveFiles(loadGameScreen);
                             break;
 
-                        case 2: // settings
+                        case 2: // high scores
+                            mainMenuScreen.resetSelection();
+                            currentDisplayState = DisplayState.HIGH_SCORES;
+                            break;
+
+                        case 3: // settings
                             mainMenuScreen.resetSelection();
                             currentDisplayState = DisplayState.SETTINGS;
                             break;
 
-                        case 3: // not yet selected
+                        case 4: // quit
                             currentDisplayState = DisplayState.QUIT;
                             break;
 
@@ -263,6 +271,36 @@ public class Invaders {
 
                     break;
 
+                case HIGH_SCORES:
+
+                    highScoreScreen.draw();
+                    highScoreScreen.listenForInputChanges();
+
+                    switch (highScoreScreen.selectedOption) {
+                        case -2: // back (to main menu)
+                            highScoreScreen.resetSelection();
+                            highScoreScreen.resetHiglight();
+                            currentDisplayState = DisplayState.MAIN_MENU;
+                            break;
+
+                        case -1: // not yet selected
+                            break;
+
+                        case 0: // reset
+                            highScoreScreen.resetHighScores();
+                            highScoreScreen.resetSelection();
+                            break;
+
+                        case 1: // back
+                            highScoreScreen.selectOptionToGoBack();
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                    break;
+
                 case SETTINGS:
 
                     settingsScreen.draw();
@@ -365,33 +403,40 @@ public class Invaders {
 
                 case GAME_OVER:
 
-                    gameOverScreen.setScore(loadedInvaderGameState.score);
-                    gameOverScreen.draw();
-                    gameOverScreen.listenForInputChanges();
+                    int score;
 
-                    switch (gameOverScreen.selectedOption) {
-                        case -2: // back (no effect since cant go back to game)
+                    if (loadedInvaderGameState != null) {
+                        score = loadedInvaderGameState.score;
+
+                        if (highScoreScreen.isNewHighScore(score) && loadedInvaderGameState != null) {
+                            highScoreScreen.addEntry("No Name", loadedInvaderGameState.score);
+                        }
+
+                        String[] options = { "Enter Name", "Back to Main Menu" };
+                        highScoreScreen.setOptions(options);
+
+                        loadedInvaderGameState = null;
+                    }
+
+                    highScoreScreen.draw();
+                    highScoreScreen.listenForInputChanges();
+
+                    switch (highScoreScreen.selectedOption) {
+                        case -2: // back (to main menu)
+                            highScoreScreen.resetSelection();
+                            highScoreScreen.resetHiglight();
+                            currentDisplayState = DisplayState.MAIN_MENU;
+                            break;
+
                         case -1: // not yet selected
                             break;
 
-                        case 0: // new game
-                            gameOverScreen.resetSelection();
-                            gameOverScreen.resetHiglight();
-                            currentDisplayState = DisplayState.NEW_GAME;
+                        case 0: // enter name
+                            // todo renaming high score username
                             break;
 
-                        case 1: // load game
-                            gameOverScreen.resetSelection();
-                            gameOverScreen.resetHiglight();
-                            currentDisplayState = DisplayState.LOAD_GAME;
-                            break;
-
-                        case 2: // save highscore
-                            // TODO Save Highscore
-                            break;
-
-                        case 3: // main menu
-                            currentDisplayState = DisplayState.MAIN_MENU;
+                        case 1: // back
+                            highScoreScreen.selectOptionToGoBack();
                             break;
 
                         default:

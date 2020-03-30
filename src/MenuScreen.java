@@ -99,10 +99,13 @@ public class MenuScreen extends KeyListener {
         StdDraw.text(0, 35, subtitle);
         for (int i = 0; i < textOptions.length; i++) {
             double y = 20 - i * (BUTTON_HEIGHT + BUTTON_SPACING);
+
             StdDraw.setPenColor(StdDraw.BLACK);
             StdDraw.filledRectangle(0, y, BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2);
+
             StdDraw.setPenColor(i == highlightedOption ? StdDraw.RED : StdDraw.WHITE);
             StdDraw.rectangle(0, y, BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2);
+
             StdDraw.text(0, y, textOptions[i]);
         }
     }
