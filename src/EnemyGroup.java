@@ -102,7 +102,6 @@ public class EnemyGroup extends DefaultCritter {
     public boolean isTouchingBottomOrShooter(Shooter shooter) {
         for (Enemy enemy : enemies) {
             if (enemy.isTouchingBottomOrShooter(shooter)) {
-                System.out.println("An Enemy Reached The Ground.");
                 return true;
             }
         }

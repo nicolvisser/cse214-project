@@ -48,19 +48,7 @@ public class Invaders {
 
         StdDraw.enableDoubleBuffering();
 
-        // Test saving stuff here -------->
-
-        String ts = getPlainTimestamp();
-
-        System.out.println(ts);
-
-        System.out.println(formatTimestamp(ts));
-
-        System.out.println(filenameOfSaveFile(3));
-
-        // <<--------------
-
-        setupStdDrawCanvas(800, 800);
+        setupStdDrawCanvas(800, 800); // using default 'resolution' of 800x800
 
         StdAudio.loop("resources/audio/Mercury.wav");
 
@@ -447,7 +435,7 @@ public class Invaders {
             loadGameScreen.setSubtitle(""); // clear error message if any
             return true;
         } catch (Exception e1) {
-            e1.printStackTrace();
+            //e1.printStackTrace();
             return false;
             // dealt with error message for user inside gameloop using return value
         }
