@@ -7,8 +7,8 @@ public class GameOverScreen extends MenuScreen {
 
     int score;
 
-    public GameOverScreen(RectangleDimension canvas) {
-        super(canvas, "GAME OVER", options);
+    public GameOverScreen() {
+        super("GAME OVER", options);
         score = 0;
     }
 

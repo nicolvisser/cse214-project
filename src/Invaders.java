@@ -10,7 +10,7 @@ import java.io.ObjectOutputStream;
 public class Invaders {
 
     enum DisplayState {
-        MAIN_MENU, NEW_GAME, PLAYING, PAUSE, SAVE_GAME, LOAD_GAME, INSTRUCTIONS, SET_RESOLUTION, GAME_OVER, QUIT;
+        MAIN_MENU, NEW_GAME, PLAYING, PAUSE, SAVE_GAME, LOAD_GAME, CONTROLS, SET_RESOLUTION, GAME_OVER, QUIT;
     }
 
     static final RectangleDimension canvas = new RectangleDimension(0, 0, 200, 200);
@@ -22,18 +22,24 @@ public class Invaders {
     static DisplayState currentDisplayState;
     static InvaderGameState loadedInvaderGameState;
 
-    static String[] titleScreenOptions = { "New Game", "Load Game", "Instructions", "Set Resolution", "Quit Game" };
-    static MenuScreen titleScreen = new MenuScreen(canvas, "Main Menu", titleScreenOptions);
+    static String[] mainMenuScreenOptions = { "New Game", "Load Game", "Controls", "Set Resolution", "Quit Game" };
+    static MenuScreen mainMenuScreen = new MenuScreen("Main Menu", mainMenuScreenOptions);
 
     static String[] pauseScreenOptions = { "Resume Game", "Save Game", "Quit To Main Menu" };
-    static MenuScreen pauseScreen = new MenuScreen(canvas, "Paused", pauseScreenOptions);
+    static MenuScreen pauseScreen = new MenuScreen("Paused", pauseScreenOptions);
 
     static String[] resolutionScreenOptions = { "600x600", "800x800", "1000x1000", "Cancel" };
-    static MenuScreen resolutionScreen = new MenuScreen(canvas, "Change Resolution", resolutionScreenOptions);
+    static MenuScreen resolutionScreen = new MenuScreen("Change Resolution", resolutionScreenOptions);
 
-    static GameOverScreen gameOverScreen = new GameOverScreen(canvas);
+    static String[] saveGameScreenOptions = { "Slot 1", "Slot 2", "Slot 3", "Slot 4", "Cancel" };
+    static MenuScreen saveGameScreen = new MenuScreen("Save Game", saveGameScreenOptions);
 
-    static InstructionsScreen instructionsScreen = new InstructionsScreen(canvas);
+    static String[] loadGameScreenOptions = { "Slot 1", "Slot 2", "Slot 3", "Slot 4", "Cancel" };
+    static MenuScreen loadGameScreen = new MenuScreen("Load Game", loadGameScreenOptions);
+
+    static GameOverScreen gameOverScreen = new GameOverScreen();
+
+    static InstructionsScreen controlsScreen = new InstructionsScreen();
 
     public static void main(String[] args) {
 
@@ -69,34 +75,34 @@ public class Invaders {
             switch (currentDisplayState) {
                 case MAIN_MENU:
 
-                    titleScreen.draw();
-                    titleScreen.listenForInputChanges();
+                    mainMenuScreen.draw();
+                    mainMenuScreen.listenForInputChanges();
 
-                    switch (titleScreen.selectedOption) {
+                    switch (mainMenuScreen.selectedOption) {
                         case -1:
                             break;
                         case 0:
-                            titleScreen.reset();
+                            mainMenuScreen.reset();
                             currentDisplayState = DisplayState.NEW_GAME;
                             break;
 
                         case 1:
-                            titleScreen.reset();
+                            mainMenuScreen.reset();
                             currentDisplayState = DisplayState.LOAD_GAME;
                             break;
 
                         case 2:
-                            titleScreen.reset();
-                            currentDisplayState = DisplayState.INSTRUCTIONS;
+                            mainMenuScreen.reset();
+                            currentDisplayState = DisplayState.CONTROLS;
                             break;
 
                         case 3:
-                            titleScreen.reset();
+                            mainMenuScreen.reset();
                             currentDisplayState = DisplayState.SET_RESOLUTION;
                             break;
 
                         case 4:
-                            titleScreen.reset();
+                            mainMenuScreen.reset();
                             currentDisplayState = DisplayState.QUIT;
 
                             break;
@@ -177,46 +183,77 @@ public class Invaders {
 
                 case SAVE_GAME:
 
-                    loadedInvaderGameState.resetFlags(); // so as not to save true flags in game state
+                    saveGameScreen.draw();
+                    saveGameScreen.listenForInputChanges();
 
-                    ObjectOutputStream out;
-                    try {
-                        out = new ObjectOutputStream(new FileOutputStream("savedata.txt"));
-                        out.writeObject(loadedInvaderGameState);
-                        out.close();
-                    } catch (IOException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
+                    if (saveGameScreen.flagBack) {
+                        saveGameScreen.reset();
+                        currentDisplayState = DisplayState.PAUSE;
+                        break;
                     }
 
-                    currentDisplayState = DisplayState.PAUSE;
+                    switch (saveGameScreen.selectedOption) {
+                        case -1: // not yet selected
+                            break;
+                        case 0: // slot 1
+                        case 1: // slot 2
+                        case 2: // slot 3
+                        case 3: // slot 4
+                            int slot = saveGameScreen.selectedOption + 1;
+                            saveInvaderGameState(slot);
+                            saveGameScreen.reset();
+                            break;
+                        case 4: // cancel
+                            saveGameScreen.flagToGoBack();
+                            break;
+
+                        default:
+
+                    }
 
                     break;
 
                 case LOAD_GAME:
 
-                    try {
-                        ObjectInputStream in = new ObjectInputStream(new FileInputStream("savedata.txt"));
-                        loadedInvaderGameState = (InvaderGameState) in.readObject();
-                        loadedInvaderGameState.setCanvasDimension(canvas); // change saved game canvas dimensions to
-                                                                           // current canvas
-                        in.close();
-                    } catch (IOException | ClassNotFoundException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
+                    loadGameScreen.draw();
+                    loadGameScreen.listenForInputChanges();
+
+                    if (loadGameScreen.flagBack) {
+                        loadGameScreen.reset();
+                        currentDisplayState = DisplayState.MAIN_MENU;
+                        break;
                     }
 
-                    currentDisplayState = DisplayState.PLAYING;
+                    switch (loadGameScreen.selectedOption) {
+                        case -1: // not yet selected
+                            break;
+                        case 0: // slot 1
+                        case 1: // slot 2
+                        case 2: // slot 3
+                        case 3: // slot 4
+
+                            int slot = loadGameScreen.selectedOption + 1;
+                            loadInvaderGameState(slot);
+                            loadGameScreen.reset();
+                            break;
+                        case 4: // cancel
+                            loadGameScreen.reset();
+                            currentDisplayState = DisplayState.MAIN_MENU;
+                            break;
+
+                        default:
+
+                    }
 
                     break;
 
-                case INSTRUCTIONS:
+                case CONTROLS:
 
-                    instructionsScreen.draw();
-                    instructionsScreen.listenForInputChanges();
+                    controlsScreen.draw();
+                    controlsScreen.listenForInputChanges();
 
-                    if (instructionsScreen.flagBack) {
-                        instructionsScreen.reset();
+                    if (controlsScreen.flagBack) {
+                        controlsScreen.reset();
                         currentDisplayState = DisplayState.MAIN_MENU;
                         break;
                     }
@@ -231,6 +268,7 @@ public class Invaders {
                     if (resolutionScreen.flagBack) {
                         currentDisplayState = DisplayState.MAIN_MENU;
                         resolutionScreen.reset();
+                        break;
                     }
 
                     switch (resolutionScreen.selectedOption) {
@@ -306,6 +344,34 @@ public class Invaders {
             StdDraw.pause(dt_ms);
 
         }
+    }
+
+    static void saveInvaderGameState(int slot) {
+        loadedInvaderGameState.resetFlags(); // so as not to save true flags in game state
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("savedata_slot" + slot + ".txt"));
+            out.writeObject(loadedInvaderGameState);
+            out.close();
+        } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        currentDisplayState = DisplayState.PAUSE;
+    }
+
+    static void loadInvaderGameState(int slot) {
+        try {
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream("savedata_slot" + slot + ".txt"));
+            loadedInvaderGameState = (InvaderGameState) in.readObject();
+            loadedInvaderGameState.setCanvasDimension(canvas); // change saved game canvas dimensions to
+                                                               // current canvas
+            in.close();
+        } catch (IOException | ClassNotFoundException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        currentDisplayState = DisplayState.PLAYING;
+
     }
 
 }

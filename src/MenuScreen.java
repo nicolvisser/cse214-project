@@ -7,8 +7,6 @@ public class MenuScreen extends KeyListener {
     static final int BUTTON_HEIGHT = 10;
     static final int BUTTON_SPACING = 5;
 
-    RectangleDimension canvas;
-
     public String title;
     public String[] textOptions;
     public int highlightedOption;
@@ -17,8 +15,7 @@ public class MenuScreen extends KeyListener {
 
     public boolean flagBack = false;
 
-    public MenuScreen(RectangleDimension canvas, String title, String[] textOptionsArray) {
-        this.canvas = canvas;
+    public MenuScreen(String title, String[] textOptionsArray) {
         this.title = title;
         textOptions = textOptionsArray;
         highlightedOption = 0;
