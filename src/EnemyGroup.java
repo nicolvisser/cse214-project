@@ -1,27 +1,42 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 
-public class EnemyGroup extends Enemy {
+public class EnemyGroup extends DefaultCritter {
 
     private static final long serialVersionUID = 1L;
 
     ArrayList<Enemy> enemies;
+    RectangleDimension canvas;
 
-    public EnemyGroup() {
+    public EnemyGroup(RectangleDimension canvas) {
         super();
+        this.canvas = canvas;
         enemies = new ArrayList<>();
+    }
+
+    public void add(Enemy enemy) {
+        enemies.add(enemy);
+    }
+
+    public void remove(Enemy enemy) {
+        enemies.remove(enemy);
+    }
+
+    public boolean hasEnemies() {
+        return enemies.size() > 0;
     }
 
     public void populateInSquareFormation(Vector2D position, int numEnemiesOnASide) {
         this.position = position;
 
         int radius = Enemy.DEFAULT_COLLISION_RADIUS;
-        int spacing = 10;
+        int spacing = 3;
 
         double x = position.x + radius;
         for (int i = 0; i < numEnemiesOnASide; i++) {
             double y = position.y + radius;
             for (int j = 0; j < numEnemiesOnASide; j++) {
-                Enemy enemy = new Enemy(new Vector2D(x, y), 3 * Math.PI / 2);
+                Enemy enemy = new Enemy(canvas, new Vector2D(x, y), 3 * Math.PI / 2);
                 enemies.add(enemy);
                 y += 2 * radius + spacing;
             }
@@ -35,23 +50,10 @@ public class EnemyGroup extends Enemy {
         for (double theta = 0; theta < 2 * Math.PI; theta += 2 * Math.PI / numEnemies) {
             double x = position.x + radius * Math.cos(theta);
             double y = position.y + radius * Math.sin(theta);
-            Enemy enemy = new Enemy(new Vector2D(x, y), 3 * Math.PI / 2);
+            Enemy enemy = new Enemy(canvas, new Vector2D(x, y), 3 * Math.PI / 2);
             enemies.add(enemy);
         }
 
-    }
-
-    public void add(Enemy enemy) {
-        enemies.add(enemy);
-    }
-
-    public void remove(Enemy enemy) {
-        enemies.remove(enemy);
-    }
-
-    @Override
-    public boolean isAlive() {
-        return enemies.size() > 0;
     }
 
     @Override
@@ -69,48 +71,51 @@ public class EnemyGroup extends Enemy {
         double dx = velocity.x * dt + 0.5 * acceleration.x * dt * dt;
         double dy = velocity.y * dt + 0.5 * acceleration.y * dt * dt;
 
-        for (int i = 0; i < enemies.size(); i++) {
-            Enemy enemy = enemies.get(i);
-            enemy.renderStep(dt); // render new position of enemy independent of group
+        Iterator<Enemy> itr = enemies.iterator();
+        while (itr.hasNext()) {
+            Enemy enemy = itr.next();
+
+            // render new position of enemy, independent of group
+            enemy.renderStep(dt);
 
             // add group movement effect to enemy
             enemy.translateX(dx);
             enemy.translateY(dy);
 
             // remove enemy if no longer alive
-            if (!enemy.isAlive()) {
-                enemies.remove(enemy);
-                i--;
+            if (enemy.state == Enemy.EnemyState.DEAD) {
+                itr.remove();
             }
         }
     }
 
-    @Override
     public int handleCollisionsWithMissiles(ArrayList<Missile> missiles) {
         int points = 0;
-
         for (Enemy enemy : enemies) {
             for (Missile missile : missiles) {
-                if ((missile.state == Missile.MissileState.TRAVELLING) && enemy.isCollidingWith(missile)) {
-                    points += missile.missileDamage; // Todo Better points system than just missile damage
-                    enemy.takeDamage(missile.missileDamage);
-                    missile.takeDamage(Integer.MAX_VALUE);
-                    break;
-                }
+                points += enemy.handleCollisionWithMissile(missile);
             }
         }
-
         return points;
     }
 
-    @Override
     public boolean isTouchingBottomOrShooter(Shooter shooter) {
         for (Enemy enemy : enemies) {
             if (enemy.isTouchingBottomOrShooter(shooter)) {
+                System.out.println("An Enemy Reached The Ground.");
                 return true;
             }
         }
         return false;
+    }
+
+    public Enemy getRandomEnemy() {
+        if (enemies.size() == 0) {
+            return null;
+        } else {
+            int randomIndex = (int) (Math.random() * enemies.size());
+            return enemies.get(randomIndex);
+        }
     }
 
 }

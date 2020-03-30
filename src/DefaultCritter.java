@@ -3,28 +3,24 @@
  */
 public class DefaultCritter extends Object2D implements Critter {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
+    private static final int DEFAULT_HEALTH_POINTS = 100;
+    private static final int DEFAULT_COLLISSION_RADIUS = 5;
+
     public int healthPoints;
     public double collisionRadius;
 
     public DefaultCritter() {
         super();
-        healthPoints = 100; // Default health points
-        collisionRadius = 10; // Default collision radius
+        healthPoints = DEFAULT_HEALTH_POINTS; // Default health points
+        collisionRadius = DEFAULT_COLLISSION_RADIUS; // Default collision radius
     }
 
     public DefaultCritter(Vector2D position, double orientation) {
         super(position, orientation);
 
-        healthPoints = 100; // Default health points
-        collisionRadius = 10; // Default collision radius
-    }
-
-    public boolean isAlive() {
-        return healthPoints > 0;
+        healthPoints = DEFAULT_HEALTH_POINTS; // Default health points
+        collisionRadius = DEFAULT_COLLISSION_RADIUS; // Default collision radius
     }
 
     public void takeDamage(int damagePoints) {

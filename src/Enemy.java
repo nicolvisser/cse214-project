@@ -5,45 +5,89 @@ import java.util.ArrayList;
  */
 public class Enemy extends DefaultCritter {
 
-    public static int DEFAULT_COLLISION_RADIUS = 20;
-
-    /**
-     *
-     */
-    private static final long serialVersionUID = 1L;
-
-    public Enemy() {
-        super();
-        healthPoints = 100;
-        collisionRadius = DEFAULT_COLLISION_RADIUS;
+    enum EnemyState {
+        ALIVE, EXPLODING, DEAD;
     }
 
-    public Enemy(Vector2D position, double orientation) {
+    RectangleDimension canvas;
+
+    public static int DEFAULT_HEALTH_POINTS = 100;
+    public static int DEFAULT_COLLISION_RADIUS = 5;
+
+    private static final long serialVersionUID = 1L;
+
+    public EnemyState state;
+
+    private AnimatedPicture explosion;
+
+    public Enemy(RectangleDimension canvas, Vector2D position, double orientation) {
         super(position, orientation);
-        healthPoints = 100;
+        this.canvas = canvas;
+        state = EnemyState.ALIVE;
+        healthPoints = DEFAULT_HEALTH_POINTS;
         collisionRadius = DEFAULT_COLLISION_RADIUS;
+        explosion = new AnimatedPicture("resources/images/explosion", "png", 16, AnimatedPicture.AnimationType.FWD_BWD_ONCE);
+    }
+
+    public int handleCollisionWithMissile(Missile missile) {
+        int points = 0;
+        if ((state == EnemyState.ALIVE) && (missile.state == Missile.MissileState.TRAVELLING)
+                && this.isCollidingWith(missile)) {
+            points += missile.missileDamage; // TODO: Better points system than just missile damage
+            takeDamage(missile.missileDamage);
+            missile.takeDamage(Integer.MAX_VALUE);
+        }
+        return points;
     }
 
     public int handleCollisionsWithMissiles(ArrayList<Missile> missiles) {
         int points = 0;
         for (Missile missile : missiles) {
-            if (this.isCollidingWith(missile)) {
-                points += missile.missileDamage; // TODO: Better points system than just missile damage
-                takeDamage(missile.missileDamage);
-                missile.takeDamage(Integer.MAX_VALUE);
-                break;
-            }
+            points += handleCollisionWithMissile(missile);
         }
         return points;
     }
 
     public boolean isTouchingBottomOrShooter(Shooter shooter) {
-        return (this.position.y - collisionRadius <= 0) || (this.isCollidingWith(shooter));
+        return (this.position.y - collisionRadius <= canvas.ymin) || (this.isCollidingWith(shooter));
+    }
+
+    @Override
+    public void renderStep(double dt) {
+        switch (state) {
+            case ALIVE:
+                if (healthPoints <= 0) {
+                    state = EnemyState.EXPLODING;
+                    break;
+                }
+                super.renderStep(dt);
+                break;
+
+            case EXPLODING:
+                super.renderStep(dt);
+                if (explosion.finished)
+                    state = EnemyState.DEAD;
+                break;
+
+            case DEAD:
+                break;
+        }
     }
 
     @Override
     public void draw() {
-        StdDraw.picture(position.x, position.y, "resources/enemy.png", 40, 40, orientationInDegrees());
+        switch (state) {
+            case ALIVE:
+                StdDraw.picture(position.x, position.y, "resources/images/enemy.png", 10, 10, orientationInDegrees());
+                break;
+
+            case EXPLODING:
+                explosion.draw(position.x, position.y, 0);
+                break;
+
+            case DEAD:
+                break;
+        }
     }
 
 }
