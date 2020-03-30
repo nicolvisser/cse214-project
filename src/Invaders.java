@@ -347,7 +347,7 @@ public class Invaders {
     static void saveInvaderGameState(int slot) {
         loadedInvaderGameState.resetFlags(); // so as not to save true flags in game state
         try {
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("savedata_slot" + slot + ".txt"));
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("savedata_slot" + slot + ".dat"));
             out.writeObject(loadedInvaderGameState);
             out.close();
         } catch (IOException e1) {
@@ -359,7 +359,7 @@ public class Invaders {
 
     static void loadInvaderGameState(int slot) {
         try {
-            ObjectInputStream in = new ObjectInputStream(new FileInputStream("savedata_slot" + slot + ".txt"));
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream("savedata_slot" + slot + ".dat"));
             loadedInvaderGameState = (InvaderGameState) in.readObject();
             loadedInvaderGameState.setCanvasDimension(canvas); // change saved game canvas dimensions to
                                                                // current canvas
