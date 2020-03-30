@@ -10,8 +10,7 @@ public class Background implements Serializable {
      */
     private static final long serialVersionUID = 1L;
 
-    // declare variables to store background position and size as bounds
-    private double xmin, xmax, ymin, ymax;
+    RectangleDimension canvas;
 
     // declare variables associated with stars
     private final int NUM_STARS = 1000;
@@ -20,20 +19,18 @@ public class Background implements Serializable {
     private final double STARS_PARALLAX_SENSITIVITY_MAX = 0.083;
 
     // declare variables associated with earth
-    private Vector2D earthPosition = Vector2D.zeroVector();
+    private Vector2D earthPosition;
     private final double EARTH_PARALLAX_SENSITIVITY = 0.1;
 
-    public Background(double x_min, double x_max, double y_min, double y_max) {
-        xmin = x_min;
-        xmax = x_max;
-        ymin = y_min;
-        ymax = y_max;
+    public Background(RectangleDimension canvas) {
+        this.canvas = canvas;
+        earthPosition = new Vector2D(0, -100);
 
         // loop through number of stars
         for (int i = 0; i < NUM_STARS; i++) {
             // set random position for each star within background bounds
-            double xpos = xmin + Math.random() * (xmax - xmin);
-            double ypos = ymin + Math.random() * (ymax - ymin);
+            double xpos = canvas.xmin + Math.random() * canvas.width;
+            double ypos = canvas.ymin + Math.random() * canvas.height;
             starPositions[i] = new Vector2D(xpos, ypos);
 
             // set random parallax sensitivity for each star
@@ -57,17 +54,17 @@ public class Background implements Serializable {
             starPositions[i].y -= playerVelocity.y * dt * starParallaxSensitivities[i];
 
             // recycle stars that go out of x bounds
-            if (starPositions[i].x < xmin) {
-                starPositions[i].x = xmax;
-            } else if (starPositions[i].x > xmax) {
-                starPositions[i].x = xmin;
+            if (starPositions[i].x < canvas.xmin) {
+                starPositions[i].x = canvas.xmax;
+            } else if (starPositions[i].x > canvas.xmax) {
+                starPositions[i].x = canvas.xmin;
             }
 
             // recycle stars that go out of y bounds
-            if (starPositions[i].y < ymin) {
-                starPositions[i].y = ymax;
-            } else if (starPositions[i].y > ymax) {
-                starPositions[i].y = ymin;
+            if (starPositions[i].y < canvas.ymin) {
+                starPositions[i].y = canvas.ymax;
+            } else if (starPositions[i].y > canvas.ymax) {
+                starPositions[i].y = canvas.ymin;
             }
         }
     }
@@ -76,7 +73,7 @@ public class Background implements Serializable {
 
         // draw black space background
         StdDraw.setPenColor(StdDraw.BLACK);
-        StdDraw.filledRectangle((xmax + xmin) / 2, (ymax + ymin) / 2, (xmax - xmin) / 2, (ymax - ymin) / 2);
+        StdDraw.filledRectangle(0, 0, canvas.width / 2, canvas.height / 2);
 
         // for each star
         for (int i = 0; i < NUM_STARS; i++) {

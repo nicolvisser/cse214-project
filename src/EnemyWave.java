@@ -9,21 +9,24 @@ public class EnemyWave implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private RectangleDimension canvas;
     private EnemyGroup[] enemyGroups;
     private Shooter shooterRef;
     private double timeUntilNextCounterAttack;
     private ArrayList<Missile> enemyMissiles;
 
-    public EnemyWave(Shooter shooterRef) {
+    public EnemyWave(RectangleDimension canvas, Shooter shooterRef) {
+        this.canvas = canvas;
+
         enemyGroups = new EnemyGroup[2];
 
-        enemyGroups[0] = new EnemyGroup();
-        enemyGroups[0].populateInSquareFormation(new Vector2D(-300, 700), 4);
-        enemyGroups[0].velocity = new Vector2D(0, -80);
+        enemyGroups[0] = new EnemyGroup(canvas);
+        enemyGroups[0].populateInSquareFormation(new Vector2D(-75, 75), 4);
+        enemyGroups[0].velocity = new Vector2D(0, -20);
 
-        enemyGroups[1] = new EnemyGroup();
-        enemyGroups[1].populateInCircleFormation(new Vector2D(0, 1300), 16, 200);
-        enemyGroups[1].velocity = new Vector2D(0, -80);
+        enemyGroups[1] = new EnemyGroup(canvas);
+        enemyGroups[1].populateInCircleFormation(new Vector2D(0, 225), 16, 50);
+        enemyGroups[1].velocity = new Vector2D(0, -20);
 
         this.shooterRef = shooterRef;
         timeUntilNextCounterAttack = 1;
@@ -38,6 +41,12 @@ public class EnemyWave implements Serializable {
         }
 
         if (timeUntilNextCounterAttack < 0) {
+            /*
+             * if at least one enemy on canvas
+             * 
+             * 
+             * 
+             */
             counterAttack();
         }
 
@@ -49,11 +58,15 @@ public class EnemyWave implements Serializable {
         while (enemyMissileIterator.hasNext()) {
             Missile enemyMissile = enemyMissileIterator.next();
             enemyMissile.renderStep(dt);
-            if (enemyMissile.state == Missile.MissileState.DEAD || !Invaders.isPointOnCanvas(enemyMissile.position)) {
+            if (enemyMissile.state == Missile.MissileState.DEAD || !canvas.doesContainPoint(enemyMissile.position)) {
                 enemyMissileIterator.remove();
             } else if (enemyMissile.state == Missile.MissileState.TRAVELLING
                     && enemyMissile.isCollidingWith(shooterRef)) {
-                shooterRef.takeDamage(enemyMissile.missileDamage);
+                if (shooterRef.getShieldState() == false) {
+                    shooterRef.takeDamage(enemyMissile.missileDamage);
+                } else {
+                    StdAudio.play("resources/audio/shieldUp.wav");
+                }
                 enemyMissile.takeDamage(Integer.MAX_VALUE);
             } else if (enemyMissile.state == Missile.MissileState.TRAVELLING) {
 
@@ -107,6 +120,17 @@ public class EnemyWave implements Serializable {
         return true;
     }
 
+    public boolean atLeastOneAliveEnemyOnCanvas() {
+        for (EnemyGroup enemyGroup : enemyGroups) {
+            for (Enemy enemy : enemyGroup.enemies) {
+                if (canvas.doesContainPoint(enemy.position) && enemy.state == Enemy.EnemyState.ALIVE) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public EnemyGroup getRandomEnemyGroup() {
         if (enemyGroups.length == 0) {
             return null;
@@ -116,19 +140,23 @@ public class EnemyWave implements Serializable {
         }
     }
 
+    // Todo: make this more readable
     public Enemy getRandomEnemyOnCanvas() {
-        Enemy rEnemy;
-        do {
-            EnemyGroup rGroup = getRandomEnemyGroup();
-            if (rGroup == null) {
-                return null;
-            }
-            rEnemy = rGroup.getRandomEnemy();
-            if (rEnemy == null) {
-                return null;
-            }
-        } while (!Invaders.isPointOnCanvas(rEnemy.position) || rEnemy.state != Enemy.EnemyState.ALIVE);
-        return rEnemy;
+        if (atLeastOneAliveEnemyOnCanvas()) {
+            Enemy rEnemy;
+            do {
+                EnemyGroup rGroup = getRandomEnemyGroup();
+                if (rGroup == null) {
+                    rEnemy = null;
+                } else {
+                    rEnemy = rGroup.getRandomEnemy();
+                }
+            } while (rEnemy == null || !canvas.doesContainPoint(rEnemy.position)
+                    || rEnemy.state != Enemy.EnemyState.ALIVE);
+            return rEnemy;
+        } else {
+            return null;
+        }
     }
 
     public void counterAttack() {
@@ -138,7 +166,7 @@ public class EnemyWave implements Serializable {
             Vector2D missileSpawnLocation = new Vector2D(attackingEnemy.position.x, attackingEnemy.position.y);
             Vector2D shooterPositionRelativeToEnemy = Object2D.relativePositionVector(attackingEnemy, shooterRef);
             Missile missile = new Missile(missileSpawnLocation, shooterPositionRelativeToEnemy.unitVector());
-            StdDraw.filledCircle(missileSpawnLocation.x, missileSpawnLocation.y, 30);
+            StdDraw.filledCircle(missileSpawnLocation.x, missileSpawnLocation.y, 5);
             missile.velocity = Vector2D.scalarMultiplication(Missile.SPEED,
                     shooterPositionRelativeToEnemy.unitVector());
             enemyMissiles.add(missile);

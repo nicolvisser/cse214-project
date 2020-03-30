@@ -3,9 +3,9 @@
  */
 public class MenuScreen extends KeyListener {
 
-    static final int BUTTON_WIDTH = 300;
-    static final int BUTTON_HEIGHT = 40;
-    static final int BUTTON_SPACING = 10;
+    static final int BUTTON_WIDTH = 100;
+    static final int BUTTON_HEIGHT = 10;
+    static final int BUTTON_SPACING = 5;
 
     public String title;
     public String[] textOptions;
@@ -38,10 +38,10 @@ public class MenuScreen extends KeyListener {
                 changeSelectionDown();
                 break;
             case ENTER_KEY:
-                selectedOption = highlightedOption;
+                selectCurrentOption();
                 break;
             case ESC_KEY:
-                flagBack = true;
+                flagToGoBack();
                 break;
 
             default:
@@ -53,20 +53,32 @@ public class MenuScreen extends KeyListener {
         highlightedOption--;
         if (highlightedOption < 0)
             highlightedOption += textOptions.length;
+        StdAudio.play("resources/audio/cut.wav");
     }
 
     public void changeSelectionDown() {
         highlightedOption++;
         if (highlightedOption >= textOptions.length)
             highlightedOption -= textOptions.length;
+        StdAudio.play("resources/audio/cut.wav");
+    }
+
+    public void selectCurrentOption() {
+        selectedOption = highlightedOption;
+        StdAudio.play("resources/audio/click7.wav");
+    }
+
+    public void flagToGoBack() {
+        flagBack = true;
+        StdAudio.play("resources/audio/click7.wav");
     }
 
     public void draw() {
         StdDraw.setPenColor(StdDraw.ORANGE);
-        StdDraw.text(0, 600, title);
+        StdDraw.text(0, 50, title);
         for (int i = 0; i < textOptions.length; i++) {
             StdDraw.setPenColor(i == highlightedOption ? StdDraw.RED : StdDraw.WHITE);
-            int y = 550 - i * (BUTTON_HEIGHT + BUTTON_SPACING);
+            double y = 20 - i * (BUTTON_HEIGHT + BUTTON_SPACING);
             StdDraw.rectangle(0, y, BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2);
             StdDraw.text(0, y, textOptions[i]);
         }

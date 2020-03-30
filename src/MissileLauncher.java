@@ -11,6 +11,7 @@ public class MissileLauncher extends DefaultCritter {
     public static final double DEFAULT_RELOAD_TIME = 0.15;
     private static final double TURRET_ANGULAR_ACCELERATION_MAGNITUDE = 40;
 
+    RectangleDimension canvas;
     Shooter shooterRef;
     ArrayList<Missile> missiles;
     public double reloadTime;
@@ -21,7 +22,8 @@ public class MissileLauncher extends DefaultCritter {
 
     private ArrayList<PowerUp> powerUpsRef;
 
-    public MissileLauncher(Shooter shooterRef) {
+    public MissileLauncher(RectangleDimension canvas, Shooter shooterRef) {
+        this.canvas = canvas;
         this.shooterRef = shooterRef;
         missiles = new ArrayList<>();
         reloadTime = DEFAULT_RELOAD_TIME;
@@ -61,7 +63,7 @@ public class MissileLauncher extends DefaultCritter {
         while (missileIterator.hasNext()) {
             Missile missile = missileIterator.next();
             missile.renderStep(dt);
-            if (missile.state == Missile.MissileState.DEAD || !Invaders.isPointOnCanvas(missile.position)) {
+            if (missile.state == Missile.MissileState.DEAD || !canvas.doesContainPoint(missile.position)) {
                 missileIterator.remove();
             } else if (missile.state == Missile.MissileState.TRAVELLING && powerUpsRef != null) {
                 Iterator<PowerUp> powerUpIterator = powerUpsRef.iterator();
@@ -78,7 +80,7 @@ public class MissileLauncher extends DefaultCritter {
     public void draw() {
 
         if (shooterRef.state == Shooter.ShooterState.ALIVE) {
-            StdDraw.picture(shooterRef.position.x, shooterRef.position.y, "resources/turret.png", 100, 40,
+            StdDraw.picture(shooterRef.position.x, shooterRef.position.y, "resources/turret.png", 25, 10,
                     orientationInDegrees());
         }
 
@@ -96,7 +98,7 @@ public class MissileLauncher extends DefaultCritter {
             System.out.println("Launched Missile With chargeUpTime: " + chargeUpTime);
             timeSinceLastMissile = 0;
             Vector2D missileStartPos = Vector2D.sum(new Vector2D(shooterRef.position.x, shooterRef.position.y),
-                    Vector2D.scalarMultiplication(50, FWDVector()));
+                    Vector2D.scalarMultiplication(12.5, FWDVector()));
             Missile missile = new Missile(missileStartPos, this.FWDVector());
             missiles.add(missile);
             StdAudio.play("resources/audio/Gun+1.wav");

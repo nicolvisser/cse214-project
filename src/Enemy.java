@@ -9,8 +9,10 @@ public class Enemy extends DefaultCritter {
         ALIVE, EXPLODING, DEAD;
     }
 
+    RectangleDimension canvas;
+
     public static int DEFAULT_HEALTH_POINTS = 100;
-    public static int DEFAULT_COLLISION_RADIUS = 20;
+    public static int DEFAULT_COLLISION_RADIUS = 5;
 
     private static final long serialVersionUID = 1L;
 
@@ -18,8 +20,9 @@ public class Enemy extends DefaultCritter {
 
     private AnimatedPicture explosion;
 
-    public Enemy(Vector2D position, double orientation) {
+    public Enemy(RectangleDimension canvas, Vector2D position, double orientation) {
         super(position, orientation);
+        this.canvas = canvas;
         state = EnemyState.ALIVE;
         healthPoints = DEFAULT_HEALTH_POINTS;
         collisionRadius = DEFAULT_COLLISION_RADIUS;
@@ -46,7 +49,7 @@ public class Enemy extends DefaultCritter {
     }
 
     public boolean isTouchingBottomOrShooter(Shooter shooter) {
-        return (this.position.y - collisionRadius <= 0) || (this.isCollidingWith(shooter));
+        return (this.position.y - collisionRadius <= canvas.ymin) || (this.isCollidingWith(shooter));
     }
 
     @Override
@@ -75,7 +78,7 @@ public class Enemy extends DefaultCritter {
     public void draw() {
         switch (state) {
             case ALIVE:
-                StdDraw.picture(position.x, position.y, "resources/enemy.png", 40, 40, orientationInDegrees());
+                StdDraw.picture(position.x, position.y, "resources/enemy.png", 10, 10, orientationInDegrees());
                 break;
 
             case EXPLODING:

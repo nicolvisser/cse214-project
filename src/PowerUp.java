@@ -4,7 +4,7 @@
 public class PowerUp extends DefaultCritter {
 
     enum PowerUpType {
-        FAST_RELOAD, RED, GREEN, YELLOW;
+        FAST_ENERGY_GAIN, RED, GREEN, FAST_RELOAD;
     }
 
     enum PowerUpState {
@@ -13,6 +13,7 @@ public class PowerUp extends DefaultCritter {
 
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_LIFETIME = 5;
+    private static final int DEFAULT_COLLISION_RADIUS = 3;
 
     public PowerUpState state;
 
@@ -23,13 +24,14 @@ public class PowerUp extends DefaultCritter {
 
     public PowerUp(Vector2D position, PowerUpType type) {
         this.position = position;
-        velocity = new Vector2D(0, -200);
+        velocity = new Vector2D(0, -50);
         this.type = type;
         state = PowerUpState.TRAVELLING;
         remainingLifetime = DEFAULT_LIFETIME;
+        collisionRadius = DEFAULT_COLLISION_RADIUS;
         String filename = "";
         switch (type) {
-            case FAST_RELOAD:
+            case FAST_ENERGY_GAIN:
                 filename = "resources/powerUpBlue";
                 break;
             case RED:
@@ -38,7 +40,7 @@ public class PowerUp extends DefaultCritter {
             case GREEN:
                 filename = "resources/powerUpGreen";
                 break;
-            case YELLOW:
+            case FAST_RELOAD:
                 filename = "resources/powerUpYellow";
                 break;
         }
@@ -59,49 +61,45 @@ public class PowerUp extends DefaultCritter {
                 String iconFilename = "";
 
                 switch (type) {
-                    case FAST_RELOAD:
+                    case FAST_ENERGY_GAIN:
                         StdDraw.setPenColor(StdDraw.BOOK_LIGHT_BLUE);
                         frame_scale_factor = 0.995;
-                        timer_x_pos = -340;
-                        iconFilename = "resources/fastReload.png";
+                        timer_x_pos = -85;
+                        iconFilename = "resources/energy.png";
                         break;
                     case RED:
                         StdDraw.setPenColor(StdDraw.RED);
                         frame_scale_factor = 0.99;
-                        timer_x_pos = -320;
+                        timer_x_pos = -80;
                         iconFilename = "resources/fastReload.png";
                         break;
                     case GREEN:
                         StdDraw.setPenColor(StdDraw.GREEN);
                         frame_scale_factor = 0.985;
-                        timer_x_pos = -300;
+                        timer_x_pos = -75;
                         iconFilename = "resources/fastReload.png";
                         break;
-                    case YELLOW:
+                    case FAST_RELOAD:
                         StdDraw.setPenColor(StdDraw.YELLOW);
                         frame_scale_factor = 0.98;
-                        timer_x_pos = -280;
+                        timer_x_pos = -70;
                         iconFilename = "resources/fastReload.png";
                         break;
                 }
 
                 // draw green box around canvas to indicate a powerup is active
                 StdDraw.setPenRadius(0.005);
-                int x = (Invaders.CANVAS_XMAX + Invaders.CANVAS_XMIN) / 2;
-                int y = (Invaders.CANVAS_YMAX + Invaders.CANVAS_YMIN) / 2;
-                double halfWidth = frame_scale_factor * Invaders.CANVAS_WIDTH / 2;
-                double halfHeight = frame_scale_factor * Invaders.CANVAS_HEIGHT / 2;
-                StdDraw.rectangle(x, y, halfWidth, halfHeight);
+                StdDraw.rectangle(0, 0, frame_scale_factor * 100, frame_scale_factor * 100);
                 StdDraw.setPenRadius();
 
                 // draw timer bar
                 double percentageTimeRemaining = Math.max(remainingLifetime / DEFAULT_LIFETIME, 0);
-                StdDraw.rectangle(timer_x_pos, 150, 5, 50);
-                StdDraw.filledRectangle(timer_x_pos, 100 + percentageTimeRemaining * 50, 5,
-                        percentageTimeRemaining * 50);
+                StdDraw.rectangle(timer_x_pos, -80 + 10, 1, 10);
+                StdDraw.filledRectangle(timer_x_pos, -80 + percentageTimeRemaining * 10, 1,
+                        percentageTimeRemaining * 10);
 
                 // draw icon above timer bar
-                StdDraw.picture(timer_x_pos, 215, iconFilename, 10, 10);
+                StdDraw.picture(timer_x_pos, -55, iconFilename, 3, 3);
 
                 break;
 
@@ -134,14 +132,15 @@ public class PowerUp extends DefaultCritter {
         this.shooterOwner = shooter;
 
         switch (type) {
-            case FAST_RELOAD:
-                shooter.getMissileLauncherReference().reloadTime = MissileLauncher.DEFAULT_RELOAD_TIME / 2;
+            case FAST_ENERGY_GAIN:
+                shooterOwner.energyGainPerTimeStep = Shooter.DEFAULT_ENERGY_GAIN_PER_TIMESTEP * 5;
                 break;
             case RED:
                 break;
             case GREEN:
                 break;
-            case YELLOW:
+            case FAST_RELOAD:
+                shooter.getMissileLauncherReference().reloadTime = MissileLauncher.DEFAULT_RELOAD_TIME / 2;
                 break;
         }
 
@@ -151,14 +150,15 @@ public class PowerUp extends DefaultCritter {
     public void deactivateEffect() {
 
         switch (type) {
-            case FAST_RELOAD:
-                shooterOwner.getMissileLauncherReference().reloadTime = MissileLauncher.DEFAULT_RELOAD_TIME;
+            case FAST_ENERGY_GAIN:
+                shooterOwner.energyGainPerTimeStep = Shooter.DEFAULT_ENERGY_GAIN_PER_TIMESTEP;
                 break;
             case RED:
                 break;
             case GREEN:
                 break;
-            case YELLOW:
+            case FAST_RELOAD:
+                shooterOwner.getMissileLauncherReference().reloadTime = MissileLauncher.DEFAULT_RELOAD_TIME;
                 break;
         }
 
