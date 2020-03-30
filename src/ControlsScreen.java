@@ -1,7 +1,7 @@
 /**
- * InstructionsScreen
+ * ControlsScreen
  */
-public class InstructionsScreen extends MenuScreen {
+public class ControlsScreen extends MenuScreen {
 
     static String[] options = { "Back" };
 
@@ -9,7 +9,7 @@ public class InstructionsScreen extends MenuScreen {
             "Block with Shield" };
     static String[] keys = { "A", "D", "Left Arrow", "Right Arrow", "Up Arrow", "Down Arrow" };
 
-    public InstructionsScreen() {
+    public ControlsScreen() {
         super("Controls", options);
     }
 
@@ -31,9 +31,14 @@ public class InstructionsScreen extends MenuScreen {
         }
 
         for (int i = 0; i < textOptions.length; i++) {
-            StdDraw.setPenColor(i == highlightedOption ? StdDraw.RED : StdDraw.WHITE);
             y -= (BUTTON_HEIGHT + BUTTON_SPACING);
+
+            StdDraw.setPenColor(StdDraw.BLACK);
+            StdDraw.filledRectangle(0, y, BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2);
+
+            StdDraw.setPenColor(i == highlightedOption ? StdDraw.RED : StdDraw.WHITE);
             StdDraw.rectangle(0, y, BUTTON_WIDTH / 2, BUTTON_HEIGHT / 2);
+
             StdDraw.text(0, y, textOptions[i]);
         }
 

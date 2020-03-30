@@ -42,13 +42,17 @@ public class Invaders {
 
     static GameOverScreen gameOverScreen = new GameOverScreen();
 
-    static InstructionsScreen controlsScreen = new InstructionsScreen();
+    static ControlsScreen controlsScreen = new ControlsScreen();
+
+    static Background background;
 
     public static void main(String[] args) {
 
         StdDraw.enableDoubleBuffering();
 
         setupStdDrawCanvas(800, 800); // using default 'resolution' of 800x800
+
+        background = new Background(canvas);
 
         StdAudio.loop("resources/audio/Mercury.wav");
 
@@ -70,8 +74,11 @@ public class Invaders {
         while (currentDisplayState != DisplayState.QUIT) {
 
             StdDraw.clear();
-            StdDraw.setPenColor(StdDraw.BLACK);
-            StdDraw.filledRectangle(0, 0, canvas.width / 2, canvas.height / 2);
+            background.draw();
+
+            if (currentDisplayState != DisplayState.PLAYING) {
+                background.renderStep(dt, new Vector2D(200, 200));
+            }
 
             switch (currentDisplayState) {
                 case MAIN_MENU:
@@ -124,6 +131,8 @@ public class Invaders {
                     loadedInvaderGameState.draw();
                     loadedInvaderGameState.renderStep(dt);
                     loadedInvaderGameState.listenForInputChanges();
+
+                    background.renderStep(dt, loadedInvaderGameState.getShooterVelocity());
 
                     if (loadedInvaderGameState.pauseFlag) {
                         loadedInvaderGameState.resetFlags();
@@ -435,7 +444,7 @@ public class Invaders {
             loadGameScreen.setSubtitle(""); // clear error message if any
             return true;
         } catch (Exception e1) {
-            //e1.printStackTrace();
+            // e1.printStackTrace();
             return false;
             // dealt with error message for user inside gameloop using return value
         }

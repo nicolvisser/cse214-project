@@ -18,13 +18,8 @@ public class Background implements Serializable {
     private double[] starParallaxSensitivities = new double[NUM_STARS];
     private final double STARS_PARALLAX_SENSITIVITY_MAX = 0.083;
 
-    // declare variables associated with earth
-    private Vector2D earthPosition;
-    private final double EARTH_PARALLAX_SENSITIVITY = 0.1;
-
     public Background(RectangleDimension canvas) {
         this.canvas = canvas;
-        earthPosition = new Vector2D(0, -100);
 
         // loop through number of stars
         for (int i = 0; i < NUM_STARS; i++) {
@@ -42,10 +37,6 @@ public class Background implements Serializable {
     // renders position of each star and earth based on velocity of player to give
     // parallax effect while moving
     public void renderStep(double dt, Vector2D playerVelocity) {
-
-        // earth position
-        earthPosition.x -= playerVelocity.x * dt * EARTH_PARALLAX_SENSITIVITY;
-        earthPosition.y -= playerVelocity.y * dt * EARTH_PARALLAX_SENSITIVITY;
 
         for (int i = 0; i < NUM_STARS; i++) {
 
@@ -87,7 +78,5 @@ public class Background implements Serializable {
             StdDraw.point(starPositions[i].x, starPositions[i].y);
         }
 
-        // draw earth from png image
-        StdDraw.picture(earthPosition.x, earthPosition.y, "resources/images/earth.png");
     }
 }

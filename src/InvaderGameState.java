@@ -10,11 +10,6 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    /*
-     * // Todo see how we can use this variable rather than directly accessing
-     * Invaders.canvas which is bad practice
-     */
-
     public boolean pauseFlag = false;
     public boolean quitFlag = false;
     public boolean gameOverFlag = false;
@@ -27,8 +22,6 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
     int score;
 
-    Background background;
-
     Shooter shooter;
 
     MissileLauncher missileLauncher;
@@ -40,8 +33,6 @@ public class InvaderGameState extends KeyListener implements Serializable {
     public InvaderGameState(RectangleDimension canvas) {
 
         score = 0;
-
-        background = new Background(canvas);
 
         shooter = new Shooter(new Vector2D(0, -75), Math.PI / 2);
 
@@ -58,8 +49,6 @@ public class InvaderGameState extends KeyListener implements Serializable {
     }
 
     public void renderStep(double dt) {
-
-        background.renderStep(dt, shooter.velocity);
 
         shooter.renderStep(dt);
 
@@ -87,8 +76,6 @@ public class InvaderGameState extends KeyListener implements Serializable {
     }
 
     public void draw() {
-
-        background.draw();
 
         shooter.draw();
 
@@ -195,6 +182,10 @@ public class InvaderGameState extends KeyListener implements Serializable {
     public void drawScore(int score) {
         StdDraw.setPenColor(StdDraw.ORANGE);
         StdDraw.text(50, -87.5, "SCORE: " + score);
+    }
+
+    public Vector2D getShooterVelocity() {
+        return shooter.velocity;
     }
 
 }
