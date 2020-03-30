@@ -14,7 +14,6 @@ public class InvaderGameState extends KeyListener implements Serializable {
      * // Todo see how we can use this variable rather than directly accessing
      * Invaders.canvas which is bad practice
      */
-    private final RectangleDimension canvas;
 
     public boolean pauseFlag = false;
     public boolean quitFlag = false;
@@ -39,7 +38,6 @@ public class InvaderGameState extends KeyListener implements Serializable {
     ArrayList<PowerUp> powerUps;
 
     public InvaderGameState(RectangleDimension canvas) {
-        this.canvas = canvas;
 
         score = 0;
 
@@ -57,11 +55,6 @@ public class InvaderGameState extends KeyListener implements Serializable {
         powerUps.add(new PowerUp(new Vector2D(-10, 400), PowerUp.PowerUpType.RED));
         powerUps.add(new PowerUp(new Vector2D(0, 600), PowerUp.PowerUpType.GREEN));
 
-    }
-
-    // change values of canvas dimensions, e.g. for on change of game resolution
-    public void setCanvasDimension(RectangleDimension otherCanvas) {
-        this.canvas.setFrom(otherCanvas);
     }
 
     public void renderStep(double dt) {

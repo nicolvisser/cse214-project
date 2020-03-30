@@ -8,24 +8,43 @@ public class MenuScreen extends KeyListener {
     static final int BUTTON_SPACING = 5;
 
     public String title;
+    public String subtitle;
+
     public String[] textOptions;
     public int highlightedOption;
 
     public int selectedOption;
 
-    public boolean flagBack = false;
-
     public MenuScreen(String title, String[] textOptionsArray) {
+        this(title, "", textOptionsArray);
+    }
+
+    public MenuScreen(String title, String subtitle, String[] textOptionsArray) {
         this.title = title;
+        this.subtitle = subtitle;
         textOptions = textOptionsArray;
         highlightedOption = 0;
         selectedOption = -1;
     }
 
-    public void reset() {
-        highlightedOption = 0;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setSubtitle(String subtitle) {
+        this.subtitle = subtitle;
+    }
+
+    public void setOptions(String[] textOptionsArray) {
+        textOptions = textOptionsArray;
+    }
+
+    public void resetSelection() {
         selectedOption = -1;
-        flagBack = false;
+    }
+
+    public void resetHiglight() {
+        highlightedOption = 0;
     }
 
     @Override
@@ -41,7 +60,7 @@ public class MenuScreen extends KeyListener {
                 selectCurrentOption();
                 break;
             case ESC_KEY:
-                flagToGoBack();
+                selectOptionToGoBack();
                 break;
 
             default:
@@ -68,14 +87,16 @@ public class MenuScreen extends KeyListener {
         StdAudio.play("resources/audio/click7.wav");
     }
 
-    public void flagToGoBack() {
-        flagBack = true;
+    public void selectOptionToGoBack() {
+        selectedOption = -2;
         StdAudio.play("resources/audio/click7.wav");
     }
 
     public void draw() {
         StdDraw.setPenColor(StdDraw.ORANGE);
         StdDraw.text(0, 50, title);
+        StdDraw.setPenColor(StdDraw.RED);
+        StdDraw.text(0, 35, subtitle);
         for (int i = 0; i < textOptions.length; i++) {
             StdDraw.setPenColor(i == highlightedOption ? StdDraw.RED : StdDraw.WHITE);
             double y = 20 - i * (BUTTON_HEIGHT + BUTTON_SPACING);
