@@ -39,7 +39,7 @@ public class Shooter extends DefaultCritter {
         collisionRadius = DEFAULT_COLLISION_RADIUS;
         state = ShooterState.ALIVE;
         shieldActive = false;
-        explosion = new AnimatedPicture("resources/explosion", "png", 16, AnimatedPicture.AnimationType.FWD_BWD_ONCE);
+        explosion = new AnimatedPicture("resources/images/explosion", "png", 16, AnimatedPicture.AnimationType.FWD_BWD_ONCE);
     }
 
     @Override
@@ -110,15 +110,15 @@ public class Shooter extends DefaultCritter {
         switch (state) {
             case ALIVE:
                 if (thrusterLeftMoveStatus & !thrusterRightMoveStatus) {
-                    StdDraw.picture(position.x, position.y, "resources/shooterL.png", 20, 20, orientationInDegrees());
+                    StdDraw.picture(position.x, position.y, "resources/images/shooterL.png", 20, 20, orientationInDegrees());
                 } else if (thrusterRightMoveStatus & !thrusterLeftMoveStatus) {
-                    StdDraw.picture(position.x, position.y, "resources/shooterR.png", 20, 20, orientationInDegrees());
+                    StdDraw.picture(position.x, position.y, "resources/images/shooterR.png", 20, 20, orientationInDegrees());
                 } else {
-                    StdDraw.picture(position.x, position.y, "resources/shooter.png", 20, 20, orientationInDegrees());
+                    StdDraw.picture(position.x, position.y, "resources/images/shooter.png", 20, 20, orientationInDegrees());
                 }
 
                 if (shieldActive) {
-                    StdDraw.picture(position.x, position.y, "resources/shield.png", 30, 30, 0);
+                    StdDraw.picture(position.x, position.y, "resources/images/shield.png", 30, 30, 0);
                 }
 
                 break;

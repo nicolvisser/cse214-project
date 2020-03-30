@@ -26,14 +26,14 @@ public class Missile extends DefaultCritter {
         collisionRadius = DEFAULT_COLLISION_RADIUS;
         missileDamage = DEFAULT_MISSILE_DAMAGE;
         state = MissileState.TRAVELLING;
-        explosion = new AnimatedPicture("resources/explosion", "png", 16, AnimatedPicture.AnimationType.FWD_BWD_ONCE);
+        explosion = new AnimatedPicture("resources/images/explosion", "png", 16, AnimatedPicture.AnimationType.FWD_BWD_ONCE);
     }
 
     @Override
     public void draw() {
         switch (state) {
             case TRAVELLING:
-                StdDraw.picture(position.x, position.y, "resources/missile.png", 5, 5, orientationInDegrees());
+                StdDraw.picture(position.x, position.y, "resources/images/missile.png", 5, 5, orientationInDegrees());
                 break;
 
             case EXPLODING:

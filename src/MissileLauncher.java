@@ -80,7 +80,7 @@ public class MissileLauncher extends DefaultCritter {
     public void draw() {
 
         if (shooterRef.state == Shooter.ShooterState.ALIVE) {
-            StdDraw.picture(shooterRef.position.x, shooterRef.position.y, "resources/turret.png", 25, 10,
+            StdDraw.picture(shooterRef.position.x, shooterRef.position.y, "resources/images/turret.png", 25, 10,
                     orientationInDegrees());
         }
 

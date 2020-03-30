@@ -174,13 +174,13 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
     public void drawHealthBar(double percentage) {
         final Color MAROON = new Color(128, 0, 0);
-        drawStatusBar(percentage, -92.5, -87.5, MAROON, Color.RED, "resources/heart.png");
+        drawStatusBar(percentage, -92.5, -87.5, MAROON, Color.RED, "resources/images/heart.png");
     }
 
     public void drawEnergyBar(double percentage) {
         final Color NAVY = new Color(0, 0, 128);
         final Color LIGHT_BLUE = new Color(128, 223, 255);
-        drawStatusBar(percentage, -92.5, -92.5, NAVY, LIGHT_BLUE, "resources/energy.png");
+        drawStatusBar(percentage, -92.5, -92.5, NAVY, LIGHT_BLUE, "resources/images/energy.png");
     }
 
     public void drawStatusBar(double percentage, double x, double y, Color back, Color front, String iconFilename) {

@@ -1,0 +1,70 @@
+resources/audio/
+
+    click7.wav, cut.wav
+
+        Downloaded .ogg files from OpenGameArt.org at https://opengameart.org/content/interface-sounds-starter-pack
+        Converted to .wav with https://audio.online-convert.com/convert-to-wav: 16bit, 44100Hz, mono.
+
+    Explosion+1.wav
+
+        Dowloaded .wav file from https://www.freesoundeffects.com/free-sounds/explosion-10070/
+
+    Gun+1.wav
+     
+        Dowloaded .wav file from https://www.freesoundeffects.com/free-sounds/gun-10081/
+
+    Mercury.wav (8.5MB)
+
+        Downloaded Mercury.mp3 (royalty free) at https://www.dl-sounds.com/royalty-free/mercury/
+        Converted to .wav with https://audio.online-convert.com/convert-to-wav with following properties to decrease size: 8bit, 44100Hz, mono.
+        Filesize is still quite large, but we had more than enough space remaining for this.
+
+    shieldUp.wav, shieldDown.wav
+
+        Downloaded .wav files from https://opengameart.org/content/space-ship-shield-sounds
+
+resources/images/
+
+    earth.png
+    
+        
+
+    enemy.png
+
+
+
+    energy.png
+
+
+
+    explosion000**.png
+
+        Downloaded grid png from https://opengameart.org/content/explosion
+        Used https://pinetools.com/split-image to split image grid into individual images
+        Renamed individual files in order of animation with index
+
+    fastReload.png
+
+        Downloaded 64x64 png (Creative Commons) from https://iconsplace.com/yellow-icons/fast-forward-icon-19/
+
+    missile.png
+
+
+
+    powerUp**000**.png
+
+
+
+    shield.png
+
+        Downloaded png from https://opengameart.org/content/shield-effect
+        Scaled down size with Preview in Mac OS
+
+    shooter.png
+
+        TODO: TOTALLY COPIED THIS FROM A PAID WEBSITE. NEED TO REPLACE THIS ASAP.
+
+    turret.png
+
+        
+

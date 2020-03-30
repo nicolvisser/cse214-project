@@ -26,7 +26,7 @@ public class Enemy extends DefaultCritter {
         state = EnemyState.ALIVE;
         healthPoints = DEFAULT_HEALTH_POINTS;
         collisionRadius = DEFAULT_COLLISION_RADIUS;
-        explosion = new AnimatedPicture("resources/explosion", "png", 16, AnimatedPicture.AnimationType.FWD_BWD_ONCE);
+        explosion = new AnimatedPicture("resources/images/explosion", "png", 16, AnimatedPicture.AnimationType.FWD_BWD_ONCE);
     }
 
     public int handleCollisionWithMissile(Missile missile) {
@@ -78,7 +78,7 @@ public class Enemy extends DefaultCritter {
     public void draw() {
         switch (state) {
             case ALIVE:
-                StdDraw.picture(position.x, position.y, "resources/enemy.png", 10, 10, orientationInDegrees());
+                StdDraw.picture(position.x, position.y, "resources/images/enemy.png", 10, 10, orientationInDegrees());
                 break;
 
             case EXPLODING:

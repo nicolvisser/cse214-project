@@ -32,16 +32,16 @@ public class PowerUp extends DefaultCritter {
         String filename = "";
         switch (type) {
             case FAST_ENERGY_GAIN:
-                filename = "resources/powerUpBlue";
+                filename = "resources/images/powerUpBlue";
                 break;
             case RED:
-                filename = "resources/powerUpRed";
+                filename = "resources/images/powerUpRed";
                 break;
             case GREEN:
-                filename = "resources/powerUpGreen";
+                filename = "resources/images/powerUpGreen";
                 break;
             case FAST_RELOAD:
-                filename = "resources/powerUpYellow";
+                filename = "resources/images/powerUpYellow";
                 break;
         }
         animatedPowerUpSprite = new AnimatedPicture(filename, "png", 6, AnimatedPicture.AnimationType.REPEAT);
@@ -65,25 +65,25 @@ public class PowerUp extends DefaultCritter {
                         StdDraw.setPenColor(StdDraw.BOOK_LIGHT_BLUE);
                         frame_scale_factor = 0.995;
                         timer_x_pos = -85;
-                        iconFilename = "resources/energy.png";
+                        iconFilename = "resources/images/energy.png";
                         break;
                     case RED:
                         StdDraw.setPenColor(StdDraw.RED);
                         frame_scale_factor = 0.99;
                         timer_x_pos = -80;
-                        iconFilename = "resources/fastReload.png";
+                        iconFilename = "resources/images/fastReload.png";
                         break;
                     case GREEN:
                         StdDraw.setPenColor(StdDraw.GREEN);
                         frame_scale_factor = 0.985;
                         timer_x_pos = -75;
-                        iconFilename = "resources/fastReload.png";
+                        iconFilename = "resources/images/fastReload.png";
                         break;
                     case FAST_RELOAD:
                         StdDraw.setPenColor(StdDraw.YELLOW);
                         frame_scale_factor = 0.98;
                         timer_x_pos = -70;
-                        iconFilename = "resources/fastReload.png";
+                        iconFilename = "resources/images/fastReload.png";
                         break;
                 }
 

@@ -88,6 +88,6 @@ public class Background implements Serializable {
         }
 
         // draw earth from png image
-        StdDraw.picture(earthPosition.x, earthPosition.y, "resources/earth.png");
+        StdDraw.picture(earthPosition.x, earthPosition.y, "resources/images/earth.png");
     }
 }
