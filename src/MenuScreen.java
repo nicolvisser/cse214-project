@@ -15,8 +15,6 @@ public class MenuScreen extends KeyListener {
 
     public int selectedOption;
 
-    public boolean flagBack = false;
-
     public MenuScreen(String title, String[] textOptionsArray) {
         this(title, "", textOptionsArray);
     }
@@ -41,10 +39,12 @@ public class MenuScreen extends KeyListener {
         textOptions = textOptionsArray;
     }
 
-    public void reset() {
-        highlightedOption = 0;
+    public void resetSelection() {
         selectedOption = -1;
-        flagBack = false;
+    }
+
+    public void resetHiglight() {
+        highlightedOption = 0;
     }
 
     @Override
@@ -60,7 +60,7 @@ public class MenuScreen extends KeyListener {
                 selectCurrentOption();
                 break;
             case ESC_KEY:
-                flagToGoBack();
+                selectOptionToGoBack();
                 break;
 
             default:
@@ -87,8 +87,8 @@ public class MenuScreen extends KeyListener {
         StdAudio.play("resources/audio/click7.wav");
     }
 
-    public void flagToGoBack() {
-        flagBack = true;
+    public void selectOptionToGoBack() {
+        selectedOption = -2;
         StdAudio.play("resources/audio/click7.wav");
     }
 

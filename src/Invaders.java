@@ -92,28 +92,28 @@ public class Invaders {
                     mainMenuScreen.listenForInputChanges();
 
                     switch (mainMenuScreen.selectedOption) {
+                        case -2: // back (nowhere to go back to)
                         case -1: // not yet selected
                             break;
+
                         case 0: // new game
-                            mainMenuScreen.reset();
+                            mainMenuScreen.resetSelection();
                             currentDisplayState = DisplayState.NEW_GAME;
                             break;
 
                         case 1: // loadgame
-                            mainMenuScreen.reset();
+                            mainMenuScreen.resetSelection();
                             currentDisplayState = DisplayState.LOAD_GAME;
                             setMenuScreenOptionsFromSaveFiles(loadGameScreen);
                             break;
 
                         case 2: // settings
-                            mainMenuScreen.reset();
+                            mainMenuScreen.resetSelection();
                             currentDisplayState = DisplayState.SETTINGS;
                             break;
 
                         case 3: // not yet selected
-                            mainMenuScreen.reset();
                             currentDisplayState = DisplayState.QUIT;
-
                             break;
 
                         default:
@@ -123,6 +123,8 @@ public class Invaders {
                     break;
 
                 case NEW_GAME:
+
+                    // todo remove this as display state and make function for it
 
                     loadedInvaderGameState = new InvaderGameState(canvas);
                     currentDisplayState = DisplayState.PLAYING;
@@ -160,28 +162,27 @@ public class Invaders {
                     pauseScreen.draw();
                     pauseScreen.listenForInputChanges();
 
-                    if (pauseScreen.flagBack) {
-                        pauseScreen.reset();
-                        currentDisplayState = DisplayState.PLAYING;
-                        break;
-                    }
-
                     switch (pauseScreen.selectedOption) {
-                        case -1:
-                            break;
-                        case 0:
-                            pauseScreen.reset();
+                        case -2: // back (to playing game)
+                            pauseScreen.resetSelection();
                             currentDisplayState = DisplayState.PLAYING;
+
+                        case -1: // not yet selected
                             break;
 
-                        case 1:
-                            pauseScreen.reset();
+                        case 0: // resume game
+                            pauseScreen.selectOptionToGoBack();
+                            break;
+
+                        case 1: // save game
+                            pauseScreen.resetSelection();
                             currentDisplayState = DisplayState.SAVE_GAME;
                             setMenuScreenOptionsFromSaveFiles(saveGameScreen);
                             break;
 
-                        case 2:
-                            pauseScreen.reset();
+                        case 2: // quit to main menu
+                            pauseScreen.resetSelection();
+                            pauseScreen.resetHiglight();
                             currentDisplayState = DisplayState.MAIN_MENU;
                             break;
 
@@ -196,29 +197,31 @@ public class Invaders {
                     saveGameScreen.draw();
                     saveGameScreen.listenForInputChanges();
 
-                    if (saveGameScreen.flagBack) {
-                        saveGameScreen.reset();
-                        currentDisplayState = DisplayState.PAUSE;
-                        break;
-                    }
-
                     switch (saveGameScreen.selectedOption) {
+                        case -2: // back (to pause screen)
+                            saveGameScreen.resetSelection();
+                            saveGameScreen.resetHiglight();
+                            currentDisplayState = DisplayState.PAUSE;
+                            break;
+
                         case -1: // not yet selected
                             break;
+
                         case 0: // slot 1
                         case 1: // slot 2
                         case 2: // slot 3
                         case 3: // slot 4
                             int slot = saveGameScreen.selectedOption + 1;
                             saveInvaderGameState(slot);
-                            saveGameScreen.reset();
+                            saveGameScreen.resetSelection();
                             break;
+
                         case 4: // cancel
-                            saveGameScreen.flagToGoBack();
+                            saveGameScreen.selectOptionToGoBack();
                             break;
 
                         default:
-
+                            break;
                     }
 
                     break;
@@ -228,31 +231,37 @@ public class Invaders {
                     loadGameScreen.draw();
                     loadGameScreen.listenForInputChanges();
 
-                    if (loadGameScreen.flagBack) {
-                        loadGameScreen.reset();
-                        loadGameScreen.setSubtitle(""); // clear error message if any
-                        currentDisplayState = DisplayState.MAIN_MENU;
-                        break;
-                    }
-
                     switch (loadGameScreen.selectedOption) {
+                        case -2: // back (to main menu)
+                            loadGameScreen.resetSelection();
+                            loadGameScreen.resetHiglight();
+                            loadGameScreen.setSubtitle(""); // clear error message if any
+                            currentDisplayState = DisplayState.MAIN_MENU;
+                            break;
+
                         case -1: // not yet selected
                             break;
+
                         case 0: // slot 1
                         case 1: // slot 2
                         case 2: // slot 3
                         case 3: // slot 4
-
                             int slot = loadGameScreen.selectedOption + 1;
-                            loadInvaderGameState(slot);
-                            loadGameScreen.reset();
+                            if (loadInvaderGameState(slot)) {
+                                loadGameScreen.resetHiglight();
+                                currentDisplayState = DisplayState.PLAYING;
+                            } else {
+                                loadGameScreen.setSubtitle("Failed to load game from slot " + slot + ".");
+                            }
+                            loadGameScreen.resetSelection();
+
                             break;
+
                         case 4: // cancel
-                            loadGameScreen.flagToGoBack();
-                            break;
+                            loadGameScreen.selectOptionToGoBack();
 
                         default:
-
+                            break;
                     }
 
                     break;
@@ -262,25 +271,30 @@ public class Invaders {
                     settingsScreen.draw();
                     settingsScreen.listenForInputChanges();
 
-                    if (settingsScreen.flagBack) {
-                        settingsScreen.reset();
-                        currentDisplayState = DisplayState.MAIN_MENU;
-                    }
-
                     switch (settingsScreen.selectedOption) {
+                        case -2: // back (to main menu)
+                            settingsScreen.resetSelection();
+                            settingsScreen.resetHiglight();
+                            currentDisplayState = DisplayState.MAIN_MENU;
+                            break;
+
                         case -1: // not yet selected
                             break;
+
                         case 0: // set resolution
                             currentDisplayState = DisplayState.SET_RESOLUTION;
-                            settingsScreen.reset();
+                            settingsScreen.resetSelection();
                             break;
+
                         case 1: // controls
                             currentDisplayState = DisplayState.CONTROLS;
-                            settingsScreen.reset();
+                            settingsScreen.resetSelection();
                             break;
+
                         case 2: // back
-                            settingsScreen.flagToGoBack();
+                            settingsScreen.selectOptionToGoBack();
                             break;
+
                         default:
                             break;
                     }
@@ -292,18 +306,20 @@ public class Invaders {
                     controlsScreen.draw();
                     controlsScreen.listenForInputChanges();
 
-                    if (controlsScreen.flagBack) {
-                        controlsScreen.reset();
-                        currentDisplayState = DisplayState.MAIN_MENU;
-                        break;
-                    }
-
                     switch (controlsScreen.selectedOption) {
+                        case -2: // back (to settings screen)
+                            controlsScreen.resetSelection();
+                            controlsScreen.resetHiglight();
+                            currentDisplayState = DisplayState.SETTINGS;
+                            break;
+
                         case -1: // not yet selected
                             break;
+
                         case 0: // back
-                            controlsScreen.flagToGoBack();
+                            controlsScreen.selectOptionToGoBack();
                             break;
+
                         default:
                             break;
                     }
@@ -315,36 +331,33 @@ public class Invaders {
                     resolutionScreen.draw();
                     resolutionScreen.listenForInputChanges();
 
-                    if (resolutionScreen.flagBack) {
-                        currentDisplayState = DisplayState.SETTINGS;
-                        resolutionScreen.reset();
-                        break;
-                    }
-
                     switch (resolutionScreen.selectedOption) {
+                        case -2: // back (to setting screen)
+                            currentDisplayState = DisplayState.SETTINGS;
+                            resolutionScreen.resetSelection();
+                            resolutionScreen.resetHiglight();
+                            break;
+
                         case -1: // not yet selected
                             break;
 
                         case 0: // 600x600
                             setupStdDrawCanvas(600, 600);
-                            resolutionScreen.reset();
-                            currentDisplayState = DisplayState.SETTINGS;
+                            resolutionScreen.resetSelection();
                             break;
 
                         case 1: // 800x800
                             setupStdDrawCanvas(800, 800);
-                            resolutionScreen.reset();
-                            currentDisplayState = DisplayState.SETTINGS;
+                            resolutionScreen.resetSelection();
                             break;
 
                         case 2: // 1000x1000
                             setupStdDrawCanvas(1000, 1000);
-                            resolutionScreen.reset();
-                            currentDisplayState = DisplayState.SETTINGS;
+                            resolutionScreen.resetSelection();
                             break;
 
                         case 3: // cancel
-                            resolutionScreen.flagToGoBack();
+                            resolutionScreen.selectOptionToGoBack();
                             break;
 
                         default:
@@ -360,23 +373,27 @@ public class Invaders {
                     gameOverScreen.listenForInputChanges();
 
                     switch (gameOverScreen.selectedOption) {
-                        case -1:
+                        case -2: // back (no effect since cant go back to game)
+                        case -1: // not yet selected
                             break;
-                        case 0:
-                            gameOverScreen.reset();
+
+                        case 0: // new game
+                            gameOverScreen.resetSelection();
+                            gameOverScreen.resetHiglight();
                             currentDisplayState = DisplayState.NEW_GAME;
                             break;
 
-                        case 1:
-                            gameOverScreen.reset();
+                        case 1: // load game
+                            gameOverScreen.resetSelection();
+                            gameOverScreen.resetHiglight();
                             currentDisplayState = DisplayState.LOAD_GAME;
                             break;
 
-                        case 2:
+                        case 2: // save highscore
                             // TODO Save Highscore
                             break;
 
-                        case 3:
+                        case 3: // main menu
                             currentDisplayState = DisplayState.MAIN_MENU;
                             break;
 
@@ -421,18 +438,18 @@ public class Invaders {
 
     }
 
-    static void loadInvaderGameState(int slot) {
+    static boolean loadInvaderGameState(int slot) {
         try {
             String filename = filenameOfSaveFile(slot);
             ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename));
             loadedInvaderGameState = (InvaderGameState) in.readObject();
             in.close();
             loadGameScreen.setSubtitle(""); // clear error message if any
-            currentDisplayState = DisplayState.PLAYING;
+            return true;
         } catch (Exception e1) {
-            // TODO Show message if game failed to load
-            loadGameScreen.setSubtitle("Failed to load game from slot " + slot + ".");
             e1.printStackTrace();
+            return false;
+            // dealt with error message for user inside gameloop using return value
         }
     }
 

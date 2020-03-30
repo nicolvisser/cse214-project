@@ -11,7 +11,6 @@ public class InstructionsScreen extends MenuScreen {
 
     public InstructionsScreen() {
         super("Controls", options);
-        flagBack = false;
     }
 
     public void draw() {
