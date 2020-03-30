@@ -28,7 +28,7 @@ public class Invaders {
     static String[] pauseScreenOptions = { "Resume Game", "Save Game", "Quit To Main Menu" };
     static MenuScreen pauseScreen = new MenuScreen(canvas, "Paused", pauseScreenOptions);
 
-    static String[] resolutionScreenOptions = { "600x600", "800x800", "1000x1000" };
+    static String[] resolutionScreenOptions = { "600x600", "800x800", "1000x1000", "Cancel" };
     static MenuScreen resolutionScreen = new MenuScreen(canvas, "Change Resolution", resolutionScreenOptions);
 
     static GameOverScreen gameOverScreen = new GameOverScreen(canvas);
@@ -228,6 +228,11 @@ public class Invaders {
                     resolutionScreen.draw();
                     resolutionScreen.listenForInputChanges();
 
+                    if (resolutionScreen.flagBack) {
+                        currentDisplayState = DisplayState.MAIN_MENU;
+                        resolutionScreen.reset();
+                    }
+
                     switch (resolutionScreen.selectedOption) {
                         case -1:
                             break;
@@ -248,6 +253,10 @@ public class Invaders {
                             setupStdDrawCanvas(1000, 1000);
                             resolutionScreen.reset();
                             currentDisplayState = DisplayState.MAIN_MENU;
+                            break;
+
+                        case 3: // cancel
+                            resolutionScreen.flagToGoBack();
                             break;
 
                         default:

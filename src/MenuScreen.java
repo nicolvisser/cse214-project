@@ -41,10 +41,10 @@ public class MenuScreen extends KeyListener {
                 changeSelectionDown();
                 break;
             case ENTER_KEY:
-                selectedOption = highlightedOption;
+                selectCurrentOption();
                 break;
             case ESC_KEY:
-                flagBack = true;
+                flagToGoBack();
                 break;
 
             default:
@@ -56,12 +56,24 @@ public class MenuScreen extends KeyListener {
         highlightedOption--;
         if (highlightedOption < 0)
             highlightedOption += textOptions.length;
+        StdAudio.play("resources/audio/cut.wav");
     }
 
     public void changeSelectionDown() {
         highlightedOption++;
         if (highlightedOption >= textOptions.length)
             highlightedOption -= textOptions.length;
+        StdAudio.play("resources/audio/cut.wav");
+    }
+
+    public void selectCurrentOption() {
+        selectedOption = highlightedOption;
+        StdAudio.play("resources/audio/click7.wav");
+    }
+
+    public void flagToGoBack() {
+        flagBack = true;
+        StdAudio.play("resources/audio/click7.wav");
     }
 
     public void draw() {
