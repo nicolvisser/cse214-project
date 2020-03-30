@@ -1,6 +1,5 @@
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
@@ -10,7 +9,7 @@ import java.io.ObjectOutputStream;
 public class Invaders {
 
     enum DisplayState {
-        MAIN_MENU, NEW_GAME, PLAYING, PAUSE, SAVE_GAME, LOAD_GAME, CONTROLS, SET_RESOLUTION, GAME_OVER, QUIT;
+        MAIN_MENU, NEW_GAME, PLAYING, PAUSE, SAVE_GAME, LOAD_GAME, SETTINGS, CONTROLS, SET_RESOLUTION, GAME_OVER, QUIT;
     }
 
     static final RectangleDimension canvas = new RectangleDimension(0, 0, 200, 200);
@@ -22,11 +21,14 @@ public class Invaders {
     static DisplayState currentDisplayState;
     static InvaderGameState loadedInvaderGameState;
 
-    static String[] mainMenuScreenOptions = { "New Game", "Load Game", "Controls", "Set Resolution", "Quit Game" };
+    static String[] mainMenuScreenOptions = { "New Game", "Load Game", "Settings", "Quit Game" };
     static MenuScreen mainMenuScreen = new MenuScreen("Main Menu", mainMenuScreenOptions);
 
     static String[] pauseScreenOptions = { "Resume Game", "Save Game", "Quit To Main Menu" };
     static MenuScreen pauseScreen = new MenuScreen("Paused", pauseScreenOptions);
+
+    static String[] settingsScreenOptions = { "Set Resolution", "Controls", "Back" };
+    static MenuScreen settingsScreen = new MenuScreen("Settings", settingsScreenOptions);
 
     static String[] resolutionScreenOptions = { "600x600", "800x800", "1000x1000", "Cancel" };
     static MenuScreen resolutionScreen = new MenuScreen("Change Resolution", resolutionScreenOptions);
@@ -77,29 +79,24 @@ public class Invaders {
                     mainMenuScreen.listenForInputChanges();
 
                     switch (mainMenuScreen.selectedOption) {
-                        case -1:
+                        case -1: // not yet selected
                             break;
-                        case 0:
+                        case 0: // new game
                             mainMenuScreen.reset();
                             currentDisplayState = DisplayState.NEW_GAME;
                             break;
 
-                        case 1:
+                        case 1: // loadgame
                             mainMenuScreen.reset();
                             currentDisplayState = DisplayState.LOAD_GAME;
                             break;
 
-                        case 2:
+                        case 2: // settings
                             mainMenuScreen.reset();
-                            currentDisplayState = DisplayState.CONTROLS;
+                            currentDisplayState = DisplayState.SETTINGS;
                             break;
 
-                        case 3:
-                            mainMenuScreen.reset();
-                            currentDisplayState = DisplayState.SET_RESOLUTION;
-                            break;
-
-                        case 4:
+                        case 3: // not yet selected
                             mainMenuScreen.reset();
                             currentDisplayState = DisplayState.QUIT;
 
@@ -236,11 +233,42 @@ public class Invaders {
                             break;
                         case 4: // cancel
                             loadGameScreen.reset();
+                            loadGameScreen.setSubtitle(""); // clear error message if any
                             currentDisplayState = DisplayState.MAIN_MENU;
                             break;
 
                         default:
 
+                    }
+
+                    break;
+
+                case SETTINGS:
+
+                    settingsScreen.draw();
+                    settingsScreen.listenForInputChanges();
+
+                    if (settingsScreen.flagBack) {
+                        settingsScreen.reset();
+                        currentDisplayState = DisplayState.MAIN_MENU;
+                    }
+
+                    switch (settingsScreen.selectedOption) {
+                        case -1: // not yet selected
+                            break;
+                        case 0: // set resolution
+                            currentDisplayState = DisplayState.SET_RESOLUTION;
+                            settingsScreen.reset();
+                            break;
+                        case 1: // controls
+                            currentDisplayState = DisplayState.CONTROLS;
+                            settingsScreen.reset();
+                            break;
+                        case 2: // back
+                            settingsScreen.flagToGoBack();
+                            break;
+                        default:
+                            break;
                     }
 
                     break;
@@ -256,6 +284,16 @@ public class Invaders {
                         break;
                     }
 
+                    switch (controlsScreen.selectedOption) {
+                        case -1: // not yet selected
+                            break;
+                        case 0: // back
+                            controlsScreen.flagToGoBack();
+                            break;
+                        default:
+                            break;
+                    }
+
                     break;
 
                 case SET_RESOLUTION:
@@ -264,31 +302,31 @@ public class Invaders {
                     resolutionScreen.listenForInputChanges();
 
                     if (resolutionScreen.flagBack) {
-                        currentDisplayState = DisplayState.MAIN_MENU;
+                        currentDisplayState = DisplayState.SETTINGS;
                         resolutionScreen.reset();
                         break;
                     }
 
                     switch (resolutionScreen.selectedOption) {
-                        case -1:
+                        case -1: // not yet selected
                             break;
 
                         case 0: // 600x600
                             setupStdDrawCanvas(600, 600);
                             resolutionScreen.reset();
-                            currentDisplayState = DisplayState.MAIN_MENU;
+                            currentDisplayState = DisplayState.SETTINGS;
                             break;
 
                         case 1: // 800x800
                             setupStdDrawCanvas(800, 800);
                             resolutionScreen.reset();
-                            currentDisplayState = DisplayState.MAIN_MENU;
+                            currentDisplayState = DisplayState.SETTINGS;
                             break;
 
                         case 2: // 1000x1000
                             setupStdDrawCanvas(1000, 1000);
                             resolutionScreen.reset();
-                            currentDisplayState = DisplayState.MAIN_MENU;
+                            currentDisplayState = DisplayState.SETTINGS;
                             break;
 
                         case 3: // cancel
@@ -350,11 +388,12 @@ public class Invaders {
             ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("savedata_slot" + slot + ".dat"));
             out.writeObject(loadedInvaderGameState);
             out.close();
-        } catch (IOException e1) {
-            // TODO Auto-generated catch block
+            currentDisplayState = DisplayState.PLAYING;
+        } catch (Exception e1) {
+            // TODO Show message if game failed to save
             e1.printStackTrace();
         }
-        currentDisplayState = DisplayState.PAUSE;
+
     }
 
     static void loadInvaderGameState(int slot) {
@@ -364,11 +403,13 @@ public class Invaders {
             loadedInvaderGameState.setCanvasDimension(canvas); // change saved game canvas dimensions to
                                                                // current canvas
             in.close();
-        } catch (IOException | ClassNotFoundException e1) {
-            // TODO Auto-generated catch block
+            loadGameScreen.setSubtitle(""); // clear error message if any
+            currentDisplayState = DisplayState.PLAYING;
+        } catch (Exception e1) {
+            // TODO Show message if game failed to load
+            loadGameScreen.setSubtitle("Failed to load game from slot " + slot + ".");
             e1.printStackTrace();
         }
-        currentDisplayState = DisplayState.PLAYING;
 
     }
 
