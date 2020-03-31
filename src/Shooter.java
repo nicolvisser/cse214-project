@@ -65,7 +65,7 @@ public class Shooter extends DefaultCritter {
                 }
 
                 // determine acceleration from thrusterstatuses
-                acceleration = Vector2D.zeroVector();
+                acceleration = Vector2D.zero();
                 if (thrusterLeftMoveStatus && !thrusterRightMoveStatus)
                     acceleration = new Vector2D(-THRUSTER_ACCELERATION_MAGNITUDE, 0);
                 if (thrusterRightMoveStatus && !thrusterLeftMoveStatus)
@@ -74,7 +74,7 @@ public class Shooter extends DefaultCritter {
                 // if almost no 'thrust' applied or thrust applied in opposite direction than
                 // movement, then slow down shooter for fast stopping or turning
                 if (velocity.x * acceleration.x < 0.001) {
-                    velocity = Vector2D.scalarMultiplication(0.5, velocity);
+                    velocity = velocity.scale(0.5);
                 }
 
                 // render new position and velocity from kinematic equations

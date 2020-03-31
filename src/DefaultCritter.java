@@ -31,7 +31,7 @@ public class DefaultCritter extends Object2D implements Critter {
         StdDraw.setPenColor(StdDraw.RED);
 
         // draw line for line of sight
-        Vector2D aimTarget = Vector2D.sum(position, Vector2D.scalarMultiplication(100, FWDVector()));
+        Vector2D aimTarget = position.add(FWDVector().scale(100));
         StdDraw.line(position.x, position.y, aimTarget.x, aimTarget.y);
 
         // draw circle for body

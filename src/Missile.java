@@ -26,7 +26,8 @@ public class Missile extends DefaultCritter {
         collisionRadius = DEFAULT_COLLISION_RADIUS;
         missileDamage = DEFAULT_MISSILE_DAMAGE;
         state = MissileState.TRAVELLING;
-        explosion = new AnimatedPicture("resources/images/explosion", "png", 16, AnimatedPicture.AnimationType.FWD_BWD_ONCE);
+        explosion = new AnimatedPicture("resources/images/explosion", "png", 16,
+                AnimatedPicture.AnimationType.FWD_BWD_ONCE);
     }
 
     @Override
@@ -57,7 +58,7 @@ public class Missile extends DefaultCritter {
                 break;
 
             case EXPLODING:
-                velocity = Vector2D.scalarMultiplication(0.85, velocity); // slow down movement speed of explosion
+                velocity = velocity.scale(0.85); // slow down movement speed of explosion
                 super.renderStep(dt);
                 if (explosion.finished) {
                     state = MissileState.DEAD;

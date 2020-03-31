@@ -95,10 +95,10 @@ public class MissileLauncher extends DefaultCritter {
 
     public void shootMissile() {
         if (timeSinceLastMissile > reloadTime) {
-            //System.out.println("Launched Missile With chargeUpTime: " + chargeUpTime);
+            // System.out.println("Launched Missile With chargeUpTime: " + chargeUpTime);
             timeSinceLastMissile = 0;
-            Vector2D missileStartPos = Vector2D.sum(new Vector2D(shooterRef.position.x, shooterRef.position.y),
-                    Vector2D.scalarMultiplication(12.5, FWDVector()));
+            Vector2D missileStartPos = new Vector2D(shooterRef.position.x, shooterRef.position.y)
+                    .add(FWDVector().scale(12.5));
             Missile missile = new Missile(missileStartPos, this.FWDVector());
             missiles.add(missile);
             StdAudio.play("resources/audio/Gun+1.wav");
