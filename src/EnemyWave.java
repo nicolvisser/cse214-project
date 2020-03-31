@@ -9,13 +9,13 @@ public class EnemyWave implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private RectangleDimension canvas;
+    private Rectangle canvas;
     private EnemyGroup[] enemyGroups;
     private Shooter shooterRef;
     private double timeUntilNextCounterAttack;
     private ArrayList<Missile> enemyMissiles;
 
-    public EnemyWave(RectangleDimension canvas, Shooter shooterRef) {
+    public EnemyWave(Rectangle canvas, Shooter shooterRef) {
         this.canvas = canvas;
 
         enemyGroups = new EnemyGroup[2];
@@ -58,7 +58,7 @@ public class EnemyWave implements Serializable {
         while (enemyMissileIterator.hasNext()) {
             Missile enemyMissile = enemyMissileIterator.next();
             enemyMissile.renderStep(dt);
-            if (enemyMissile.state == Missile.MissileState.DEAD || !canvas.doesContainPoint(enemyMissile.position)) {
+            if (enemyMissile.state == Missile.MissileState.DEAD || !canvas.containsPoint(enemyMissile.position)) {
                 enemyMissileIterator.remove();
             } else if (enemyMissile.state == Missile.MissileState.TRAVELLING
                     && enemyMissile.isCollidingWith(shooterRef)) {
@@ -123,7 +123,7 @@ public class EnemyWave implements Serializable {
     public boolean atLeastOneAliveEnemyOnCanvas() {
         for (EnemyGroup enemyGroup : enemyGroups) {
             for (Enemy enemy : enemyGroup.enemies) {
-                if (canvas.doesContainPoint(enemy.position) && enemy.state == Enemy.EnemyState.ALIVE) {
+                if (canvas.containsPoint(enemy.position) && enemy.state == Enemy.EnemyState.ALIVE) {
                     return true;
                 }
             }
@@ -151,7 +151,7 @@ public class EnemyWave implements Serializable {
                 } else {
                     rEnemy = rGroup.getRandomEnemy();
                 }
-            } while (rEnemy == null || !canvas.doesContainPoint(rEnemy.position)
+            } while (rEnemy == null || !canvas.containsPoint(rEnemy.position)
                     || rEnemy.state != Enemy.EnemyState.ALIVE);
             return rEnemy;
         } else {

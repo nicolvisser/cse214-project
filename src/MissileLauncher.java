@@ -11,7 +11,7 @@ public class MissileLauncher extends DefaultCritter {
     public static final double DEFAULT_RELOAD_TIME = 0.15;
     private static final double TURRET_ANGULAR_ACCELERATION_MAGNITUDE = 40;
 
-    RectangleDimension canvas;
+    Rectangle canvas;
     Shooter shooterRef;
     ArrayList<Missile> missiles;
     public double reloadTime;
@@ -22,7 +22,7 @@ public class MissileLauncher extends DefaultCritter {
 
     private ArrayList<PowerUp> powerUpsRef;
 
-    public MissileLauncher(RectangleDimension canvas, Shooter shooterRef) {
+    public MissileLauncher(Rectangle canvas, Shooter shooterRef) {
         this.canvas = canvas;
         this.shooterRef = shooterRef;
         missiles = new ArrayList<>();
@@ -63,7 +63,7 @@ public class MissileLauncher extends DefaultCritter {
         while (missileIterator.hasNext()) {
             Missile missile = missileIterator.next();
             missile.renderStep(dt);
-            if (missile.state == Missile.MissileState.DEAD || !canvas.doesContainPoint(missile.position)) {
+            if (missile.state == Missile.MissileState.DEAD || !canvas.containsPoint(missile.position)) {
                 missileIterator.remove();
             } else if (missile.state == Missile.MissileState.TRAVELLING && powerUpsRef != null) {
                 Iterator<PowerUp> powerUpIterator = powerUpsRef.iterator();

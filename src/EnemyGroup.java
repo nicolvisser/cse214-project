@@ -6,9 +6,9 @@ public class EnemyGroup extends DefaultCritter {
     private static final long serialVersionUID = 1L;
 
     ArrayList<Enemy> enemies;
-    RectangleDimension canvas;
+    Rectangle canvas;
 
-    public EnemyGroup(RectangleDimension canvas) {
+    public EnemyGroup(Rectangle canvas) {
         super();
         this.canvas = canvas;
         enemies = new ArrayList<>();

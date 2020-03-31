@@ -30,7 +30,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
     ArrayList<PowerUp> powerUps;
 
-    public InvaderGameState(RectangleDimension canvas) {
+    public InvaderGameState(Rectangle canvas) {
 
         score = 0;
 

@@ -14,7 +14,7 @@ public class Invaders {
         GAME_OVER, QUIT;
     }
 
-    static final RectangleDimension canvas = new RectangleDimension(0, 0, 200, 200);
+    static final Rectangle canvas = new Rectangle(0, 0, 200, 200);
 
     static final int FPS = 60;
     static final int dt_ms = 1000 / FPS;
@@ -67,8 +67,8 @@ public class Invaders {
 
     public static void setupStdDrawCanvas(int width, int height) {
         StdDraw.setCanvasSize(width, height);
-        StdDraw.setXscale(canvas.xmin, canvas.xmax);
-        StdDraw.setYscale(canvas.ymin, canvas.ymax);
+        StdDraw.setXscale(canvas.getXmin(), canvas.getXmax());
+        StdDraw.setYscale(canvas.getYmin(), canvas.getYmax());
     }
 
     public static void gameLoop() {

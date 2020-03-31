@@ -10,7 +10,7 @@ public class Background implements Serializable {
      */
     private static final long serialVersionUID = 1L;
 
-    RectangleDimension canvas;
+    Rectangle canvas;
 
     // declare variables associated with stars
     private final int NUM_STARS = 1000;
@@ -18,14 +18,14 @@ public class Background implements Serializable {
     private double[] starParallaxSensitivities = new double[NUM_STARS];
     private final double STARS_PARALLAX_SENSITIVITY_MAX = 0.083;
 
-    public Background(RectangleDimension canvas) {
+    public Background(Rectangle canvas) {
         this.canvas = canvas;
 
         // loop through number of stars
         for (int i = 0; i < NUM_STARS; i++) {
             // set random position for each star within background bounds
-            double xpos = canvas.xmin + Math.random() * canvas.width;
-            double ypos = canvas.ymin + Math.random() * canvas.height;
+            double xpos = canvas.getXmin() + Math.random() * canvas.getWidth();
+            double ypos = canvas.getYmin() + Math.random() * canvas.getHeight();
             starPositions[i] = new Vector2D(xpos, ypos);
 
             // set random parallax sensitivity for each star
@@ -45,17 +45,17 @@ public class Background implements Serializable {
             starPositions[i].y -= playerVelocity.y * dt * starParallaxSensitivities[i];
 
             // recycle stars that go out of x bounds
-            if (starPositions[i].x < canvas.xmin) {
-                starPositions[i].x = canvas.xmax;
-            } else if (starPositions[i].x > canvas.xmax) {
-                starPositions[i].x = canvas.xmin;
+            if (starPositions[i].x < canvas.getXmin()) {
+                starPositions[i].x = canvas.getXmax();
+            } else if (starPositions[i].x > canvas.getXmax()) {
+                starPositions[i].x = canvas.getXmin();
             }
 
             // recycle stars that go out of y bounds
-            if (starPositions[i].y < canvas.ymin) {
-                starPositions[i].y = canvas.ymax;
-            } else if (starPositions[i].y > canvas.ymax) {
-                starPositions[i].y = canvas.ymin;
+            if (starPositions[i].y < canvas.getYmin()) {
+                starPositions[i].y = canvas.getYmax();
+            } else if (starPositions[i].y > canvas.getYmax()) {
+                starPositions[i].y = canvas.getYmin();
             }
         }
     }
@@ -64,7 +64,7 @@ public class Background implements Serializable {
 
         // draw black space background
         StdDraw.setPenColor(StdDraw.BLACK);
-        StdDraw.filledRectangle(0, 0, canvas.width / 2, canvas.height / 2);
+        StdDraw.filledRectangle(0, 0, canvas.getWidth() / 2, canvas.getHeight() / 2);
 
         // for each star
         for (int i = 0; i < NUM_STARS; i++) {
