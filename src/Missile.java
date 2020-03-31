@@ -60,7 +60,7 @@ public class Missile extends DefaultCritter {
             case EXPLODING:
                 velocity = velocity.scale(0.85); // slow down movement speed of explosion
                 super.render(dt);
-                if (explosion.finished) {
+                if (explosion.isFinished) {
                     state = MissileState.DEAD;
                 }
                 break;

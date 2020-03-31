@@ -3,43 +3,47 @@
  */
 public class Shooter extends DefaultCritter {
 
-    enum ShooterState {
-        ALIVE, EXPLODING, DEAD;
-    }
-
     public static final int DEFAULT_HEALTH_POINTS = 300;
     public static final int DEFAULT_ENERGY_POINTS = 100;
-    public static final int DEFAULT_COLLISION_RADIUS = 7;
     public static final double DEFAULT_ENERGY_GAIN_PER_TIMESTEP = 0.1;
-    public static final int SHIELD_COLLISION_RADIUS = 12;
-    public static final int SHIELD_ENERGY_USAGE_INITIAL = 10;
-    public static final double SHIELD_ENERGY_USAGE_PER_TIMESTEP = 0.5;
 
     private static final long serialVersionUID = 1L;
+    public static final int DEFAULT_COLLISION_RADIUS = 7;
+    private static final int SHIELD_COLLISION_RADIUS = 12;
+    private static final int SHIELD_ENERGY_USAGE_INITIAL = 10;
+    private static final double SHIELD_ENERGY_USAGE_PER_TIMESTEP = 0.5;
     private static final int MOVEMENT_BOUNDARY_XMIN = -95;
     private static final int MOVEMENT_BOUNDARY_XMAX = 95;
     private static final int THRUSTER_ACCELERATION_MAGNITUDE = 1000;
 
-    public boolean thrusterLeftMoveStatus = false;
-    public boolean thrusterRightMoveStatus = false;
     public ShooterState state;
-    private boolean shieldActive;
+    private MissileLauncher missileLauncherRef; // TODO dont only ref, but also move and init inside this class
 
-    double energyPoints;
-    double energyGainPerTimeStep;
+    public boolean isThrusterLeftActive;
+    public boolean isThrusterRightActive;
+    private boolean isShieldActive;
 
-    private MissileLauncher missileLauncherRef;
-    private AnimatedPicture explosion;
+    public double energyPoints;
+    public double energyGainPerTimeStep;
+
+    private AnimatedPicture explosionAnimation;
+
+    enum ShooterState {
+        ALIVE, EXPLODING, DEAD;
+    }
 
     public Shooter(Vector2D position, double orientation) {
         super(position, orientation);
         healthPoints = DEFAULT_HEALTH_POINTS;
+        state = ShooterState.ALIVE;
+        collisionRadius = DEFAULT_COLLISION_RADIUS;
         energyPoints = DEFAULT_ENERGY_POINTS;
         energyGainPerTimeStep = DEFAULT_ENERGY_GAIN_PER_TIMESTEP;
-        collisionRadius = DEFAULT_COLLISION_RADIUS;
-        state = ShooterState.ALIVE;
-        shieldActive = false;
-        explosion = new AnimatedPicture("resources/images/explosion", "png", 16, AnimatedPicture.AnimationType.FWD_BWD_ONCE);
+        isThrusterLeftActive = false;
+        isThrusterRightActive = false;
+        isShieldActive = false;
+        explosionAnimation = new AnimatedPicture("resources/images/explosion", "png", 16,
+                AnimatedPicture.AnimationType.FWD_BWD_ONCE);
     }
 
     @Override
@@ -53,23 +57,24 @@ public class Shooter extends DefaultCritter {
                 }
 
                 if (energyPoints <= 0) {
-                    if (shieldActive) {
-                        deactivateShield();
-                    }
+                    deactivateShield();
                 }
 
+                // gain energy
                 energyPoints = Math.min(energyPoints + energyGainPerTimeStep, DEFAULT_ENERGY_POINTS);
 
-                if (shieldActive) {
+                // drain energy
+                if (isShieldActive) {
                     energyPoints -= SHIELD_ENERGY_USAGE_PER_TIMESTEP;
                 }
 
                 // determine acceleration from thrusterstatuses
-                acceleration = Vector2D.zero();
-                if (thrusterLeftMoveStatus && !thrusterRightMoveStatus)
+                if (isThrusterLeftActive && !isThrusterRightActive)
                     acceleration = new Vector2D(-THRUSTER_ACCELERATION_MAGNITUDE, 0);
-                if (thrusterRightMoveStatus && !thrusterLeftMoveStatus)
+                else if (isThrusterRightActive && !isThrusterLeftActive)
                     acceleration = new Vector2D(+THRUSTER_ACCELERATION_MAGNITUDE, 0);
+                else
+                    acceleration = Vector2D.zero();
 
                 // if almost no 'thrust' applied or thrust applied in opposite direction than
                 // movement, then slow down shooter for fast stopping or turning
@@ -94,7 +99,7 @@ public class Shooter extends DefaultCritter {
                 break;
 
             case EXPLODING:
-                if (explosion.finished) {
+                if (explosionAnimation.isFinished) {
                     state = ShooterState.DEAD;
                 }
                 break;
@@ -109,28 +114,41 @@ public class Shooter extends DefaultCritter {
     public void draw() {
         switch (state) {
             case ALIVE:
-                if (thrusterLeftMoveStatus & !thrusterRightMoveStatus) {
-                    StdDraw.picture(position.x, position.y, "resources/images/shooterL.png", 20, 20, getOrientationInDegrees());
-                } else if (thrusterRightMoveStatus & !thrusterLeftMoveStatus) {
-                    StdDraw.picture(position.x, position.y, "resources/images/shooterR.png", 20, 20, getOrientationInDegrees());
+                if (isThrusterLeftActive & !isThrusterRightActive) {
+                    StdDraw.picture(position.x, position.y, "resources/images/shooterL.png", 20, 20,
+                            getOrientationInDegrees());
+                } else if (isThrusterRightActive & !isThrusterLeftActive) {
+                    StdDraw.picture(position.x, position.y, "resources/images/shooterR.png", 20, 20,
+                            getOrientationInDegrees());
                 } else {
-                    StdDraw.picture(position.x, position.y, "resources/images/shooter.png", 20, 20, getOrientationInDegrees());
+                    StdDraw.picture(position.x, position.y, "resources/images/shooter.png", 20, 20,
+                            getOrientationInDegrees());
                 }
 
-                if (shieldActive) {
+                if (isShieldActive) {
                     StdDraw.picture(position.x, position.y, "resources/images/shield.png", 30, 30, 0);
                 }
 
                 break;
 
             case EXPLODING:
-                explosion.draw(position.x, position.y, 0);
+                explosionAnimation.draw(position.x, position.y);
                 break;
 
             case DEAD:
                 break;
         }
 
+    }
+
+    @Override
+    public void prepareToSaveState() {
+        // dont save these statuses:
+        // otherwise for example if shield was active at time of save, it remains active
+        // after load until deactivated with key release
+        isThrusterLeftActive = false;
+        isThrusterRightActive = false;
+        isShieldActive = false;
     }
 
     public void addMissileLauncherReference(MissileLauncher missileLauncher) {
@@ -142,23 +160,23 @@ public class Shooter extends DefaultCritter {
     }
 
     public boolean getShieldState() {
-        return shieldActive;
+        return isShieldActive;
     }
 
     public void activateShield() {
-        if (!shieldActive && energyPoints > SHIELD_ENERGY_USAGE_INITIAL) {
+        if (!isShieldActive && energyPoints > SHIELD_ENERGY_USAGE_INITIAL) {
             StdAudio.play("resources/audio/shieldUp.wav");
             collisionRadius = SHIELD_COLLISION_RADIUS;
             energyPoints -= SHIELD_ENERGY_USAGE_INITIAL;
-            shieldActive = true;
+            isShieldActive = true;
         }
     }
 
     public void deactivateShield() {
-        if (shieldActive) {
+        if (isShieldActive) {
             StdAudio.play("resources/audio/shieldDown.wav");
             collisionRadius = DEFAULT_COLLISION_RADIUS;
-            shieldActive = false;
+            isShieldActive = false;
         }
     }
 }

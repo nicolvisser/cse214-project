@@ -40,4 +40,9 @@ public class DefaultCritter extends Object2D implements Critter {
         return this.distanceTo(other) <= this.collisionRadius + other.collisionRadius;
     }
 
+    @Override
+    public void prepareToSaveState() {
+
+    }
+
 }

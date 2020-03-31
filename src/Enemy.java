@@ -66,7 +66,7 @@ public class Enemy extends DefaultCritter {
 
             case EXPLODING:
                 super.render(dt);
-                if (explosion.finished)
+                if (explosion.isFinished)
                     state = EnemyState.DEAD;
                 break;
 

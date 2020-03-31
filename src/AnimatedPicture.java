@@ -17,7 +17,7 @@ public class AnimatedPicture implements Serializable {
     AnimationType animationType;
 
     int currentFrameIndex;
-    boolean finished;
+    boolean isFinished;
 
     boolean reverseIncrement;
 
@@ -28,19 +28,19 @@ public class AnimatedPicture implements Serializable {
         this.animationType = animationType;
 
         currentFrameIndex = 0;
-        finished = false;
+        isFinished = false;
 
         reverseIncrement = false;
     }
 
     public void reset() {
         currentFrameIndex = 0;
-        finished = false;
+        isFinished = false;
         reverseIncrement = false;
     }
 
     public void draw(double x, double y) {
-        if (!finished) {
+        if (!isFinished) {
             String filename = String.format("%s%05d.%s", filenameNoIndex, currentFrameIndex, extension);
             StdDraw.picture(x, y, filename);
             updateAnimationProgress();
@@ -48,7 +48,7 @@ public class AnimatedPicture implements Serializable {
     }
 
     public void draw(double x, double y, double degrees) {
-        if (!finished) {
+        if (!isFinished) {
             String filename = String.format("%s%05d.%s", filenameNoIndex, currentFrameIndex, extension);
             StdDraw.picture(x, y, filename, degrees);
             updateAnimationProgress();
@@ -56,7 +56,7 @@ public class AnimatedPicture implements Serializable {
     }
 
     public void draw(double x, double y, double scaledWidth, double scaledHeight) {
-        if (!finished) {
+        if (!isFinished) {
             String filename = String.format("%s%05d.%s", filenameNoIndex, currentFrameIndex, extension);
             StdDraw.picture(x, y, filename, scaledWidth, scaledHeight);
             updateAnimationProgress();
@@ -64,7 +64,7 @@ public class AnimatedPicture implements Serializable {
     }
 
     public void draw(double x, double y, double scaledWidth, double scaledHeight, double degrees) {
-        if (!finished) {
+        if (!isFinished) {
             String filename = String.format("%s%05d.%s", filenameNoIndex, currentFrameIndex, extension);
             StdDraw.picture(x, y, filename, scaledWidth, scaledHeight, degrees);
             updateAnimationProgress();
@@ -81,7 +81,7 @@ public class AnimatedPicture implements Serializable {
         switch (animationType) {
             case ONCE:
                 if (currentFrameIndex == numFrames) {
-                    finished = true;
+                    isFinished = true;
                 }
                 break;
             case REPEAT:
@@ -97,7 +97,7 @@ public class AnimatedPicture implements Serializable {
                     reverseIncrement = true;
                 }
                 if (currentFrameIndex == -1 && reverseIncrement) {
-                    finished = true;
+                    isFinished = true;
                 }
 
                 break;

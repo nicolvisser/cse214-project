@@ -96,10 +96,10 @@ public class InvaderGameState extends KeyListener implements Serializable {
     public void onKeyPress(KeyListener.KeyboardKey key) {
         switch (key) {
             case A_KEY:
-                shooter.thrusterLeftMoveStatus = true;
+                shooter.isThrusterLeftActive = true;
                 break;
             case D_KEY:
-                shooter.thrusterRightMoveStatus = true;
+                shooter.isThrusterRightActive = true;
                 break;
             case LEFT_ARROW:
                 missileLauncher.turretLeftRotateStatus = true;
@@ -129,10 +129,10 @@ public class InvaderGameState extends KeyListener implements Serializable {
     public void onKeyRelease(KeyListener.KeyboardKey key) {
         switch (key) {
             case A_KEY:
-                shooter.thrusterLeftMoveStatus = false;
+                shooter.isThrusterLeftActive = false;
                 break;
             case D_KEY:
-                shooter.thrusterRightMoveStatus = false;
+                shooter.isThrusterRightActive = false;
                 break;
             case LEFT_ARROW:
                 missileLauncher.turretLeftRotateStatus = false;
