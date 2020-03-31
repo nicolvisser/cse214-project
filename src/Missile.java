@@ -20,7 +20,7 @@ public class Missile extends DefaultCritter {
     private AnimatedPicture explosion;
 
     public Missile(Vector2D position, Vector2D direction) {
-        super(position, Object2D.orientationFromVector(direction));
+        super(position, direction.getPolarAngle());
         velocity = new Vector2D(SPEED * direction.x, SPEED * direction.y);
         healthPoints = DEFAULT_HEALTH_POINTS;
         collisionRadius = DEFAULT_COLLISION_RADIUS;
@@ -34,7 +34,7 @@ public class Missile extends DefaultCritter {
     public void draw() {
         switch (state) {
             case TRAVELLING:
-                StdDraw.picture(position.x, position.y, "resources/images/missile.png", 5, 5, orientationInDegrees());
+                StdDraw.picture(position.x, position.y, "resources/images/missile.png", 5, 5, getOrientationInDegrees());
                 break;
 
             case EXPLODING:

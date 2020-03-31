@@ -110,11 +110,11 @@ public class Shooter extends DefaultCritter {
         switch (state) {
             case ALIVE:
                 if (thrusterLeftMoveStatus & !thrusterRightMoveStatus) {
-                    StdDraw.picture(position.x, position.y, "resources/images/shooterL.png", 20, 20, orientationInDegrees());
+                    StdDraw.picture(position.x, position.y, "resources/images/shooterL.png", 20, 20, getOrientationInDegrees());
                 } else if (thrusterRightMoveStatus & !thrusterLeftMoveStatus) {
-                    StdDraw.picture(position.x, position.y, "resources/images/shooterR.png", 20, 20, orientationInDegrees());
+                    StdDraw.picture(position.x, position.y, "resources/images/shooterR.png", 20, 20, getOrientationInDegrees());
                 } else {
-                    StdDraw.picture(position.x, position.y, "resources/images/shooter.png", 20, 20, orientationInDegrees());
+                    StdDraw.picture(position.x, position.y, "resources/images/shooter.png", 20, 20, getOrientationInDegrees());
                 }
 
                 if (shieldActive) {

@@ -28,7 +28,7 @@ public class MissileLauncher extends DefaultCritter {
         missiles = new ArrayList<>();
         reloadTime = DEFAULT_RELOAD_TIME;
         timeSinceLastMissile = DEFAULT_RELOAD_TIME;
-        orientation = Math.PI / 2;
+        setOrientation(Math.PI / 2);
         turretLeftRotateStatus = false;
         turretRightRotateStatus = false;
 
@@ -56,8 +56,8 @@ public class MissileLauncher extends DefaultCritter {
         super.renderStep(dt);
 
         // keep rotation in [0.2, 2*PI - 0.2] interval
-        orientation = Math.min(orientation, Math.PI - 0.2); // todo fix hardcoding
-        orientation = Math.max(orientation, 0 + 0.2); // todo fix hardcoding
+        setOrientation(Math.min(getOrientation(), Math.PI - 0.2)); // TODO: fix hardcoding
+        setOrientation(Math.max(getOrientation(), 0 + 0.2)); // TODO: fix hardcoding
 
         Iterator<Missile> missileIterator = missiles.iterator();
         while (missileIterator.hasNext()) {
@@ -81,7 +81,7 @@ public class MissileLauncher extends DefaultCritter {
 
         if (shooterRef.state == Shooter.ShooterState.ALIVE) {
             StdDraw.picture(shooterRef.position.x, shooterRef.position.y, "resources/images/turret.png", 25, 10,
-                    orientationInDegrees());
+                    getOrientationInDegrees());
         }
 
         for (Missile missile : missiles) {
@@ -98,8 +98,8 @@ public class MissileLauncher extends DefaultCritter {
             // System.out.println("Launched Missile With chargeUpTime: " + chargeUpTime);
             timeSinceLastMissile = 0;
             Vector2D missileStartPos = new Vector2D(shooterRef.position.x, shooterRef.position.y)
-                    .add(FWDVector().scale(12.5));
-            Missile missile = new Missile(missileStartPos, this.FWDVector());
+                    .add(lookVector().scale(12.5));
+            Missile missile = new Missile(missileStartPos, this.lookVector());
             missiles.add(missile);
             StdAudio.play("resources/audio/Gun+1.wav");
         }

@@ -31,7 +31,7 @@ public class DefaultCritter extends Object2D implements Critter {
         StdDraw.setPenColor(StdDraw.RED);
 
         // draw line for line of sight
-        Vector2D aimTarget = position.add(FWDVector().scale(100));
+        Vector2D aimTarget = position.add(lookVector().scale(100));
         StdDraw.line(position.x, position.y, aimTarget.x, aimTarget.y);
 
         // draw circle for body
@@ -39,7 +39,7 @@ public class DefaultCritter extends Object2D implements Critter {
     }
 
     public boolean isCollidingWith(DefaultCritter other) {
-        if (distanceBetween(this, other) <= this.collisionRadius + other.collisionRadius)
+        if (this.distanceTo(other) <= this.collisionRadius + other.collisionRadius)
             return true;
         else
             return false;

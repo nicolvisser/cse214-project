@@ -40,4 +40,8 @@ public class Vector2D implements Serializable {
     public Vector2D scale(double c) {
         return new Vector2D(c * x, c * y);
     }
+
+    public Double getPolarAngle() {
+        return Math.atan2(y, x);
+    }
 }

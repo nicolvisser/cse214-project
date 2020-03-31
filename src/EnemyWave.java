@@ -164,7 +164,7 @@ public class EnemyWave implements Serializable {
         Enemy attackingEnemy = getRandomEnemyOnCanvas();
         if (attackingEnemy != null) {
             Vector2D missileSpawnLocation = new Vector2D(attackingEnemy.position.x, attackingEnemy.position.y);
-            Vector2D shooterPositionRelativeToEnemy = Object2D.relativePositionVector(attackingEnemy, shooterRef);
+            Vector2D shooterPositionRelativeToEnemy = attackingEnemy.positionRelativeTo(shooterRef);
             Missile missile = new Missile(missileSpawnLocation, shooterPositionRelativeToEnemy.normalize());
             StdDraw.filledCircle(missileSpawnLocation.x, missileSpawnLocation.y, 5);
             missile.velocity = shooterPositionRelativeToEnemy.normalize().scale(Missile.SPEED);

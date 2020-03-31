@@ -9,16 +9,14 @@ public class TestObject2D {
 
         obj.lookAt(0, 0);
 
-        Vector2D forwardVector = obj.FWDVector();
-
-        System.out.println("(" + forwardVector.x + "," + forwardVector.y + ")");
+        System.out.println(obj.lookVector());
+        System.out.println(obj.getOrientationInDegrees());
 
         obj.translateX(1);
         obj.lookAt(0, 0);
 
-        forwardVector = obj.FWDVector();
-
-        System.out.println("(" + forwardVector.x + "," + forwardVector.y + ")");
+        System.out.println(obj.lookVector());
+        System.out.println(obj.getOrientationInDegrees());
 
     }
 }
