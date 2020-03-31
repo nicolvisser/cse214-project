@@ -10,30 +10,34 @@ public class MissileLauncher extends DefaultCritter {
 
     public static final double DEFAULT_RELOAD_TIME = 0.15;
     private static final double TURRET_ANGULAR_ACCELERATION_MAGNITUDE = 40;
+    private static final double TURRENT_MINIMUM_ANGLE = 0.2;
+    private static final double TURRENT_MAXIMUM_ANGLE = Math.PI - 0.2;
 
-    Rectangle canvas;
-    Shooter shooterRef;
-    ArrayList<Missile> missiles;
+    private Rectangle drawArea;
+    private Shooter shooterRef;
+
+    public ArrayList<Missile> missiles;
     public double reloadTime;
-    double timeSinceLastMissile;
-    double chargeUpTime; // keeps track of how long user held shoot key down
+    private double timeSinceLastMissile;
+    private double chargeUpTime;
+
     public boolean turretLeftRotateStatus;
     public boolean turretRightRotateStatus;
 
     private ArrayList<PowerUp> powerUpsRef;
 
-    public MissileLauncher(Rectangle canvas, Shooter shooterRef) {
-        this.canvas = canvas;
+    public MissileLauncher(Rectangle drawArea, Shooter shooterRef) {
+        super(shooterRef.position, Math.PI / 2);
+
+        this.drawArea = drawArea;
         this.shooterRef = shooterRef;
+
         missiles = new ArrayList<>();
-        reloadTime = DEFAULT_RELOAD_TIME;
         timeSinceLastMissile = DEFAULT_RELOAD_TIME;
-        setOrientation(Math.PI / 2);
+        reloadTime = DEFAULT_RELOAD_TIME;
+
         turretLeftRotateStatus = false;
         turretRightRotateStatus = false;
-
-        shooterRef.addMissileLauncherReference(this);
-
     }
 
     public void render(double dt) {
@@ -41,11 +45,12 @@ public class MissileLauncher extends DefaultCritter {
         chargeUpTime += dt;
 
         // determine angular velocity from turret rotation status
-        angularAcceleration = 0;
         if (turretLeftRotateStatus)
             angularAcceleration += TURRET_ANGULAR_ACCELERATION_MAGNITUDE;
-        if (turretRightRotateStatus)
+        else if (turretRightRotateStatus)
             angularAcceleration -= TURRET_ANGULAR_ACCELERATION_MAGNITUDE;
+        else
+            angularAcceleration = 0;
 
         // if almost no 'torque' applied or 'torque' applied in opposite direction than
         // rotation, then slow down turret for fast stopping or turning
@@ -56,14 +61,14 @@ public class MissileLauncher extends DefaultCritter {
         super.render(dt);
 
         // keep rotation in [0.2, 2*PI - 0.2] interval
-        setOrientation(Math.min(getOrientation(), Math.PI - 0.2)); // TODO: fix hardcoding
-        setOrientation(Math.max(getOrientation(), 0 + 0.2)); // TODO: fix hardcoding
+        setOrientation(Math.min(getOrientation(), TURRENT_MAXIMUM_ANGLE));
+        setOrientation(Math.max(getOrientation(), TURRENT_MINIMUM_ANGLE));
 
         Iterator<Missile> missileIterator = missiles.iterator();
         while (missileIterator.hasNext()) {
             Missile missile = missileIterator.next();
             missile.render(dt);
-            if (missile.state == Missile.MissileState.DEAD || !canvas.containsPoint(missile.position)) {
+            if (missile.state == Missile.MissileState.DEAD || !drawArea.containsPoint(missile.position)) {
                 missileIterator.remove();
             } else if (missile.state == Missile.MissileState.TRAVELLING && powerUpsRef != null) {
                 Iterator<PowerUp> powerUpIterator = powerUpsRef.iterator();
@@ -78,7 +83,6 @@ public class MissileLauncher extends DefaultCritter {
     }
 
     public void draw() {
-
         if (shooterRef.state == Shooter.ShooterState.ALIVE) {
             StdDraw.picture(shooterRef.position.x, shooterRef.position.y, "resources/images/turret.png", 25, 10,
                     getOrientationInDegrees());
@@ -108,10 +112,6 @@ public class MissileLauncher extends DefaultCritter {
 
     public void addAbilityToEquipPowerUp(ArrayList<PowerUp> powerUpsRef) {
         this.powerUpsRef = powerUpsRef;
-    }
-
-    public ArrayList<PowerUp> getPowerUpsRef() {
-        return this.powerUpsRef;
     }
 
 }

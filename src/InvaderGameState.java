@@ -24,21 +24,16 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
     Shooter shooter;
 
-    MissileLauncher missileLauncher;
-
     EnemyWave enemyWave;
 
     ArrayList<PowerUp> powerUps;
 
-    public InvaderGameState(Rectangle canvas) {
+    public InvaderGameState(Rectangle drawArea) {
 
         score = 0;
 
-        shooter = new Shooter(new Vector2D(0, -75), Math.PI / 2);
-
-        missileLauncher = new MissileLauncher(canvas, shooter);
-
-        enemyWave = new EnemyWave(canvas, shooter);
+        shooter = new Shooter(new Vector2D(0, -75), Math.PI / 2, drawArea);
+        enemyWave = new EnemyWave(drawArea, shooter);
 
         powerUps = new ArrayList<>();
         powerUps.add(new PowerUp(new Vector2D(0, 0), PowerUp.PowerUpType.FAST_RELOAD));
@@ -51,8 +46,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
     public void render(double dt) {
 
         shooter.render(dt);
-
-        missileLauncher.render(dt);
+        shooter.getMissileLauncher().addAbilityToEquipPowerUp(powerUps);
 
         Iterator<PowerUp> itr = powerUps.iterator();
         while (itr.hasNext()) {
@@ -67,10 +61,8 @@ public class InvaderGameState extends KeyListener implements Serializable {
             }
         }
 
-        missileLauncher.addAbilityToEquipPowerUp(powerUps);
-
         enemyWave.render(dt);
-        score += enemyWave.handleCollisionsWithMissiles(missileLauncher.missiles);
+        score += enemyWave.handleCollisionsWithMissiles(shooter.getMissileLauncher().missiles);
         gameOverFlag = enemyWave.isCleared() || (shooter.state == Shooter.ShooterState.DEAD);
 
     }
@@ -80,8 +72,6 @@ public class InvaderGameState extends KeyListener implements Serializable {
         shooter.draw();
 
         enemyWave.draw();
-
-        missileLauncher.draw();
 
         for (PowerUp powerUp : powerUps) {
             powerUp.draw();
@@ -102,10 +92,10 @@ public class InvaderGameState extends KeyListener implements Serializable {
                 shooter.isThrusterRightActive = true;
                 break;
             case LEFT_ARROW:
-                missileLauncher.turretLeftRotateStatus = true;
+                shooter.getMissileLauncher().turretLeftRotateStatus = true;
                 break;
             case RIGHT_ARROW:
-                missileLauncher.turretRightRotateStatus = true;
+                shooter.getMissileLauncher().turretRightRotateStatus = true;
                 break;
             case ESC_KEY:
                 pauseFlag = true;
@@ -114,7 +104,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
                 quitFlag = true;
                 break;
             case UP_ARROW:
-                missileLauncher.startCharging();
+                shooter.getMissileLauncher().startCharging();
                 break;
             case DOWN_ARROW:
                 shooter.activateShield();
@@ -135,13 +125,13 @@ public class InvaderGameState extends KeyListener implements Serializable {
                 shooter.isThrusterRightActive = false;
                 break;
             case LEFT_ARROW:
-                missileLauncher.turretLeftRotateStatus = false;
+                shooter.getMissileLauncher().turretLeftRotateStatus = false;
                 break;
             case RIGHT_ARROW:
-                missileLauncher.turretRightRotateStatus = false;
+                shooter.getMissileLauncher().turretRightRotateStatus = false;
                 break;
             case UP_ARROW:
-                missileLauncher.shootMissile();
+                shooter.getMissileLauncher().shootMissile();
                 break;
             case DOWN_ARROW:
                 shooter.deactivateShield();

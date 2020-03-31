@@ -17,7 +17,9 @@ public class Shooter extends DefaultCritter {
     private static final int THRUSTER_ACCELERATION_MAGNITUDE = 1000;
 
     public ShooterState state;
-    private MissileLauncher missileLauncherRef; // TODO dont only ref, but also move and init inside this class
+
+    public Rectangle drawArea;
+    private MissileLauncher missileLauncher;
 
     public boolean isThrusterLeftActive;
     public boolean isThrusterRightActive;
@@ -32,8 +34,9 @@ public class Shooter extends DefaultCritter {
         ALIVE, EXPLODING, DEAD;
     }
 
-    public Shooter(Vector2D position, double orientation) {
+    public Shooter(Vector2D position, double orientation, Rectangle drawArea) {
         super(position, orientation);
+        this.drawArea = drawArea;
         healthPoints = DEFAULT_HEALTH_POINTS;
         state = ShooterState.ALIVE;
         collisionRadius = DEFAULT_COLLISION_RADIUS;
@@ -44,12 +47,15 @@ public class Shooter extends DefaultCritter {
         isShieldActive = false;
         explosionAnimation = new AnimatedPicture("resources/images/explosion", "png", 16,
                 AnimatedPicture.AnimationType.FWD_BWD_ONCE);
+        missileLauncher = new MissileLauncher(drawArea, this);
     }
 
     @Override
     public void render(double dt) {
         switch (state) {
             case ALIVE:
+                missileLauncher.render(dt);
+
                 if (healthPoints <= 0) {
                     StdAudio.play("resources/audio/Explosion+1.wav");
                     state = ShooterState.EXPLODING;
@@ -125,6 +131,8 @@ public class Shooter extends DefaultCritter {
                             getOrientationInDegrees());
                 }
 
+                missileLauncher.draw();
+
                 if (isShieldActive) {
                     StdDraw.picture(position.x, position.y, "resources/images/shield.png", 30, 30, 0);
                 }
@@ -151,12 +159,8 @@ public class Shooter extends DefaultCritter {
         isShieldActive = false;
     }
 
-    public void addMissileLauncherReference(MissileLauncher missileLauncher) {
-        this.missileLauncherRef = missileLauncher;
-    }
-
-    public MissileLauncher getMissileLauncherReference() {
-        return missileLauncherRef;
+    public MissileLauncher getMissileLauncher() {
+        return missileLauncher;
     }
 
     public boolean getShieldState() {

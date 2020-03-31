@@ -34,7 +34,8 @@ public class Missile extends DefaultCritter {
     public void draw() {
         switch (state) {
             case TRAVELLING:
-                StdDraw.picture(position.x, position.y, "resources/images/missile.png", 5, 5, getOrientationInDegrees());
+                StdDraw.picture(position.x, position.y, "resources/images/missile.png", 5, 5,
+                        getOrientationInDegrees());
                 break;
 
             case EXPLODING:

@@ -140,7 +140,7 @@ public class PowerUp extends DefaultCritter {
             case GREEN:
                 break;
             case FAST_RELOAD:
-                shooter.getMissileLauncherReference().reloadTime = MissileLauncher.DEFAULT_RELOAD_TIME / 2;
+                shooter.getMissileLauncher().reloadTime = MissileLauncher.DEFAULT_RELOAD_TIME / 2;
                 break;
         }
 
@@ -158,7 +158,7 @@ public class PowerUp extends DefaultCritter {
             case GREEN:
                 break;
             case FAST_RELOAD:
-                shooterOwner.getMissileLauncherReference().reloadTime = MissileLauncher.DEFAULT_RELOAD_TIME;
+                shooterOwner.getMissileLauncher().reloadTime = MissileLauncher.DEFAULT_RELOAD_TIME;
                 break;
         }
 
