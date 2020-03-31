@@ -77,4 +77,10 @@ public class Rectangle implements Serializable {
     public boolean containsPoint(Vector2D pos) {
         return (pos.x >= xmin) && (pos.x <= xmax) && (pos.y >= ymin) && (pos.y <= ymax);
     }
+
+    public Vector2D getRandomPosition() {
+        double rx = xmin + Math.random() * width;
+        double ry = ymin + Math.random() * height;
+        return new Vector2D(rx, ry);
+    }
 }

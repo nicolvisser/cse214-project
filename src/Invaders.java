@@ -47,7 +47,7 @@ public class Invaders {
 
     static ControlsScreen controlsScreen = new ControlsScreen();
 
-    static Background background;
+    static Starfield background;
 
     public static void main(String[] args) {
 
@@ -55,7 +55,7 @@ public class Invaders {
 
         setupStdDrawCanvas(800, 800); // using default 'resolution' of 800x800
 
-        background = new Background(canvas);
+        background = new Starfield(canvas);
 
         StdAudio.loop("resources/audio/Mercury.wav");
 
