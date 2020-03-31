@@ -80,7 +80,7 @@ public class Invaders {
             background.draw();
 
             if (currentDisplayState != DisplayState.PLAYING) {
-                background.renderStep(dt, new Vector2D(200, 200));
+                background.render(dt, new Vector2D(200, 200));
             }
 
             switch (currentDisplayState) {
@@ -137,10 +137,10 @@ public class Invaders {
                 case PLAYING:
 
                     loadedInvaderGameState.draw();
-                    loadedInvaderGameState.renderStep(dt);
+                    loadedInvaderGameState.render(dt);
                     loadedInvaderGameState.listenForInputChanges();
 
-                    background.renderStep(dt, loadedInvaderGameState.getShooterVelocity());
+                    background.render(dt, loadedInvaderGameState.getShooterVelocity());
 
                     if (loadedInvaderGameState.pauseFlag) {
                         loadedInvaderGameState.resetFlags();

@@ -47,10 +47,10 @@ public class Missile extends DefaultCritter {
     }
 
     @Override
-    public void renderStep(double dt) {
+    public void render(double dt) {
         switch (state) {
             case TRAVELLING:
-                super.renderStep(dt);
+                super.render(dt);
                 if (healthPoints <= 0) {
                     StdAudio.play("resources/audio/Explosion+1.wav");
                     state = MissileState.EXPLODING;
@@ -59,7 +59,7 @@ public class Missile extends DefaultCritter {
 
             case EXPLODING:
                 velocity = velocity.scale(0.85); // slow down movement speed of explosion
-                super.renderStep(dt);
+                super.render(dt);
                 if (explosion.finished) {
                     state = MissileState.DEAD;
                 }

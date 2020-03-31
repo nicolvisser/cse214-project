@@ -33,7 +33,7 @@ public class EnemyWave implements Serializable {
         enemyMissiles = new ArrayList<>();
     }
 
-    public void renderStep(double dt) {
+    public void render(double dt) {
         timeUntilNextCounterAttack -= dt;
 
         if (checkGameOverConditions(shooterRef)) {
@@ -51,13 +51,13 @@ public class EnemyWave implements Serializable {
         }
 
         for (EnemyGroup enemyGroup : enemyGroups) {
-            enemyGroup.renderStep(dt);
+            enemyGroup.render(dt);
         }
 
         Iterator<Missile> enemyMissileIterator = enemyMissiles.iterator();
         while (enemyMissileIterator.hasNext()) {
             Missile enemyMissile = enemyMissileIterator.next();
-            enemyMissile.renderStep(dt);
+            enemyMissile.render(dt);
             if (enemyMissile.state == Missile.MissileState.DEAD || !canvas.containsPoint(enemyMissile.position)) {
                 enemyMissileIterator.remove();
             } else if (enemyMissile.state == Missile.MissileState.TRAVELLING

@@ -28,7 +28,7 @@ public class Particle2D implements Serializable {
         position.y += dy;
     }
 
-    public void renderStep(double dt) {
+    public void render(double dt) {
         velocity.x += acceleration.x * dt;
         velocity.y += acceleration.y * dt;
         position.x += velocity.x * dt + 0.5 * acceleration.x * dt * dt;

@@ -74,8 +74,8 @@ public class Object2D extends Particle2D {
     }
 
     @Override
-    public void renderStep(double dt) {
-        super.renderStep(dt);
+    public void render(double dt) {
+        super.render(dt);
         angularVelocity += angularAcceleration * dt;
         orientation += angularVelocity * dt + 0.5 * angularAcceleration * dt * dt;
     }

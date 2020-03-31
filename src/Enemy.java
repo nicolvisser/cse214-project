@@ -54,18 +54,18 @@ public class Enemy extends DefaultCritter {
     }
 
     @Override
-    public void renderStep(double dt) {
+    public void render(double dt) {
         switch (state) {
             case ALIVE:
                 if (healthPoints <= 0) {
                     state = EnemyState.EXPLODING;
                     break;
                 }
-                super.renderStep(dt);
+                super.render(dt);
                 break;
 
             case EXPLODING:
-                super.renderStep(dt);
+                super.render(dt);
                 if (explosion.finished)
                     state = EnemyState.DEAD;
                 break;

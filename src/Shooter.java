@@ -43,7 +43,7 @@ public class Shooter extends DefaultCritter {
     }
 
     @Override
-    public void renderStep(double dt) {
+    public void render(double dt) {
         switch (state) {
             case ALIVE:
                 if (healthPoints <= 0) {
@@ -78,7 +78,7 @@ public class Shooter extends DefaultCritter {
                 }
 
                 // render new position and velocity from kinematic equations
-                super.renderStep(dt);
+                super.render(dt);
 
                 // keep player in boundaries
                 if (position.x > MOVEMENT_BOUNDARY_XMAX) {

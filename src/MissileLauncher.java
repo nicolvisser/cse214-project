@@ -36,7 +36,7 @@ public class MissileLauncher extends DefaultCritter {
 
     }
 
-    public void renderStep(double dt) {
+    public void render(double dt) {
         timeSinceLastMissile += dt;
         chargeUpTime += dt;
 
@@ -53,7 +53,7 @@ public class MissileLauncher extends DefaultCritter {
             angularVelocity *= 0.5;
         }
 
-        super.renderStep(dt);
+        super.render(dt);
 
         // keep rotation in [0.2, 2*PI - 0.2] interval
         setOrientation(Math.min(getOrientation(), Math.PI - 0.2)); // TODO: fix hardcoding
@@ -62,7 +62,7 @@ public class MissileLauncher extends DefaultCritter {
         Iterator<Missile> missileIterator = missiles.iterator();
         while (missileIterator.hasNext()) {
             Missile missile = missileIterator.next();
-            missile.renderStep(dt);
+            missile.render(dt);
             if (missile.state == Missile.MissileState.DEAD || !canvas.containsPoint(missile.position)) {
                 missileIterator.remove();
             } else if (missile.state == Missile.MissileState.TRAVELLING && powerUpsRef != null) {

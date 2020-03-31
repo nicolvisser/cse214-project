@@ -1,18 +1,11 @@
 import java.io.Serializable;
 
-/**
- * Background
- */
 public class Background implements Serializable {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
 
     Rectangle canvas;
 
-    // declare variables associated with stars
     private final int NUM_STARS = 1000;
     private Vector2D[] starPositions = new Vector2D[NUM_STARS];
     private double[] starParallaxSensitivities = new double[NUM_STARS];
@@ -21,7 +14,6 @@ public class Background implements Serializable {
     public Background(Rectangle canvas) {
         this.canvas = canvas;
 
-        // loop through number of stars
         for (int i = 0; i < NUM_STARS; i++) {
             // set random position for each star within background bounds
             double xpos = canvas.getXmin() + Math.random() * canvas.getWidth();
@@ -36,7 +28,7 @@ public class Background implements Serializable {
 
     // renders position of each star and earth based on velocity of player to give
     // parallax effect while moving
-    public void renderStep(double dt, Vector2D playerVelocity) {
+    public void render(double dt, Vector2D playerVelocity) {
 
         for (int i = 0; i < NUM_STARS; i++) {
 
@@ -66,17 +58,12 @@ public class Background implements Serializable {
         StdDraw.setPenColor(StdDraw.BLACK);
         StdDraw.filledRectangle(0, 0, canvas.getWidth() / 2, canvas.getHeight() / 2);
 
-        // for each star
         for (int i = 0; i < NUM_STARS; i++) {
-
             // simulate flickering of stars by letting star brightness be random greyscale
             // value between [130,255]
             int grayLevel = 130 + (int) (Math.random() * 126);
             StdDraw.setPenColor(grayLevel, grayLevel, grayLevel);
-
-            // draw star as a point
             StdDraw.point(starPositions[i].x, starPositions[i].y);
         }
-
     }
 }

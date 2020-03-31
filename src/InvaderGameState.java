@@ -48,11 +48,11 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
     }
 
-    public void renderStep(double dt) {
+    public void render(double dt) {
 
-        shooter.renderStep(dt);
+        shooter.render(dt);
 
-        missileLauncher.renderStep(dt);
+        missileLauncher.render(dt);
 
         Iterator<PowerUp> itr = powerUps.iterator();
         while (itr.hasNext()) {
@@ -60,7 +60,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
             if (powerUp.state == PowerUp.PowerUpState.DEACTIVE) {
                 itr.remove();
             } else {
-                powerUp.renderStep(dt);
+                powerUp.render(dt);
                 if (shooter.isCollidingWith(powerUp)) {
                     powerUp.addEffectTo(shooter);
                 }
@@ -69,7 +69,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         missileLauncher.addAbilityToEquipPowerUp(powerUps);
 
-        enemyWave.renderStep(dt);
+        enemyWave.render(dt);
         score += enemyWave.handleCollisionsWithMissiles(missileLauncher.missiles);
         gameOverFlag = enemyWave.isCleared() || (shooter.state == Shooter.ShooterState.DEAD);
 

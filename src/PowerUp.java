@@ -110,10 +110,10 @@ public class PowerUp extends DefaultCritter {
     }
 
     @Override
-    public void renderStep(double dt) {
+    public void render(double dt) {
         switch (state) {
             case TRAVELLING:
-                super.renderStep(dt);
+                super.render(dt);
                 break;
 
             case ACTIVE:

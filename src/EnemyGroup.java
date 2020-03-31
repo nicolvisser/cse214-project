@@ -64,8 +64,8 @@ public class EnemyGroup extends DefaultCritter {
     }
 
     @Override
-    public void renderStep(double dt) {
-        super.renderStep(dt);
+    public void render(double dt) {
+        super.render(dt);
 
         // calculate change in position of group object
         double dx = velocity.x * dt + 0.5 * acceleration.x * dt * dt;
@@ -76,7 +76,7 @@ public class EnemyGroup extends DefaultCritter {
             Enemy enemy = itr.next();
 
             // render new position of enemy, independent of group
-            enemy.renderStep(dt);
+            enemy.render(dt);
 
             // add group movement effect to enemy
             enemy.translateX(dx);
