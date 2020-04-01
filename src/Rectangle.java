@@ -22,8 +22,8 @@ public class Rectangle implements Serializable {
         this.height = height;
         this.xmin = xcenter - width / 2;
         this.xmax = xcenter + width / 2;
-        this.ymin = xcenter - height / 2;
-        this.ymax = xcenter + height / 2;
+        this.ymin = ycenter - height / 2;
+        this.ymax = ycenter + height / 2;
     }
 
     public double getWidth() {
