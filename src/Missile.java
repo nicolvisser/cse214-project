@@ -30,6 +30,10 @@ public class Missile extends DefaultCritter {
                 AnimatedPicture.AnimationType.FWD_BWD_ONCE);
     }
 
+    public void takeDamage() { // able to 'kill' missile regardless of damage
+        healthPoints = 0;
+    }
+
     @Override
     public void draw() {
         switch (state) {

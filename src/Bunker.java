@@ -1,100 +1,77 @@
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Bunker {
 
-    enum BlockState {
-        EDGE, INNER, DESTROYED;
+    private class Block extends Particle2D {
+        private static final long serialVersionUID = 1L;
+        private double halfWidth, halfHeight;
+
+        public Block(Vector2D position, double halfWidth, double halfHeight) {
+            super(position);
+            this.halfWidth = halfWidth;
+            this.halfHeight = halfHeight;
+        }
+
+        public void draw() {
+            int r = 60 + (int) (Math.random() * 20);
+            StdDraw.setPenColor(new Color(r, r, r));
+            StdDraw.filledRectangle(position.x, position.y, halfWidth, halfHeight);
+        }
     }
 
     Rectangle bunkerArea;
-    int M, N;
-    BlockState[][] blocks;
+    ArrayList<Block> blocks;
+    double collisionRadius;
 
-    public Bunker(Rectangle bunkerArea, int M, int N) {
+    public Bunker(Rectangle bunkerArea, int numRows, int numCols) {
         this.bunkerArea = bunkerArea;
-        this.M = M; // num rows
-        this.N = N; // num cols
-        blocks = new BlockState[M][N];
-        for (int row = 0; row < M; row++) {
-            for (int col = 0; col < N; col++) {
-                blocks[row][col] = BlockState.INNER;
-            }
-        }
-        findEdges();
-    }
+        blocks = new ArrayList<>();
+        double halfWidth = bunkerArea.getWidth() / numRows / 2;
+        double halfHeight = bunkerArea.getHeight() / numCols / 2;
+        this.collisionRadius = (halfWidth + halfHeight) / 2;
 
-    public void findEdges() {
-
-        for (int col = 0; col < N; col++) {
-            // find from top
-            for (int row = 0; row < M; row++) {
-                if (blocks[row][col] != BlockState.DESTROYED) {
-                    blocks[row][col] = BlockState.EDGE;
-                    break;
-                }
-            }
-
-            // find from top
-            for (int row = M - 1; row >= 0; row--) {
-                if (blocks[row][col] != BlockState.DESTROYED) {
-                    blocks[row][col] = BlockState.EDGE;
-                    break;
-                }
-            }
-        }
-
-        for (int row = 0; row < M; row++) {
-            // find from top
-            for (int col = 0; col < N; col++) {
-                if (blocks[row][col] != BlockState.DESTROYED) {
-                    blocks[row][col] = BlockState.EDGE;
-                    break;
-                }
-            }
-
-            // find from top
-            for (int col = N - 1; col >= 0; col--) {
-                if (blocks[row][col] != BlockState.DESTROYED) {
-                    blocks[row][col] = BlockState.EDGE;
-                    break;
-                }
+        for (double x = bunkerArea.getXmin() + halfWidth; x < bunkerArea.getXmax(); x += 2 * halfWidth) {
+            for (double y = bunkerArea.getYmin() + halfHeight; y < bunkerArea.getYmax(); y += 2 * halfHeight) {
+                Block block = new Block(new Vector2D(x, y), halfWidth, halfHeight);
+                blocks.add(block);
             }
         }
     }
 
     public void draw() {
-
-        double blockHalfWidth = bunkerArea.getWidth() / N / 2;
-        double blockHalfHeight = bunkerArea.getHeight() / M / 2;
-
-        for (int row = 0; row < M; row++) {
-            double y = bunkerArea.getYmin() + blockHalfHeight + row * 2 * blockHalfHeight;
-            for (int col = 0; col < N; col++) {
-                double x = bunkerArea.getXmin() + blockHalfWidth + col * 2 * blockHalfWidth;
-                int randColorValue = 150 + (int) (Math.random() * 30);
-
-                Color randColor;
-                switch (blocks[row][col]) {
-                    case EDGE:
-                        randColor = new Color(randColorValue, 0, 0);
-                        StdDraw.setPenColor(randColor);
-                        StdDraw.filledRectangle(x, y, blockHalfWidth, blockHalfHeight);
-                        break;
-                    case INNER:
-                        randColor = new Color(0, 0, randColorValue);
-                        StdDraw.setPenColor(randColor);
-                        StdDraw.filledRectangle(x, y, blockHalfWidth, blockHalfHeight);
-                        break;
-                    case DESTROYED:
-                        break;
-
-                }
-            }
+        for (Block block : blocks) {
+            block.draw();
         }
-
     }
 
-    public static void main(String[] args) {
+    public void handlePossibleCollisionWith(Missile missile) {
+        boolean burst = false;
+        int burstRadius = 5;
 
+        if (missile.state == Missile.MissileState.TRAVELLING) { // missile is alive and travelling
+
+            if (bunkerArea.containsPoint(missile.position)) { // missile entered bunker region
+
+                Iterator<Block> blockIterator = blocks.iterator();
+                while (blockIterator.hasNext()) {
+                    Block block = blockIterator.next();
+
+                    double distance = block.position.subtract(missile.position).magnitude();
+
+                    if (distance < collisionRadius) {
+                        burst = true;
+                    }
+
+                    if (burst && distance < burstRadius) {
+                        blockIterator.remove();
+                        missile.takeDamage();
+                    }
+
+                }
+
+            }
+        }
     }
 }

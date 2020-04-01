@@ -28,7 +28,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
     ArrayList<PowerUp> powerUps;
 
-    Bunker bunker;
+    ArrayList<Bunker> bunkers;
 
     public InvaderGameState(Rectangle drawArea) {
 
@@ -43,7 +43,11 @@ public class InvaderGameState extends KeyListener implements Serializable {
         powerUps.add(new PowerUp(new Vector2D(-10, 400), PowerUp.PowerUpType.RED));
         powerUps.add(new PowerUp(new Vector2D(0, 600), PowerUp.PowerUpType.GREEN));
 
-        bunker = new Bunker(new Rectangle(0, -50, 30, 10), 5, 15);
+        bunkers = new ArrayList<>();
+        bunkers.add(new Bunker(new Rectangle(-20, -30, 30, 10), 20, 5));
+        bunkers.add(new Bunker(new Rectangle(-60, -30, 30, 10), 20, 5));
+        bunkers.add(new Bunker(new Rectangle(20, -30, 30, 10), 20, 5));
+        bunkers.add(new Bunker(new Rectangle(60, -30, 30, 10), 20, 5));
 
     }
 
@@ -69,11 +73,22 @@ public class InvaderGameState extends KeyListener implements Serializable {
         score += enemyWave.handleCollisionsWithMissiles(shooter.getMissileLauncher().missiles);
         gameOverFlag = enemyWave.isCleared() || (shooter.state == Shooter.ShooterState.DEAD);
 
+        for (Bunker bunker : bunkers) {
+            for (Missile missile : shooter.getMissileLauncher().missiles) {
+                bunker.handlePossibleCollisionWith(missile);
+            }
+
+            for (Missile enemyMissile : enemyWave.enemyMissiles) {
+                bunker.handlePossibleCollisionWith(enemyMissile);
+            }
+        }
     }
 
     public void draw() {
 
-        bunker.draw();
+        for (Bunker bunker : bunkers) {
+            bunker.draw();
+        }
 
         shooter.draw();
 

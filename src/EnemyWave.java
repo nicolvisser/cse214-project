@@ -13,7 +13,7 @@ public class EnemyWave implements Serializable {
     private EnemyGroup[] enemyGroups;
     private Shooter shooterRef;
     private double timeUntilNextCounterAttack;
-    private ArrayList<Missile> enemyMissiles;
+    public ArrayList<Missile> enemyMissiles;
 
     public EnemyWave(Rectangle canvas, Shooter shooterRef) {
         this.canvas = canvas;
@@ -67,7 +67,7 @@ public class EnemyWave implements Serializable {
                 } else {
                     StdAudio.play("resources/audio/shieldUp.wav");
                 }
-                enemyMissile.takeDamage(Integer.MAX_VALUE);
+                enemyMissile.takeDamage();
             } else if (enemyMissile.state == Missile.MissileState.TRAVELLING) {
 
                 Iterator<Missile> shooterMissileIterator = shooterRef.getMissileLauncher().missiles.iterator();
@@ -76,8 +76,8 @@ public class EnemyWave implements Serializable {
                     Missile shooterMissile = shooterMissileIterator.next();
                     if (shooterMissile.state == Missile.MissileState.TRAVELLING
                             && enemyMissile.isCollidingWith(shooterMissile)) {
-                        shooterMissile.takeDamage(Integer.MAX_VALUE);
-                        enemyMissile.takeDamage(Integer.MAX_VALUE);
+                        shooterMissile.takeDamage();
+                        enemyMissile.takeDamage();
                     }
                 }
 

@@ -36,7 +36,7 @@ public class Enemy extends DefaultCritter {
                 && this.isCollidingWith(missile)) {
             points += missile.missileDamage; // TODO: Better points system than just missile damage
             takeDamage(missile.missileDamage);
-            missile.takeDamage(Integer.MAX_VALUE);
+            missile.takeDamage();
         }
         return points;
     }
