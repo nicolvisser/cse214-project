@@ -28,6 +28,8 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
     ArrayList<PowerUp> powerUps;
 
+    Bunker bunker;
+
     public InvaderGameState(Rectangle drawArea) {
 
         score = 0;
@@ -40,6 +42,8 @@ public class InvaderGameState extends KeyListener implements Serializable {
         powerUps.add(new PowerUp(new Vector2D(10, 200), PowerUp.PowerUpType.FAST_ENERGY_GAIN));
         powerUps.add(new PowerUp(new Vector2D(-10, 400), PowerUp.PowerUpType.RED));
         powerUps.add(new PowerUp(new Vector2D(0, 600), PowerUp.PowerUpType.GREEN));
+
+        bunker = new Bunker(new Rectangle(0, -50, 30, 10), 5, 15);
 
     }
 
@@ -69,6 +73,8 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
     public void draw() {
 
+        bunker.draw();
+
         shooter.draw();
 
         enemyWave.draw();
@@ -80,6 +86,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
         drawHealthBar((double) shooter.healthPoints / Shooter.DEFAULT_HEALTH_POINTS);
         drawEnergyBar(shooter.energyPoints / Shooter.DEFAULT_ENERGY_POINTS);
         drawScore(score);
+
     }
 
     @Override
