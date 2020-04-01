@@ -9,7 +9,7 @@ public class MissileLauncher extends DefaultCritter {
     private static final long serialVersionUID = 1L;
 
     public static final double DEFAULT_RELOAD_TIME = 0.15;
-    private static final double TURRET_ANGULAR_ACCELERATION_MAGNITUDE = 40;
+    private static final double TURRET_ANGULAR_ACCELERATION_MAGNITUDE = 50;
     private static final double TURRENT_MINIMUM_ANGLE = 0.2;
     private static final double TURRENT_MAXIMUM_ANGLE = Math.PI - 0.2;
 
@@ -46,9 +46,9 @@ public class MissileLauncher extends DefaultCritter {
 
         // determine angular velocity from turret rotation status
         if (turretLeftRotateStatus)
-            angularAcceleration += TURRET_ANGULAR_ACCELERATION_MAGNITUDE;
+            angularAcceleration = TURRET_ANGULAR_ACCELERATION_MAGNITUDE;
         else if (turretRightRotateStatus)
-            angularAcceleration -= TURRET_ANGULAR_ACCELERATION_MAGNITUDE;
+            angularAcceleration = -TURRET_ANGULAR_ACCELERATION_MAGNITUDE;
         else
             angularAcceleration = 0;
 
@@ -61,8 +61,15 @@ public class MissileLauncher extends DefaultCritter {
         super.render(dt);
 
         // keep rotation in [0.2, 2*PI - 0.2] interval
-        setOrientation(Math.min(getOrientation(), TURRENT_MAXIMUM_ANGLE));
-        setOrientation(Math.max(getOrientation(), TURRENT_MINIMUM_ANGLE));
+        if (getOrientation() > TURRENT_MAXIMUM_ANGLE) {
+            setOrientation(TURRENT_MAXIMUM_ANGLE);
+            angularVelocity = 0;
+            angularAcceleration = 0;
+        } else if (getOrientation() < TURRENT_MINIMUM_ANGLE) {
+            setOrientation(TURRENT_MINIMUM_ANGLE);
+            angularVelocity = 0;
+            angularAcceleration = 0;
+        }
 
         Iterator<Missile> missileIterator = missiles.iterator();
         while (missileIterator.hasNext()) {
