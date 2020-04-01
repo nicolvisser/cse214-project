@@ -1,14 +1,15 @@
 public class HighScoreScreen extends MenuScreen {
 
     static final int NUM_ENTRIES = 10;
-    static final String[] OPTIONS = { "Reset", "Back" };
+    static final String[] DEFAULT_OPTIONS = { "Reset", "Back" };
+    static final String[] GAME_OVER_OPTIONS = { "Rename", "Back" };
 
     String[] names;
     int[] scores;
     int highlightedScore;
 
     public HighScoreScreen() {
-        super("High Scores", OPTIONS);
+        super("High Scores", DEFAULT_OPTIONS);
         names = new String[NUM_ENTRIES];
         scores = new int[NUM_ENTRIES];
         highlightedScore = -1;
@@ -59,6 +60,11 @@ public class HighScoreScreen extends MenuScreen {
         }
     }
 
+    public void renameHighlightedScore(String name) {
+        names[highlightedScore] = name;
+        saveToFile();
+    }
+
     public boolean isNewHighScore(int score) {
         return score > scores[NUM_ENTRIES - 1];
     }
@@ -77,6 +83,14 @@ public class HighScoreScreen extends MenuScreen {
 
     public void resetHighlightedScore() {
         highlightedScore = -1;
+    }
+
+    public void setOptionsToGameOverOptions() {
+        textOptions = GAME_OVER_OPTIONS;
+    }
+
+    public void resetOptions() {
+        textOptions = DEFAULT_OPTIONS;
     }
 
     public void draw() {

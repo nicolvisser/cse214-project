@@ -4,6 +4,8 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import javax.swing.JOptionPane;
+
 /**
  * Invaders
  */
@@ -43,11 +45,12 @@ public class Invaders {
 
     static HighScoreScreen highScoreScreen = new HighScoreScreen();
 
-    static GameOverScreen gameOverScreen = new GameOverScreen();
-
     static ControlsScreen controlsScreen = new ControlsScreen();
 
     static Starfield background;
+
+    static int score;
+    static boolean isHighScore = false;
 
     public static void main(String[] args) {
 
@@ -403,17 +406,14 @@ public class Invaders {
 
                 case GAME_OVER:
 
-                    int score;
-
                     if (loadedInvaderGameState != null) {
                         score = loadedInvaderGameState.score;
+                        isHighScore = highScoreScreen.isNewHighScore(score);
 
-                        if (highScoreScreen.isNewHighScore(score) && loadedInvaderGameState != null) {
+                        if (isHighScore) {
                             highScoreScreen.addEntry("No Name", loadedInvaderGameState.score);
+                            highScoreScreen.setOptionsToGameOverOptions();
                         }
-
-                        String[] options = { "Enter Name", "Back to Main Menu" };
-                        highScoreScreen.setOptions(options);
 
                         loadedInvaderGameState = null;
                     }
@@ -425,14 +425,24 @@ public class Invaders {
                         case -2: // back (to main menu)
                             highScoreScreen.resetSelection();
                             highScoreScreen.resetHiglight();
+                            highScoreScreen.resetHighlightedScore();
+                            highScoreScreen.resetOptions();
                             currentDisplayState = DisplayState.MAIN_MENU;
                             break;
 
                         case -1: // not yet selected
                             break;
 
-                        case 0: // enter name
-                            // todo renaming high score username
+                        case 0: // if highscore rename, else reset
+                            if (isHighScore) {
+                                String name = JOptionPane.showInputDialog("Enter Your Name:");
+                                if (name.length() > 25)
+                                    name = name.substring(0, 25);
+                                highScoreScreen.renameHighlightedScore(name);
+                            } else {
+                                highScoreScreen.resetHighScores();
+                            }
+                            highScoreScreen.resetSelection();
                             break;
 
                         case 1: // back
