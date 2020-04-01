@@ -31,7 +31,7 @@ public class Rectangle implements Serializable {
     }
 
     public double getHeight() {
-        return width;
+        return height;
     }
 
     public double getXmin() {
