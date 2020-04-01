@@ -5,13 +5,15 @@ public class Shooter extends DefaultCritter {
 
     public static final int DEFAULT_HEALTH_POINTS = 300;
     public static final int DEFAULT_ENERGY_POINTS = 100;
-    public static final double DEFAULT_ENERGY_GAIN_PER_TIMESTEP = 0.1;
+    public static final double DEFAULT_ENERGY_GAIN_PER_TIMESTEP = 0.05;
 
     private static final long serialVersionUID = 1L;
     public static final int DEFAULT_COLLISION_RADIUS = 7;
+
     private static final int SHIELD_COLLISION_RADIUS = 12;
-    private static final int SHIELD_ENERGY_USAGE_INITIAL = 10;
-    private static final double SHIELD_ENERGY_USAGE_PER_TIMESTEP = 0.5;
+    private static final int SHIELD_ENERGY_USAGE_INITIAL = 25;
+    private static final double SHIELD_ENERGY_USAGE_PER_TIMESTEP = 2;
+
     private static final int MOVEMENT_BOUNDARY_XMIN = -95;
     private static final int MOVEMENT_BOUNDARY_XMAX = 95;
     private static final int THRUSTER_ACCELERATION_MAGNITUDE = 1000;
