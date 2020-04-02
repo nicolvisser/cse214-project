@@ -49,10 +49,6 @@ public class Enemy extends DefaultCritter {
         return points;
     }
 
-    public boolean isTouchingBottomOrShooter(Shooter shooter) {
-        return (this.position.y - collisionRadius <= canvas.ymin()) || (this.isCollidingWith(shooter));
-    }
-
     @Override
     public void render(double dt) {
         switch (state) {

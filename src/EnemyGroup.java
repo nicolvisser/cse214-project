@@ -99,16 +99,22 @@ public class EnemyGroup extends DefaultCritter {
         return points;
     }
 
-    public boolean isTouchingBottomOrShooter(Shooter shooter) {
+    public boolean isCollidingWith(Shooter shooter) {
         // TODO: Possible big performance boost here if using bounding box that
-        // (1) intersects with shooter bounding box
-        // (2) interects with line that extends over 'ground' y = -100
+        // intersects with shooter bounding box... BUT FIRST need to create bounding
+        // area for shooter
         for (Enemy enemy : enemies) {
-            if (enemy.isTouchingBottomOrShooter(shooter)) {
+            if (enemy.isCollidingWith(shooter)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public boolean isCollidingWithBottomOfCanvas() {
+        // a ray along the bottom of canvas
+        Ray groundRay = new Ray(new Vector2D(canvas.xmin(), canvas.ymin()), new Vector2D(1, 0));
+        return boundingShape.intersects(groundRay);
     }
 
     public Enemy getRandomEnemy() {

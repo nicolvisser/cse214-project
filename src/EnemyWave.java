@@ -104,7 +104,7 @@ public class EnemyWave implements Serializable {
 
     public boolean checkGameOverConditions(Shooter shooter) {
         for (EnemyGroup enemyGroup : enemyGroups) {
-            if (enemyGroup.isTouchingBottomOrShooter(shooter)) {
+            if (enemyGroup.isCollidingWith(shooter) || enemyGroup.isCollidingWithBottomOfCanvas()) {
                 return true;
             }
         }
