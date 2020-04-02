@@ -2,7 +2,6 @@ public class Rectangle {
 
     private double width, height;
     private double x, y; // position of center of rectangle
-    private double xmin, xmax, ymin, ymax;
 
     public Rectangle(double x, double y, double width, double height) {
         set(x, y, width, height);
@@ -13,10 +12,6 @@ public class Rectangle {
         this.y = y;
         this.width = width;
         this.height = height;
-        this.xmin = x - width / 2;
-        this.xmax = x + width / 2;
-        this.ymin = y - height / 2;
-        this.ymax = y + height / 2;
     }
 
     public double getWidth() {
@@ -27,20 +22,20 @@ public class Rectangle {
         return height;
     }
 
-    public double getXmin() {
-        return xmin;
+    public double xmin() {
+        return x - width / 2;
     }
 
-    public double getXmax() {
-        return xmax;
+    public double xmax() {
+        return x + width / 2;
     }
 
-    public double getYmin() {
-        return ymin;
+    public double ymin() {
+        return y - height / 2;
     }
 
-    public double getYmax() {
-        return ymax;
+    public double ymax() {
+        return y + height / 2;
     }
 
     public void setWidth(double width) {
@@ -84,7 +79,7 @@ public class Rectangle {
     }
 
     public boolean contains(double x, double y) {
-        return (x >= xmin) && (x <= xmax) && (y >= ymin) && (y <= ymax);
+        return (x >= xmin()) && (x <= xmax()) && (y >= ymin()) && (y <= ymax());
     }
 
     public boolean contains(Vector2D pos) {
@@ -92,13 +87,13 @@ public class Rectangle {
     }
 
     public boolean contains(Rectangle other) {
-        return (other.xmin >= this.xmin && other.xmax <= this.xmax && other.ymin >= this.ymin
-                && other.ymax <= this.ymax);
+        return (other.xmin() >= this.xmin() && other.xmax() <= this.xmax() && other.ymin() >= this.ymin()
+                && other.ymax() <= this.ymax());
     }
 
     // also includes touching
     public boolean intersects(Rectangle other) {
-        return !(this.xmin > other.xmax || this.xmax < other.xmin || this.ymin > other.ymax || this.ymax < other.ymin);
+        return !(this.xmin() > other.xmax() || this.xmax() < other.xmin() || this.ymin() > other.ymax() || this.ymax() < other.ymin());
     }
 
     // see http://www.jeffreythompson.org/collision-detection/circle-rect.php
@@ -108,14 +103,14 @@ public class Rectangle {
         double testY = circle.y;
 
         // which edge is closest?
-        if (circle.x < xmin)
-            testX = xmin; // test left edge
-        else if (circle.x > xmax)
-            testX = xmax; // right edge
-        if (circle.y < ymin)
-            testY = ymin; // bottom edge
-        else if (circle.y > ymax)
-            testY = ymax; // top edge
+        if (circle.x < xmin())
+            testX = xmin(); // test left edge
+        else if (circle.x > xmax())
+            testX = xmax(); // right edge
+        if (circle.y < ymin())
+            testY = ymin(); // bottom edge
+        else if (circle.y > ymax())
+            testY = ymax(); // top edge
 
         // get distance from closest edges
         double distX = circle.x - testX;
@@ -128,10 +123,10 @@ public class Rectangle {
 
     public Rectangle intersection(Rectangle other) {
         if (intersects(other)) {
-            double newXmin = Math.max(this.xmin, other.xmin);
-            double newXmax = Math.min(this.xmax, other.xmax);
-            double newYmin = Math.max(this.ymin, other.ymin);
-            double newYmax = Math.min(this.ymax, other.ymax);
+            double newXmin = Math.max(this.xmin(), other.xmin());
+            double newXmax = Math.min(this.xmax(), other.xmax());
+            double newYmin = Math.max(this.ymin(), other.ymin());
+            double newYmax = Math.min(this.ymax(), other.ymax());
 
             double newX = (newXmin + newXmax) / 2;
             double newY = (newYmin + newYmax) / 2;
@@ -154,8 +149,8 @@ public class Rectangle {
     }
 
     public Vector2D getRandomPositionInside() {
-        double rx = xmin + Math.random() * width;
-        double ry = ymin + Math.random() * height;
+        double rx = xmin() + Math.random() * width;
+        double ry = ymin() + Math.random() * height;
         return new Vector2D(rx, ry);
     }
 

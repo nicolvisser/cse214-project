@@ -70,8 +70,8 @@ public class Invaders {
 
     public static void setupStdDrawCanvas(int width, int height) {
         StdDraw.setCanvasSize(width, height);
-        StdDraw.setXscale(canvas.getXmin(), canvas.getXmax());
-        StdDraw.setYscale(canvas.getYmin(), canvas.getYmax());
+        StdDraw.setXscale(canvas.xmin(), canvas.xmax());
+        StdDraw.setYscale(canvas.ymin(), canvas.ymax());
     }
 
     public static void gameLoop() {

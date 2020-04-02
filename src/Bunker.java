@@ -32,8 +32,8 @@ public class Bunker {
         double halfHeight = bunkerArea.getHeight() / numCols / 2;
         this.collisionRadius = (halfWidth + halfHeight) / 2;
 
-        for (double x = bunkerArea.getXmin() + halfWidth; x < bunkerArea.getXmax(); x += 2 * halfWidth) {
-            for (double y = bunkerArea.getYmin() + halfHeight; y < bunkerArea.getYmax(); y += 2 * halfHeight) {
+        for (double x = bunkerArea.xmin() + halfWidth; x < bunkerArea.xmax(); x += 2 * halfWidth) {
+            for (double y = bunkerArea.ymin() + halfHeight; y < bunkerArea.ymax(); y += 2 * halfHeight) {
                 Block block = new Block(new Vector2D(x, y), halfWidth, halfHeight);
                 blocks.add(block);
             }

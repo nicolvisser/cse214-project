@@ -44,14 +44,14 @@ public class Circle {
         double testY = y;
 
         // which edge is closest?
-        if (x < rect.getXmin())
-            testX = rect.getXmin(); // test left edge
-        else if (x > rect.getXmax())
-            testX = rect.getXmax(); // right edge
-        if (y < rect.getYmin())
-            testY = rect.getYmin(); // bottom edge
-        else if (y > rect.getYmax())
-            testY = rect.getYmax(); // top edge
+        if (x < rect.xmin())
+            testX = rect.xmin(); // test left edge
+        else if (x > rect.xmax())
+            testX = rect.xmax(); // right edge
+        if (y < rect.ymin())
+            testY = rect.ymin(); // bottom edge
+        else if (y > rect.ymax())
+            testY = rect.ymax(); // top edge
 
         // get distance from closest edges
         double distX = x - testX;

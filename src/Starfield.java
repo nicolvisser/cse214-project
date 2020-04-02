@@ -34,15 +34,15 @@ public class Starfield {
             star.render(dt);
 
             // recycle stars that go out of x or bounds
-            if (star.position.x < drawArea.getXmin()) {
-                star.position.x = drawArea.getXmax();
-            } else if (star.position.x > drawArea.getXmax()) {
-                star.position.x = drawArea.getXmin();
+            if (star.position.x < drawArea.xmin()) {
+                star.position.x = drawArea.xmax();
+            } else if (star.position.x > drawArea.xmax()) {
+                star.position.x = drawArea.xmin();
             }
-            if (star.position.y < drawArea.getYmin()) {
-                star.position.y = drawArea.getYmax();
-            } else if (star.position.y > drawArea.getYmax()) {
-                star.position.y = drawArea.getYmin();
+            if (star.position.y < drawArea.ymin()) {
+                star.position.y = drawArea.ymax();
+            } else if (star.position.y > drawArea.ymax()) {
+                star.position.y = drawArea.ymin();
             }
         }
     }
