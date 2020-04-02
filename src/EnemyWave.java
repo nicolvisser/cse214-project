@@ -20,13 +20,13 @@ public class EnemyWave implements Serializable {
 
         enemyGroups = new EnemyGroup[2];
 
-        enemyGroups[0] = new EnemyGroup(canvas);
-        enemyGroups[0].populateInSquareFormation(new Vector2D(-75, 75), 4);
-        enemyGroups[0].velocity = new Vector2D(0, -20);
+        Rectangle rect = new Rectangle(-50, 100, 100, 50);
+        enemyGroups[0] = new EnemyGroup(canvas, rect, 8, 3);
+        enemyGroups[0].velocity = new Vector2D(0, -10);
 
-        enemyGroups[1] = new EnemyGroup(canvas);
-        enemyGroups[1].populateInCircleFormation(new Vector2D(0, 225), 16, 50);
-        enemyGroups[1].velocity = new Vector2D(0, -20);
+        Circle circ = new Circle(0, 200, 50);
+        enemyGroups[1] = new EnemyGroup(canvas, circ, 16);
+        enemyGroups[1].velocity = new Vector2D(0, -10);
 
         this.shooterRef = shooterRef;
         timeUntilNextCounterAttack = 1;
@@ -151,8 +151,7 @@ public class EnemyWave implements Serializable {
                 } else {
                     rEnemy = rGroup.getRandomEnemy();
                 }
-            } while (rEnemy == null || !canvas.contains(rEnemy.position)
-                    || rEnemy.state != Enemy.EnemyState.ALIVE);
+            } while (rEnemy == null || !canvas.contains(rEnemy.position) || rEnemy.state != Enemy.EnemyState.ALIVE);
             return rEnemy;
         } else {
             return null;

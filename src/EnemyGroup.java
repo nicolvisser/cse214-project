@@ -5,58 +5,53 @@ public class EnemyGroup extends DefaultCritter {
 
     private static final long serialVersionUID = 1L;
 
+    Shape boundingShape;
     ArrayList<Enemy> enemies;
     Rectangle canvas;
 
-    public EnemyGroup(Rectangle canvas) {
+    public EnemyGroup(Rectangle canvas, Rectangle boundingRectangle, int numEnemiesInRow, int numEnemiesInCol) {
+        super(); // TODO fix issue here with collisionradius in super class that does not
+                 // correspond to Shape collisionArea (also to other constructors)
+        this.canvas = canvas; // TODO take out of constructor and give own method (also to other constructors)
+        allowRotation = false;
+        enemies = new ArrayList<>();
+        this.position = boundingRectangle.center;
+        this.boundingShape = boundingRectangle;
+
+        int r = Enemy.DEFAULT_COLLISION_RADIUS;
+
+        double xSpacing = (boundingRectangle.width - 2 * r * numEnemiesInRow) / (numEnemiesInRow - 1);
+        double ySpacing = (boundingRectangle.height - 2 * r * numEnemiesInCol) / (numEnemiesInCol - 1);
+
+        for (double x = boundingRectangle.xmin() + r; x < boundingRectangle.xmax(); x += xSpacing + 2 * r) {
+            for (double y = boundingRectangle.ymin() + r; y < boundingRectangle.ymax(); y += ySpacing + 2 * r) {
+                Enemy enemy = new Enemy(canvas, new Vector2D(x, y), 3 * Math.PI / 2);
+                enemy.allowRotation = false;
+                enemies.add(enemy);
+            }
+        }
+
+    }
+
+    public EnemyGroup(Rectangle canvas, Circle boundingCircle, int numEnemies) {
         super();
         this.canvas = canvas;
         allowRotation = false;
         enemies = new ArrayList<>();
-    }
-
-    public void add(Enemy enemy) {
-        enemies.add(enemy);
-    }
-
-    public void remove(Enemy enemy) {
-        enemies.remove(enemy);
-    }
-
-    public boolean hasEnemies() {
-        return enemies.size() > 0;
-    }
-
-    public void populateInSquareFormation(Vector2D position, int numEnemiesOnASide) {
-        this.position = position;
-
-        int radius = Enemy.DEFAULT_COLLISION_RADIUS;
-        int spacing = 3;
-
-        double x = position.x + radius;
-        for (int i = 0; i < numEnemiesOnASide; i++) {
-            double y = position.y + radius;
-            for (int j = 0; j < numEnemiesOnASide; j++) {
-                Enemy enemy = new Enemy(canvas, new Vector2D(x, y), 3 * Math.PI / 2);
-                enemy.allowRotation = false;
-                enemies.add(enemy);
-                y += 2 * radius + spacing;
-            }
-            x += 2 * radius + spacing;
-        }
-    }
-
-    public void populateInCircleFormation(Vector2D position, int numEnemies, int radius) {
-        this.position = position;
+        this.position = boundingCircle.center;
+        this.boundingShape = boundingCircle;
 
         for (double theta = 0; theta < 2 * Math.PI; theta += 2 * Math.PI / numEnemies) {
-            double x = position.x + radius * Math.cos(theta);
-            double y = position.y + radius * Math.sin(theta);
+            double x = position.x + (boundingCircle.radius - Enemy.DEFAULT_COLLISION_RADIUS) * Math.cos(theta);
+            double y = position.y + (boundingCircle.radius - Enemy.DEFAULT_COLLISION_RADIUS) * Math.sin(theta);
             Enemy enemy = new Enemy(canvas, new Vector2D(x, y), 3 * Math.PI / 2);
             enemy.allowRotation = false;
             enemies.add(enemy);
         }
+    }
 
+    public boolean hasEnemies() {
+        return enemies.size() > 0;
     }
 
     @Override
