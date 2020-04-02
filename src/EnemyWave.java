@@ -94,10 +94,10 @@ public class EnemyWave implements Serializable {
         }
     }
 
-    public int handleCollisionsWithMissiles(ArrayList<Missile> missiles) {
+    public int handlePossibleCollisionWithMissile(Missile missile) {
         int points = 0;
         for (EnemyGroup enemyGroup : enemyGroups) {
-            points += enemyGroup.handleCollisionsWithMissiles(missiles);
+            points += enemyGroup.handlePossibleCollisionWithMissile(missile);
         }
         return points;
     }

@@ -56,6 +56,8 @@ public class EnemyGroup extends DefaultCritter {
 
     @Override
     public void draw() {
+        // TODO: Possible performance update: only draw if on screen (by using bounding
+        // boxes)
         for (Enemy enemy : enemies) {
             enemy.draw();
         }
@@ -87,10 +89,10 @@ public class EnemyGroup extends DefaultCritter {
         }
     }
 
-    public int handleCollisionsWithMissiles(ArrayList<Missile> missiles) {
+    public int handlePossibleCollisionWithMissile(Missile missile) {
         int points = 0;
-        for (Enemy enemy : enemies) {
-            for (Missile missile : missiles) {
+        if (boundingShape.contains(missile.position)) { // TODO: missile should ideally have its own bounding box
+            for (Enemy enemy : enemies) {
                 points += enemy.handleCollisionWithMissile(missile);
             }
         }
@@ -98,6 +100,9 @@ public class EnemyGroup extends DefaultCritter {
     }
 
     public boolean isTouchingBottomOrShooter(Shooter shooter) {
+        // TODO: Possible big performance boost here if using bounding box that
+        // (1) intersects with shooter bounding box
+        // (2) interects with line that extends over 'ground' y = -100
         for (Enemy enemy : enemies) {
             if (enemy.isTouchingBottomOrShooter(shooter)) {
                 return true;
@@ -107,7 +112,7 @@ public class EnemyGroup extends DefaultCritter {
     }
 
     public Enemy getRandomEnemy() {
-        if (enemies.size() == 0) {
+        if (!hasEnemies()) {
             return null;
         } else {
             int randomIndex = (int) (Math.random() * enemies.size());
