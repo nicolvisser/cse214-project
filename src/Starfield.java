@@ -50,7 +50,7 @@ public class Starfield {
     public void draw() {
         // draw black space background
         StdDraw.setPenColor(StdDraw.BLACK);
-        StdDraw.filledRectangle(0, 0, drawArea.getWidth() / 2, drawArea.getHeight() / 2);
+        StdDraw.filledRectangle(0, 0, drawArea.width / 2, drawArea.height / 2);
 
         // draw each star with a flicker effect
         for (Star star : stars) {

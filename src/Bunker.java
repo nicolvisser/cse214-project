@@ -28,8 +28,8 @@ public class Bunker {
     public Bunker(Rectangle bunkerArea, int numRows, int numCols) {
         this.bunkerArea = bunkerArea;
         blocks = new ArrayList<>();
-        double halfWidth = bunkerArea.getWidth() / numRows / 2;
-        double halfHeight = bunkerArea.getHeight() / numCols / 2;
+        double halfWidth = bunkerArea.width / numRows / 2;
+        double halfHeight = bunkerArea.height / numCols / 2;
         this.collisionRadius = (halfWidth + halfHeight) / 2;
 
         for (double x = bunkerArea.xmin() + halfWidth; x < bunkerArea.xmax(); x += 2 * halfWidth) {

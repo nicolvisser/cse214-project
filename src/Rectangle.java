@@ -1,65 +1,62 @@
 public class Rectangle {
 
-    private double width, height;
-    private double x, y; // position of center of rectangle
+    public double width, height;
+    public Vector2D center;
 
     public Rectangle(double x, double y, double width, double height) {
-        set(x, y, width, height);
-    }
-
-    public void set(double x, double y, double width, double height) {
-        this.x = x;
-        this.y = y;
+        this.center = new Vector2D(x, y);
         this.width = width;
         this.height = height;
     }
 
-    public double getWidth() {
-        return width;
-    }
-
-    public double getHeight() {
-        return height;
+    // note: setting center REFERENCE
+    public Rectangle(Vector2D center, double width, double height) {
+        this.center = center;
+        this.width = width;
+        this.height = height;
     }
 
     public double xmin() {
-        return x - width / 2;
+        return center.x - width / 2;
     }
 
     public double xmax() {
-        return x + width / 2;
+        return center.x + width / 2;
     }
 
     public double ymin() {
-        return y - height / 2;
+        return center.y - height / 2;
     }
 
     public double ymax() {
-        return y + height / 2;
-    }
-
-    public void setWidth(double width) {
-        set(x, y, width, height);
-    }
-
-    public void setHeight(double height) {
-        set(x, y, width, height);
-    }
-
-    public void setXcenter(double xcenter) {
-        set(xcenter, y, width, height);
-    }
-
-    public void setYcenter(double ycenter) {
-        set(x, ycenter, width, height);
+        return center.y + height / 2;
     }
 
     public void setPosition(double x, double y) {
-        set(x, y, width, height);
+        center.x = x;
+        center.y = y;
+    }
+
+    public void setPositionFrom(Vector2D center) {
+        this.center.x = center.x;
+        this.center.y = center.y;
+    }
+
+    public void setPositionAs(Vector2D center) {
+        this.center = center;
+    }
+
+    public void setWidth(double width) {
+        this.width = width;
+    }
+
+    public void setHeight(double height) {
+        this.height = height;
     }
 
     public void setSize(int width, int height) {
-        set(x, y, width, height);
+        this.width = width;
+        this.height = height;
     }
 
     public static Rectangle zero() {
@@ -82,8 +79,8 @@ public class Rectangle {
         return (x >= xmin()) && (x <= xmax()) && (y >= ymin()) && (y <= ymax());
     }
 
-    public boolean contains(Vector2D pos) {
-        return contains(pos.x, pos.y);
+    public boolean contains(Vector2D point) {
+        return contains(point.x, point.y);
     }
 
     public boolean contains(Rectangle other) {
@@ -93,7 +90,8 @@ public class Rectangle {
 
     // also includes touching
     public boolean intersects(Rectangle other) {
-        return !(this.xmin() > other.xmax() || this.xmax() < other.xmin() || this.ymin() > other.ymax() || this.ymax() < other.ymin());
+        return !(this.xmin() > other.xmax() || this.xmax() < other.xmin() || this.ymin() > other.ymax()
+                || this.ymax() < other.ymin());
     }
 
     // see http://www.jeffreythompson.org/collision-detection/circle-rect.php
@@ -143,7 +141,7 @@ public class Rectangle {
     public boolean equals(Object obj) {
         if (obj instanceof Rectangle) {
             Rectangle rect = (Rectangle) obj;
-            return (x == rect.x && y == rect.y && width == rect.width && height == rect.height);
+            return (center.x == rect.center.x && center.y == rect.center.y && width == rect.width && height == rect.height);
         }
         return super.equals(obj);
     }
@@ -156,6 +154,6 @@ public class Rectangle {
 
     // for debugging and testing
     public void draw() {
-        StdDraw.rectangle(x, y, width / 2, height / 2);
+        StdDraw.rectangle(center.x, center.y, width / 2, height / 2);
     }
 }
