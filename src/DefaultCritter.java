@@ -37,7 +37,7 @@ public class DefaultCritter extends Object2D implements Critter {
         healthPoints -= damagePoints;
     }
 
-    // draw simple default representation of object for debugging
+    // draw simple representation of DefaultCritter for debugging / testing
     public void draw() {
         StdDraw.setPenColor(StdDraw.RED);
         // draw line for line of sight
