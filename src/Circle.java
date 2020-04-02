@@ -4,14 +4,12 @@ public class Circle {
     double radius;
 
     public Circle(double x, double y, double radius) {
-        this.center.x = x;
-        this.center.y = y;
+        this.center = new Vector2D(x, y);
         this.radius = radius;
     }
 
     public Circle(Vector2D center, double radius) {
-        this.center.x = center.x;
-        this.center.y = center.y;
+        this.center = new Vector2D(center.x, center.y);
         this.radius = radius;
     }
 
