@@ -25,6 +25,7 @@ public class PowerUp extends DefaultCritter {
     public PowerUp(Vector2D position, PowerUpType type) {
         this.position = position;
         velocity = new Vector2D(0, -50);
+        allowRotation = false;
         this.type = type;
         state = PowerUpState.TRAVELLING;
         remainingLifetime = DEFAULT_LIFETIME;

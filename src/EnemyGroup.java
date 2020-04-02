@@ -11,6 +11,7 @@ public class EnemyGroup extends DefaultCritter {
     public EnemyGroup(Rectangle canvas) {
         super();
         this.canvas = canvas;
+        allowRotation = false;
         enemies = new ArrayList<>();
     }
 
@@ -37,6 +38,7 @@ public class EnemyGroup extends DefaultCritter {
             double y = position.y + radius;
             for (int j = 0; j < numEnemiesOnASide; j++) {
                 Enemy enemy = new Enemy(canvas, new Vector2D(x, y), 3 * Math.PI / 2);
+                enemy.allowRotation = false;
                 enemies.add(enemy);
                 y += 2 * radius + spacing;
             }
@@ -51,6 +53,7 @@ public class EnemyGroup extends DefaultCritter {
             double x = position.x + radius * Math.cos(theta);
             double y = position.y + radius * Math.sin(theta);
             Enemy enemy = new Enemy(canvas, new Vector2D(x, y), 3 * Math.PI / 2);
+            enemy.allowRotation = false;
             enemies.add(enemy);
         }
 

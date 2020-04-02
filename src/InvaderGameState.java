@@ -35,6 +35,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
         score = 0;
 
         shooter = new Shooter(new Vector2D(0, -75), Math.PI / 2, drawArea);
+        shooter.allowRotation = false;
         enemyWave = new EnemyWave(drawArea, shooter);
 
         powerUps = new ArrayList<>();

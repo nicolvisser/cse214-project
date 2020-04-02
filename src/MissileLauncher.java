@@ -28,6 +28,7 @@ public class MissileLauncher extends DefaultCritter {
 
     public MissileLauncher(Rectangle drawArea, Shooter shooterRef) {
         super(shooterRef.position, Math.PI / 2);
+        allowTranslation = false;
 
         this.drawArea = drawArea;
         this.shooterRef = shooterRef;

@@ -22,6 +22,7 @@ public class Missile extends DefaultCritter {
     public Missile(Vector2D position, Vector2D direction) {
         super(position, direction.getPolarAngle());
         velocity = new Vector2D(SPEED * direction.x, SPEED * direction.y);
+        allowRotation = false;
         healthPoints = DEFAULT_HEALTH_POINTS;
         collisionRadius = DEFAULT_COLLISION_RADIUS;
         missileDamage = DEFAULT_MISSILE_DAMAGE;
