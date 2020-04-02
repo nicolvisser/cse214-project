@@ -28,11 +28,15 @@ public class Particle2D implements Serializable {
         position.y += dy;
     }
 
-    public void render(double dt) {
+    public void renderTranslation(double dt) {
         velocity.x += acceleration.x * dt;
         velocity.y += acceleration.y * dt;
         position.x += velocity.x * dt + 0.5 * acceleration.x * dt * dt;
         position.y += velocity.y * dt + 0.5 * acceleration.y * dt * dt;
+    }
+
+    public void render(double dt) {
+        renderTranslation(dt);
     }
 
     public Vector2D positionRelativeTo(Particle2D other) {

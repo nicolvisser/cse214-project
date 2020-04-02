@@ -73,11 +73,14 @@ public class Object2D extends Particle2D {
         return new Vector2D(Math.sin(orientation), -Math.cos(orientation));
     }
 
-    @Override
-    public void render(double dt) {
-        super.render(dt);
+    public void renderRotation(double dt) {
         angularVelocity += angularAcceleration * dt;
         orientation += angularVelocity * dt + 0.5 * angularAcceleration * dt * dt;
+    }
+
+    public void render(double dt) {
+        super.renderTranslation(dt);
+        this.renderRotation(dt);
     }
 
 }
