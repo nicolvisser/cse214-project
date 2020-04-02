@@ -40,8 +40,8 @@ public class EnemyGroup implements Serializable {
 
     }
 
-    public boolean hasEnemies() {
-        return enemies.size() > 0;
+    public boolean isCleared() {
+        return enemies.size() == 0;
     }
 
     public void draw() {
@@ -118,7 +118,7 @@ public class EnemyGroup implements Serializable {
     }
 
     public Enemy getRandomEnemy() {
-        if (!hasEnemies()) {
+        if (isCleared()) {
             return null;
         } else {
             int randomIndex = (int) (Math.random() * enemies.size());

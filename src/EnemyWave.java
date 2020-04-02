@@ -7,7 +7,7 @@ public class EnemyWave implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Rectangle canvas;
-    private EnemyGroup[] enemyGroups;
+    private ArrayList<EnemyGroup> enemyGroups;
     private Shooter shooterRef;
     private double timeUntilNextCounterAttack;
     public ArrayList<Missile> enemyMissiles;
@@ -15,15 +15,15 @@ public class EnemyWave implements Serializable {
     public EnemyWave(Rectangle canvas, Shooter shooterRef) {
         this.canvas = canvas;
 
-        enemyGroups = new EnemyGroup[2];
+        enemyGroups = new ArrayList<>();
 
         Rectangle rect0 = new Rectangle(-50, 100, 100, 50);
-        enemyGroups[0] = new EnemyGroup(canvas, rect0, 8, 3);
-        enemyGroups[0].velocity = new Vector2D(0, -10);
+        enemyGroups.add(new EnemyGroup(canvas, rect0, 8, 3));
+        enemyGroups.get(0).velocity = new Vector2D(0, -10);
 
         Rectangle rect1 = new Rectangle(50, 200, 100, 50);
-        enemyGroups[1] = new EnemyGroup(canvas, rect1, 8, 3);
-        enemyGroups[1].velocity = new Vector2D(0, -10);
+        enemyGroups.add(new EnemyGroup(canvas, rect1, 8, 3));
+        enemyGroups.get(1).velocity = new Vector2D(0, -10);
 
         this.shooterRef = shooterRef;
         timeUntilNextCounterAttack = 1;
@@ -41,8 +41,14 @@ public class EnemyWave implements Serializable {
             counterAttack();
         }
 
-        for (EnemyGroup enemyGroup : enemyGroups) {
+        Iterator<EnemyGroup> enemyGroupIterator = enemyGroups.iterator();
+        while (enemyGroupIterator.hasNext()) {
+            EnemyGroup enemyGroup = enemyGroupIterator.next();
             enemyGroup.render(dt);
+
+            if (enemyGroup.isCleared()) {
+                enemyGroupIterator.remove();
+            }
         }
 
         Iterator<Missile> enemyMissileIterator = enemyMissiles.iterator();
@@ -103,12 +109,7 @@ public class EnemyWave implements Serializable {
     }
 
     public boolean isCleared() {
-        for (EnemyGroup enemyGroup : enemyGroups) {
-            if (enemyGroup.hasEnemies()) {
-                return false;
-            }
-        }
-        return true;
+        return enemyGroups.size() == 0;
     }
 
     public boolean atLeastOneAliveEnemyOnCanvas() {
@@ -123,11 +124,11 @@ public class EnemyWave implements Serializable {
     }
 
     public EnemyGroup getRandomEnemyGroup() {
-        if (enemyGroups.length == 0) {
+        if (isCleared()) {
             return null;
         } else {
-            int randomIndex = (int) (Math.random() * enemyGroups.length);
-            return enemyGroups[randomIndex];
+            int randomIndex = (int) (Math.random() * enemyGroups.size());
+            return enemyGroups.get(randomIndex);
         }
     }
 
