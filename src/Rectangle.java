@@ -101,6 +101,31 @@ public class Rectangle {
         return !(this.xmin > other.xmax || this.xmax < other.xmin || this.ymin > other.ymax || this.ymax < other.ymin);
     }
 
+    // see http://www.jeffreythompson.org/collision-detection/circle-rect.php
+    public boolean intersects(Circle circle) {
+        // temporary variables to set edges for testing
+        double testX = circle.x;
+        double testY = circle.y;
+
+        // which edge is closest?
+        if (circle.x < xmin)
+            testX = xmin; // test left edge
+        else if (circle.x > xmax)
+            testX = xmax; // right edge
+        if (circle.y < ymin)
+            testY = ymin; // bottom edge
+        else if (circle.y > ymax)
+            testY = ymax; // top edge
+
+        // get distance from closest edges
+        double distX = circle.x - testX;
+        double distY = circle.y - testY;
+        double distance = Math.sqrt((distX * distX) + (distY * distY));
+
+        // if the distance is less than the radius, collision!
+        return distance <= circle.radius;
+    }
+
     public Rectangle intersection(Rectangle other) {
         if (intersects(other)) {
             double newXmin = Math.max(this.xmin, other.xmin);

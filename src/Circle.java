@@ -37,6 +37,31 @@ public class Circle {
         return dx * dx + dy * dy <= (this.radius + other.radius) * (this.radius + other.radius);
     }
 
+    // see http://www.jeffreythompson.org/collision-detection/circle-rect.php
+    public boolean intersects(Rectangle rect) {
+        // temporary variables to set edges for testing
+        double testX = x;
+        double testY = y;
+
+        // which edge is closest?
+        if (x < rect.getXmin())
+            testX = rect.getXmin(); // test left edge
+        else if (x > rect.getXmax())
+            testX = rect.getXmax(); // right edge
+        if (y < rect.getYmin())
+            testY = rect.getYmin(); // bottom edge
+        else if (y > rect.getYmax())
+            testY = rect.getYmax(); // top edge
+
+        // get distance from closest edges
+        double distX = x - testX;
+        double distY = y - testY;
+        double distance = Math.sqrt((distX * distX) + (distY * distY));
+
+        // if the distance is less than the radius, collision!
+        return distance <= radius;
+    }
+
     public Vector2D getRandomPositionInside() {
         double rx, ry;
         do {
