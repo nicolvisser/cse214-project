@@ -88,4 +88,10 @@ public class Circle implements Shape {
         StdDraw.circle(center.x, center.y, radius);
     }
 
+    @Override
+    public boolean intersects(Ray ray) {
+        // TODO IMPLEMENT RAY INTERSECTION WITH CIRCLE HERE
+        return false;
+    }
+
 }

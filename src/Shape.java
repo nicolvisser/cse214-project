@@ -11,6 +11,8 @@ public interface Shape {
 
     public boolean intersects(Circle circ);
 
+    public boolean intersects(Ray ray);
+
     public Vector2D getRandomPositionInside();
 
 }
