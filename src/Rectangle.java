@@ -97,22 +97,22 @@ public class Rectangle {
     // see http://www.jeffreythompson.org/collision-detection/circle-rect.php
     public boolean intersects(Circle circle) {
         // temporary variables to set edges for testing
-        double testX = circle.x;
-        double testY = circle.y;
+        double testX = circle.center.x;
+        double testY = circle.center.y;
 
         // which edge is closest?
-        if (circle.x < xmin())
+        if (circle.center.x < xmin())
             testX = xmin(); // test left edge
-        else if (circle.x > xmax())
+        else if (circle.center.x > xmax())
             testX = xmax(); // right edge
-        if (circle.y < ymin())
+        if (circle.center.y < ymin())
             testY = ymin(); // bottom edge
-        else if (circle.y > ymax())
+        else if (circle.center.y > ymax())
             testY = ymax(); // top edge
 
         // get distance from closest edges
-        double distX = circle.x - testX;
-        double distY = circle.y - testY;
+        double distX = circle.center.x - testX;
+        double distY = circle.center.y - testY;
         double distance = Math.sqrt((distX * distX) + (distY * distY));
 
         // if the distance is less than the radius, collision!
