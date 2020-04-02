@@ -18,12 +18,12 @@ public class EnemyWave implements Serializable {
         enemyGroups = new ArrayList<>();
 
         Rectangle rect0 = new Rectangle(-50, 100, 100, 50);
-        enemyGroups.add(new EnemyGroup(canvas, rect0, 8, 3));
-        enemyGroups.get(0).velocity = new Vector2D(0, -10);
+        enemyGroups.add(new EnemyGroup(canvas, rect0, 5, 4));
+        enemyGroups.get(0).velocity = new Vector2D(0, -20);
 
         Rectangle rect1 = new Rectangle(50, 200, 100, 50);
-        enemyGroups.add(new EnemyGroup(canvas, rect1, 8, 3));
-        enemyGroups.get(1).velocity = new Vector2D(0, -10);
+        enemyGroups.add(new EnemyGroup(canvas, rect1, 5, 4));
+        enemyGroups.get(1).velocity = new Vector2D(0, -20);
 
         this.shooterRef = shooterRef;
         timeUntilNextCounterAttack = 1;

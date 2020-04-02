@@ -69,6 +69,9 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         enemyWave.render(dt);
 
+        if (enemyWave.isCleared() || shooter.state == Shooter.ShooterState.DEAD)
+            gameOverFlag = true;
+
         for (Missile shooterMissile : shooter.getMissileLauncher().missiles) {
             score += enemyWave.handlePossibleCollisionWithMissile(shooterMissile);
         }
@@ -184,6 +187,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
         StdDraw.setPenColor(back);
         StdDraw.filledRectangle(x + SPACING_ICON_BAR + BAR_WIDTH / 2 * 1, y, BAR_WIDTH / 2, 1);
 
+        percentage = Math.min(percentage, 1); // dont overdraw higher values
         if (percentage > 0) {
             StdDraw.setPenColor(front);
             StdDraw.filledRectangle(x + SPACING_ICON_BAR + BAR_WIDTH / 2 * percentage, y, BAR_WIDTH / 2 * percentage,

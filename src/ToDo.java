@@ -5,4 +5,4 @@
 // TODO: Better rotation of turret / crosshair / lookvector or something
 
 
-// TODO: FIX BUG WHEN ENEMY TOUCHES BOTTOM OF SCREEN
+// TODO: FIX UNINTENTIONAL FLICKERING OF HEALTH BAR IF SHOOTER DIES

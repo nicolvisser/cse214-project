@@ -114,7 +114,16 @@ public class EnemyGroup implements Serializable {
     public boolean isCollidingWithBottomOfCanvas() {
         // a ray along the bottom of canvas
         Ray groundRay = new Ray(new Vector2D(canvas.xmin(), canvas.ymin()), new Vector2D(1, 0));
-        return boundingRect.intersects(groundRay);
+        if (boundingRect.intersects(groundRay)) {
+            for (Enemy enemy : enemies) {
+                // TODO: replace with circle.intersects(line) after you implemented that method
+                // -->
+                if (enemy.position.y - enemy.collisionCircle.radius < canvas.xmin()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public Enemy getRandomEnemy() {
