@@ -3,3 +3,6 @@
 
 
 // TODO: Better rotation of turret / crosshair / lookvector or something
+
+
+// TODO: FIX BUG WHEN ENEMY TOUCHES BOTTOM OF SCREEN
