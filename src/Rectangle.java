@@ -1,4 +1,4 @@
-public class Rectangle {
+public class Rectangle implements Shape {
 
     public double width, height;
     public Vector2D center;
@@ -88,6 +88,11 @@ public class Rectangle {
                 && other.ymax() <= this.ymax());
     }
 
+    public boolean contains(Circle circle) {
+        return (circle.center.x + circle.radius <= xmax()) && (circle.center.x - circle.radius >= xmin())
+                && (circle.center.y + circle.radius <= ymax()) && (circle.center.y - circle.radius >= ymin());
+    }
+
     // also includes touching
     public boolean intersects(Rectangle other) {
         return !(this.xmin() > other.xmax() || this.xmax() < other.xmin() || this.ymin() > other.ymax()
@@ -141,7 +146,8 @@ public class Rectangle {
     public boolean equals(Object obj) {
         if (obj instanceof Rectangle) {
             Rectangle rect = (Rectangle) obj;
-            return (center.x == rect.center.x && center.y == rect.center.y && width == rect.width && height == rect.height);
+            return (center.x == rect.center.x && center.y == rect.center.y && width == rect.width
+                    && height == rect.height);
         }
         return super.equals(obj);
     }
@@ -156,4 +162,5 @@ public class Rectangle {
     public void draw() {
         StdDraw.rectangle(center.x, center.y, width / 2, height / 2);
     }
+
 }

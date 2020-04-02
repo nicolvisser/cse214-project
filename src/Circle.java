@@ -1,4 +1,4 @@
-public class Circle {
+public class Circle implements Shape {
 
     Vector2D center;
     double radius;
@@ -32,6 +32,14 @@ public class Circle {
         double maxRadius = Math.max(this.radius, other.radius);
         double minRadius = Math.min(this.radius, other.radius);
         return distance + minRadius <= maxRadius;
+    }
+
+    // see JimBalter's comment @
+    // https://stackoverflow.com/questions/14097290/check-if-circle-contains-rectangle
+    public boolean contains(Rectangle rect) {
+        double dx = Math.max(center.x - rect.xmin(), rect.xmax() - center.x);
+        double dy = Math.max(center.y - rect.ymin(), rect.ymax() - center.y);
+        return radius * radius >= dx * dx + dy * dy;
     }
 
     // also includes touching

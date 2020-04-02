@@ -1,4 +1,4 @@
-public class TestCollision {
+public class TestCircInsideRect {
 
     public static void main(String[] args) {
 
@@ -13,15 +13,15 @@ public class TestCollision {
             StdDraw.setPenColor(StdDraw.BLACK);
             r.draw();
 
-            Circle c = new Circle(StdDraw.mouseX(), StdDraw.mouseY(), 3);
+            Circle c = new Circle(StdDraw.mouseX(), StdDraw.mouseY(), 2);
             c.draw();
 
-            StdOut.println(c.intersects(r));
+            StdOut.println(r.contains(c));
 
             StdDraw.show();
             StdDraw.pause(30);
             StdDraw.clear();
-            if (c.intersects(r)) {
+            if (r.contains(c)) {
                 StdDraw.setPenColor(StdDraw.RED);
                 StdDraw.filledRectangle(0, 0, 10, 10);
             }
