@@ -21,7 +21,7 @@ public class Starfield {
         stars = new Star[NUM_STARS];
 
         for (int i = 0; i < NUM_STARS; i++) {
-            Vector2D position = drawArea.getRandomPosition();
+            Vector2D position = drawArea.getRandomPositionInside();
             double parallaxSensitivity = Math.random() * STARS_PARALLAX_SENSITIVITY_MAX;
             stars[i] = new Star(position, parallaxSensitivity);
         }

@@ -75,7 +75,7 @@ public class MissileLauncher extends DefaultCritter {
         while (missileIterator.hasNext()) {
             Missile missile = missileIterator.next();
             missile.render(dt);
-            if (missile.state == Missile.MissileState.DEAD || !drawArea.containsPoint(missile.position)) {
+            if (missile.state == Missile.MissileState.DEAD || !drawArea.contains(missile.position)) {
                 missileIterator.remove();
             } else if (missile.state == Missile.MissileState.TRAVELLING && powerUpsRef != null) {
                 Iterator<PowerUp> powerUpIterator = powerUpsRef.iterator();

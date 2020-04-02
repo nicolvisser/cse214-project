@@ -52,7 +52,7 @@ public class Bunker {
 
         if (missile.state == Missile.MissileState.TRAVELLING) { // missile is alive and travelling
 
-            if (bunkerArea.containsPoint(missile.position)) { // missile entered bunker region
+            if (bunkerArea.contains(missile.position)) { // missile entered bunker region
 
                 Iterator<Block> blockIterator = blocks.iterator();
                 while (blockIterator.hasNext()) {

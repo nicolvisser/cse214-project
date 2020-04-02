@@ -58,7 +58,7 @@ public class EnemyWave implements Serializable {
         while (enemyMissileIterator.hasNext()) {
             Missile enemyMissile = enemyMissileIterator.next();
             enemyMissile.render(dt);
-            if (enemyMissile.state == Missile.MissileState.DEAD || !canvas.containsPoint(enemyMissile.position)) {
+            if (enemyMissile.state == Missile.MissileState.DEAD || !canvas.contains(enemyMissile.position)) {
                 enemyMissileIterator.remove();
             } else if (enemyMissile.state == Missile.MissileState.TRAVELLING
                     && enemyMissile.isCollidingWith(shooterRef)) {
@@ -123,7 +123,7 @@ public class EnemyWave implements Serializable {
     public boolean atLeastOneAliveEnemyOnCanvas() {
         for (EnemyGroup enemyGroup : enemyGroups) {
             for (Enemy enemy : enemyGroup.enemies) {
-                if (canvas.containsPoint(enemy.position) && enemy.state == Enemy.EnemyState.ALIVE) {
+                if (canvas.contains(enemy.position) && enemy.state == Enemy.EnemyState.ALIVE) {
                     return true;
                 }
             }
@@ -151,7 +151,7 @@ public class EnemyWave implements Serializable {
                 } else {
                     rEnemy = rGroup.getRandomEnemy();
                 }
-            } while (rEnemy == null || !canvas.containsPoint(rEnemy.position)
+            } while (rEnemy == null || !canvas.contains(rEnemy.position)
                     || rEnemy.state != Enemy.EnemyState.ALIVE);
             return rEnemy;
         } else {
