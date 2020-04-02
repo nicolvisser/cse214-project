@@ -2,9 +2,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/**
- * EnemyWave
- */
 public class EnemyWave implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -20,12 +17,12 @@ public class EnemyWave implements Serializable {
 
         enemyGroups = new EnemyGroup[2];
 
-        Rectangle rect = new Rectangle(-50, 100, 100, 50);
-        enemyGroups[0] = new EnemyGroup(canvas, rect, 8, 3);
+        Rectangle rect0 = new Rectangle(-50, 100, 100, 50);
+        enemyGroups[0] = new EnemyGroup(canvas, rect0, 8, 3);
         enemyGroups[0].velocity = new Vector2D(0, -10);
 
-        Circle circ = new Circle(0, 200, 50);
-        enemyGroups[1] = new EnemyGroup(canvas, circ, 16);
+        Rectangle rect1 = new Rectangle(50, 200, 100, 50);
+        enemyGroups[1] = new EnemyGroup(canvas, rect1, 8, 3);
         enemyGroups[1].velocity = new Vector2D(0, -10);
 
         this.shooterRef = shooterRef;
@@ -41,12 +38,6 @@ public class EnemyWave implements Serializable {
         }
 
         if (timeUntilNextCounterAttack < 0) {
-            /*
-             * if at least one enemy on canvas
-             * 
-             * 
-             * 
-             */
             counterAttack();
         }
 

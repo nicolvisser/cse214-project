@@ -29,7 +29,7 @@ public class PowerUp extends DefaultCritter {
         this.type = type;
         state = PowerUpState.TRAVELLING;
         remainingLifetime = DEFAULT_LIFETIME;
-        collisionRadius = DEFAULT_COLLISION_RADIUS;
+        collisionCircle = new Circle(position, DEFAULT_COLLISION_RADIUS);
         String filename = "";
         switch (type) {
             case FAST_ENERGY_GAIN:
@@ -108,10 +108,18 @@ public class PowerUp extends DefaultCritter {
 
                 break;
         }
+
+        // ------> for debugging:
+        StdDraw.setPenColor(StdDraw.GRAY);
+        collisionCircle.draw();
+        // <-------
     }
 
     @Override
     public void render(double dt) {
+
+        collisionCircle.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
+
         switch (state) {
             case TRAVELLING:
                 super.render(dt);

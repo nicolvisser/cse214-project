@@ -3,9 +3,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.awt.Color;
 
-/**
- * InvaderGameState
- */
 public class InvaderGameState extends KeyListener implements Serializable {
 
     private static final long serialVersionUID = 1L;

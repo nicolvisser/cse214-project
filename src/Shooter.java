@@ -20,7 +20,7 @@ public class Shooter extends DefaultCritter {
 
     public ShooterState state;
 
-    public Rectangle drawArea;
+    public Rectangle canvas;
     private MissileLauncher missileLauncher;
 
     public boolean isThrusterLeftActive;
@@ -36,12 +36,12 @@ public class Shooter extends DefaultCritter {
         ALIVE, EXPLODING, DEAD;
     }
 
-    public Shooter(Vector2D position, double orientation, Rectangle drawArea) {
+    public Shooter(Vector2D position, double orientation, Rectangle canvas) {
         super(position, orientation);
-        this.drawArea = drawArea;
+        this.canvas = canvas;
         healthPoints = DEFAULT_HEALTH_POINTS;
         state = ShooterState.ALIVE;
-        collisionRadius = DEFAULT_COLLISION_RADIUS;
+        collisionCircle = new Circle(position, DEFAULT_COLLISION_RADIUS);
         energyPoints = DEFAULT_ENERGY_POINTS;
         energyGainPerTimeStep = DEFAULT_ENERGY_GAIN_PER_TIMESTEP;
         isThrusterLeftActive = false;
@@ -49,11 +49,14 @@ public class Shooter extends DefaultCritter {
         isShieldActive = false;
         explosionAnimation = new AnimatedPicture("resources/images/explosion", "png", 16,
                 AnimatedPicture.AnimationType.FWD_BWD_ONCE);
-        missileLauncher = new MissileLauncher(drawArea, this);
+        missileLauncher = new MissileLauncher(canvas, this);
     }
 
     @Override
     public void render(double dt) {
+
+        collisionCircle.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
+
         switch (state) {
             case ALIVE:
                 missileLauncher.render(dt);
@@ -149,6 +152,11 @@ public class Shooter extends DefaultCritter {
                 break;
         }
 
+        // ------> for debugging:
+        StdDraw.setPenColor(StdDraw.CYAN);
+        collisionCircle.draw();
+        // <-------
+
     }
 
     @Override
@@ -172,7 +180,7 @@ public class Shooter extends DefaultCritter {
     public void activateShield() {
         if (!isShieldActive && energyPoints > SHIELD_ENERGY_USAGE_INITIAL) {
             StdAudio.play("resources/audio/shieldUp.wav");
-            collisionRadius = SHIELD_COLLISION_RADIUS;
+            collisionCircle.radius = SHIELD_COLLISION_RADIUS;
             energyPoints -= SHIELD_ENERGY_USAGE_INITIAL;
             isShieldActive = true;
         }
@@ -181,7 +189,7 @@ public class Shooter extends DefaultCritter {
     public void deactivateShield() {
         if (isShieldActive) {
             StdAudio.play("resources/audio/shieldDown.wav");
-            collisionRadius = DEFAULT_COLLISION_RADIUS;
+            collisionCircle.radius = DEFAULT_COLLISION_RADIUS;
             isShieldActive = false;
         }
     }

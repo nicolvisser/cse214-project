@@ -24,7 +24,7 @@ public class Missile extends DefaultCritter {
         velocity = new Vector2D(SPEED * direction.x, SPEED * direction.y);
         allowRotation = false;
         healthPoints = DEFAULT_HEALTH_POINTS;
-        collisionRadius = DEFAULT_COLLISION_RADIUS;
+        collisionCircle = new Circle(position, DEFAULT_COLLISION_RADIUS);
         missileDamage = DEFAULT_MISSILE_DAMAGE;
         state = MissileState.TRAVELLING;
         explosion = new AnimatedPicture("resources/images/explosion", "png", 16,
@@ -50,10 +50,18 @@ public class Missile extends DefaultCritter {
             case DEAD:
                 break;
         }
+
+        // -----> for debugging
+        StdDraw.setPenColor(StdDraw.YELLOW);
+        collisionCircle.draw();
+        // <-----
     }
 
     @Override
     public void render(double dt) {
+
+        collisionCircle.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
+
         switch (state) {
             case TRAVELLING:
                 super.render(dt);

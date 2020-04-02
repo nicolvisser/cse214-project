@@ -1,8 +1,5 @@
 import java.util.ArrayList;
 
-/**
- * Enemy
- */
 public class Enemy extends DefaultCritter {
 
     enum EnemyState {
@@ -25,7 +22,7 @@ public class Enemy extends DefaultCritter {
         this.canvas = canvas;
         state = EnemyState.ALIVE;
         healthPoints = DEFAULT_HEALTH_POINTS;
-        collisionRadius = DEFAULT_COLLISION_RADIUS;
+        collisionCircle = new Circle(position, DEFAULT_COLLISION_RADIUS);
         explosion = new AnimatedPicture("resources/images/explosion", "png", 16,
                 AnimatedPicture.AnimationType.FWD_BWD_ONCE);
     }
@@ -51,6 +48,9 @@ public class Enemy extends DefaultCritter {
 
     @Override
     public void render(double dt) {
+
+        collisionCircle.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
+
         switch (state) {
             case ALIVE:
                 if (healthPoints <= 0) {
@@ -86,6 +86,11 @@ public class Enemy extends DefaultCritter {
             case DEAD:
                 break;
         }
+
+        // -----> for debugging:
+        StdDraw.setPenColor(StdDraw.MAGENTA);
+        collisionCircle.draw();
+        //
     }
 
 }

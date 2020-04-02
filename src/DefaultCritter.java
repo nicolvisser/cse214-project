@@ -8,7 +8,8 @@ public class DefaultCritter extends Object2D implements Critter {
     private static final int DEFAULT_COLLISION_RADIUS = 5;
 
     public int healthPoints;
-    public double collisionRadius;
+
+    public Circle collisionCircle;
 
     public boolean allowTranslation;
     public boolean allowRotation;
@@ -17,7 +18,8 @@ public class DefaultCritter extends Object2D implements Critter {
         super();
 
         healthPoints = DEFAULT_HEALTH_POINTS;
-        collisionRadius = DEFAULT_COLLISION_RADIUS;
+        collisionCircle = new Circle(position, DEFAULT_COLLISION_RADIUS); // ! possible error if position of circle and
+                                                                         // object gets out of sync
 
         allowTranslation = true;
         allowRotation = true;
@@ -27,7 +29,7 @@ public class DefaultCritter extends Object2D implements Critter {
         super(position, orientation);
 
         healthPoints = DEFAULT_HEALTH_POINTS;
-        collisionRadius = DEFAULT_COLLISION_RADIUS;
+        collisionCircle = new Circle(position, DEFAULT_COLLISION_RADIUS);
 
         allowTranslation = true;
         allowRotation = true;
@@ -44,11 +46,11 @@ public class DefaultCritter extends Object2D implements Critter {
         Vector2D aimTarget = position.add(lookVector().scale(100));
         StdDraw.line(position.x, position.y, aimTarget.x, aimTarget.y);
         // draw circle for body
-        StdDraw.filledCircle(position.x, position.y, collisionRadius);
+        collisionCircle.draw();
     }
 
     public boolean isCollidingWith(DefaultCritter other) {
-        return this.distanceTo(other) <= this.collisionRadius + other.collisionRadius;
+        return this.collisionCircle.intersects(other.collisionCircle);
     }
 
     @Override

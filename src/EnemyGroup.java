@@ -1,30 +1,37 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class EnemyGroup extends DefaultCritter {
+public class EnemyGroup implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    Shape boundingShape;
+    Vector2D position;
+    Vector2D velocity;
+    Vector2D acceleration;
+
+    Rectangle boundingRect;
     ArrayList<Enemy> enemies;
     Rectangle canvas;
 
-    public EnemyGroup(Rectangle canvas, Rectangle boundingRectangle, int numEnemiesInRow, int numEnemiesInCol) {
-        super(); // TODO fix issue here with collisionradius in super class that does not
-                 // correspond to Shape collisionArea (also to other constructors)
+    public EnemyGroup(Rectangle canvas, Rectangle boundingRect, int numEnemiesInRow, int numEnemiesInCol) {
+        super();
         this.canvas = canvas; // TODO take out of constructor and give own method (also to other constructors)
-        allowRotation = false;
         enemies = new ArrayList<>();
-        this.position = boundingRectangle.center;
-        this.boundingShape = boundingRectangle;
+
+        this.position = boundingRect.center;
+        this.velocity = Vector2D.zero();
+        this.acceleration = Vector2D.zero();
+
+        this.boundingRect = boundingRect;
 
         int r = Enemy.DEFAULT_COLLISION_RADIUS;
 
-        double xSpacing = (boundingRectangle.width - 2 * r * numEnemiesInRow) / (numEnemiesInRow - 1);
-        double ySpacing = (boundingRectangle.height - 2 * r * numEnemiesInCol) / (numEnemiesInCol - 1);
+        double xSpacing = (boundingRect.width - 2 * r * numEnemiesInRow) / (numEnemiesInRow - 1);
+        double ySpacing = (boundingRect.height - 2 * r * numEnemiesInCol) / (numEnemiesInCol - 1);
 
-        for (double x = boundingRectangle.xmin() + r; x < boundingRectangle.xmax(); x += xSpacing + 2 * r) {
-            for (double y = boundingRectangle.ymin() + r; y < boundingRectangle.ymax(); y += ySpacing + 2 * r) {
+        for (double x = boundingRect.xmin() + r; x < boundingRect.xmax(); x += xSpacing + 2 * r) {
+            for (double y = boundingRect.ymin() + r; y < boundingRect.ymax(); y += ySpacing + 2 * r) {
                 Enemy enemy = new Enemy(canvas, new Vector2D(x, y), 3 * Math.PI / 2);
                 enemy.allowRotation = false;
                 enemies.add(enemy);
@@ -33,43 +40,37 @@ public class EnemyGroup extends DefaultCritter {
 
     }
 
-    public EnemyGroup(Rectangle canvas, Circle boundingCircle, int numEnemies) {
-        super();
-        this.canvas = canvas;
-        allowRotation = false;
-        enemies = new ArrayList<>();
-        this.position = boundingCircle.center;
-        this.boundingShape = boundingCircle;
-
-        for (double theta = 0; theta < 2 * Math.PI; theta += 2 * Math.PI / numEnemies) {
-            double x = position.x + (boundingCircle.radius - Enemy.DEFAULT_COLLISION_RADIUS) * Math.cos(theta);
-            double y = position.y + (boundingCircle.radius - Enemy.DEFAULT_COLLISION_RADIUS) * Math.sin(theta);
-            Enemy enemy = new Enemy(canvas, new Vector2D(x, y), 3 * Math.PI / 2);
-            enemy.allowRotation = false;
-            enemies.add(enemy);
-        }
-    }
-
     public boolean hasEnemies() {
         return enemies.size() > 0;
     }
 
-    @Override
     public void draw() {
-        // TODO: Possible performance update: only draw if on screen (by using bounding
-        // boxes)
-        for (Enemy enemy : enemies) {
-            enemy.draw();
+
+        // ---------> for debugging:
+        StdDraw.setPenColor(StdDraw.PINK);
+        boundingRect.draw();
+        // <------------------------
+
+        if (canvas.intersects(boundingRect)) {
+            for (Enemy enemy : enemies) {
+                enemy.draw();
+            }
         }
+
     }
 
-    @Override
     public void render(double dt) {
-        super.render(dt);
+
+        velocity = velocity.add(acceleration.scale(dt));
 
         // calculate change in position of group object
         double dx = velocity.x * dt + 0.5 * acceleration.x * dt * dt;
         double dy = velocity.y * dt + 0.5 * acceleration.y * dt * dt;
+
+        position.x += dx;
+        position.y += dy;
+
+        boundingRect.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
 
         Iterator<Enemy> itr = enemies.iterator();
         while (itr.hasNext()) {
@@ -91,7 +92,7 @@ public class EnemyGroup extends DefaultCritter {
 
     public int handlePossibleCollisionWithMissile(Missile missile) {
         int points = 0;
-        if (boundingShape.contains(missile.position)) { // TODO: missile should ideally have its own bounding box
+        if (boundingRect.intersects(missile.collisionCircle)) {
             for (Enemy enemy : enemies) {
                 points += enemy.handleCollisionWithMissile(missile);
             }
@@ -100,21 +101,20 @@ public class EnemyGroup extends DefaultCritter {
     }
 
     public boolean isCollidingWith(Shooter shooter) {
-        // TODO: Possible big performance boost here if using bounding box that
-        // intersects with shooter bounding box... BUT FIRST need to create bounding
-        // area for shooter
-        for (Enemy enemy : enemies) {
-            if (enemy.isCollidingWith(shooter)) {
-                return true;
+
+        if (boundingRect.intersects(shooter.collisionCircle))
+            for (Enemy enemy : enemies) {
+                if (enemy.isCollidingWith(shooter)) {
+                    return true;
+                }
             }
-        }
         return false;
     }
 
     public boolean isCollidingWithBottomOfCanvas() {
         // a ray along the bottom of canvas
         Ray groundRay = new Ray(new Vector2D(canvas.xmin(), canvas.ymin()), new Vector2D(1, 0));
-        return boundingShape.intersects(groundRay);
+        return boundingRect.intersects(groundRay);
     }
 
     public Enemy getRandomEnemy() {
