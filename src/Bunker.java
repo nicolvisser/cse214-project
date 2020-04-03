@@ -21,19 +21,19 @@ public class Bunker {
         }
     }
 
-    Rectangle bunkerArea;
+    Rectangle boundingRect;
     ArrayList<Block> blocks;
     double collisionRadius;
 
-    public Bunker(Rectangle bunkerArea, int numRows, int numCols) {
-        this.bunkerArea = bunkerArea;
+    public Bunker(Rectangle boundingRect, int numRows, int numCols) {
+        this.boundingRect = boundingRect;
         blocks = new ArrayList<>();
-        double halfWidth = bunkerArea.width / numRows / 2;
-        double halfHeight = bunkerArea.height / numCols / 2;
+        double halfWidth = boundingRect.width / numRows / 2;
+        double halfHeight = boundingRect.height / numCols / 2;
         this.collisionRadius = (halfWidth + halfHeight) / 2;
 
-        for (double x = bunkerArea.xmin() + halfWidth; x < bunkerArea.xmax(); x += 2 * halfWidth) {
-            for (double y = bunkerArea.ymin() + halfHeight; y < bunkerArea.ymax(); y += 2 * halfHeight) {
+        for (double x = boundingRect.xmin() + halfWidth; x < boundingRect.xmax(); x += 2 * halfWidth) {
+            for (double y = boundingRect.ymin() + halfHeight; y < boundingRect.ymax(); y += 2 * halfHeight) {
                 Block block = new Block(new Vector2D(x, y), halfWidth, halfHeight);
                 blocks.add(block);
             }
@@ -44,6 +44,11 @@ public class Bunker {
         for (Block block : blocks) {
             block.draw();
         }
+
+        // -----> for debugging:
+        StdDraw.setPenColor(StdDraw.PRINCETON_ORANGE);
+        boundingRect.draw();
+        //
     }
 
     public void handlePossibleCollisionWith(Missile missile) {
@@ -52,7 +57,7 @@ public class Bunker {
 
         if (missile.state == Missile.MissileState.TRAVELLING) { // missile is alive and travelling
 
-            if (bunkerArea.contains(missile.position)) { // missile entered bunker region
+            if (boundingRect.contains(missile.position)) { // missile entered bunker region
 
                 Iterator<Block> blockIterator = blocks.iterator();
                 while (blockIterator.hasNext()) {
