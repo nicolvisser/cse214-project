@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 /**
  * Shooter
  */
@@ -194,5 +196,18 @@ public class Shooter extends DefaultCritter {
             collisionCircle.radius = DEFAULT_COLLISION_RADIUS;
             isShieldActive = false;
         }
+    }
+
+    public void drawAimLine(ArrayList<Bunker> obstacles) {
+        StdDraw.setPenColor(StdDraw.RED);
+
+        Ray aimRay = new Ray(position, missileLauncher.lookVector());
+        for (Bunker obstacle : obstacles) {
+            if (obstacle.boundingRect.intersects(aimRay)) {
+                aimRay.draw(obstacle.boundingRect.lengthOfRayUntilIntersection(aimRay));
+                return;
+            }
+        }
+        aimRay.draw(200);
     }
 }

@@ -101,9 +101,9 @@ public class MissileLauncher extends DefaultCritter {
         }
 
         // aim line
-        LineSegment aimLine = new LineSegment(position, lookVector(), 200);
-        StdDraw.setPenColor(StdDraw.GRAY);
-        aimLine.draw();
+        // LineSegment aimLine = new LineSegment(position, lookVector(), 200);
+        // StdDraw.setPenColor(StdDraw.GRAY);
+        // aimLine.draw();
     }
 
     public void startCharging() {

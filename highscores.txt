@@ -1,3 +1,5 @@
+No Name
+3700
 Nicol
 3200
 No Name
@@ -8,13 +10,11 @@ No Name
 3200
 NICOL
 3200
+No Name
+3000
 NICOL
 3000
+No Name
+2300
 JOHN
 2000
-PETER
-1000
-PIETER
-800
-AHMED
-400
