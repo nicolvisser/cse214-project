@@ -99,6 +99,11 @@ public class MissileLauncher extends DefaultCritter {
         for (Missile missile : missiles) {
             missile.draw();
         }
+
+        // aim line
+        LineSegment aimLine = new LineSegment(position, lookVector(), 200);
+        StdDraw.setPenColor(StdDraw.GRAY);
+        aimLine.draw();
     }
 
     public void startCharging() {
