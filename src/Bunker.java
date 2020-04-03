@@ -4,9 +4,9 @@ import java.util.Iterator;
 
 public class Bunker {
 
-    private class Block extends Particle2D {
+    public class Block extends Particle2D {
         private static final long serialVersionUID = 1L;
-        private Rectangle boundingRect;
+        public Rectangle boundingRect;
         public Color color;
 
         public Block(double x, double y, double width, double height) {
@@ -33,8 +33,8 @@ public class Bunker {
         double blockHeight = (boundingRect.height - (numRows - 1) * spacing) / numRows;
 
         for (double x = boundingRect.xmin() + blockWidth / 2; x < boundingRect.xmax(); x += blockWidth + spacing) {
-            for (double y = boundingRect.ymin() + blockHeight / 2; y < boundingRect.ymax(); y += blockHeight
-                    + spacing) {
+            for (double y = boundingRect.ymin() + blockHeight / 2; y < boundingRect
+                    .ymax(); y += (blockHeight + spacing)) {
                 Block block = new Block(x, y, blockWidth, blockHeight);
                 blocks.add(block);
             }

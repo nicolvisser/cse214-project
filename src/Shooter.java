@@ -198,16 +198,24 @@ public class Shooter extends DefaultCritter {
         }
     }
 
-    public void drawAimLine(ArrayList<Bunker> obstacles) {
-        StdDraw.setPenColor(StdDraw.RED);
+    public void drawAimLine(ArrayList<Bunker> bunkers) {
 
         Ray aimRay = new Ray(position, missileLauncher.lookVector());
-        for (Bunker obstacle : obstacles) {
-            if (obstacle.boundingRect.intersects(aimRay)) {
-                aimRay.draw(obstacle.boundingRect.lengthOfRayUntilIntersection(aimRay));
-                return;
+        double lengthOfAimLine = 200;
+
+        for (Bunker bunker : bunkers) {
+            if (bunker.boundingRect.intersects(aimRay)) {
+                for (Bunker.Block block : bunker.blocks) {
+                    Double lengthUntilCollision = block.boundingRect.lengthOfRayUntilIntersection(aimRay);
+                    if (lengthUntilCollision > 0 && lengthUntilCollision < lengthOfAimLine) {
+                        lengthOfAimLine = lengthUntilCollision;
+                    }
+                }
             }
         }
-        aimRay.draw(200);
+
+        StdDraw.setPenColor(StdDraw.RED);
+        aimRay.draw(lengthOfAimLine);
+
     }
 }
