@@ -42,10 +42,10 @@ public class InvaderGameState extends KeyListener implements Serializable {
         powerUps.add(new PowerUp(new Vector2D(0, 600), PowerUp.PowerUpType.GREEN));
 
         bunkers = new ArrayList<>();
-        bunkers.add(new Bunker(new Rectangle(-20, -30, 30, 10), 20, 5));
-        bunkers.add(new Bunker(new Rectangle(-60, -30, 30, 10), 20, 5));
-        bunkers.add(new Bunker(new Rectangle(20, -30, 30, 10), 20, 5));
-        bunkers.add(new Bunker(new Rectangle(60, -30, 30, 10), 20, 5));
+        bunkers.add(new Bunker(new Rectangle(-20, -30, 30, 10), 5, 15));
+        bunkers.add(new Bunker(new Rectangle(-60, -30, 30, 10), 5, 15));
+        bunkers.add(new Bunker(new Rectangle(20, -30, 30, 10), 5, 15));
+        bunkers.add(new Bunker(new Rectangle(60, -30, 30, 10), 5, 15));
 
     }
 
@@ -54,11 +54,11 @@ public class InvaderGameState extends KeyListener implements Serializable {
         shooter.render(dt);
         shooter.getMissileLauncher().addAbilityToEquipPowerUp(powerUps);
 
-        Iterator<PowerUp> itr = powerUps.iterator();
-        while (itr.hasNext()) {
-            PowerUp powerUp = itr.next();
+        Iterator<PowerUp> powerUpIterator = powerUps.iterator();
+        while (powerUpIterator.hasNext()) {
+            PowerUp powerUp = powerUpIterator.next();
             if (powerUp.state == PowerUp.PowerUpState.DEACTIVE) {
-                itr.remove();
+                powerUpIterator.remove();
             } else {
                 powerUp.render(dt);
                 if (shooter.isCollidingWith(powerUp)) {
@@ -76,13 +76,20 @@ public class InvaderGameState extends KeyListener implements Serializable {
             score += enemyWave.handlePossibleCollisionWithMissile(shooterMissile);
         }
 
-        for (Bunker bunker : bunkers) {
+        Iterator<Bunker> bunkerIterator = bunkers.iterator();
+        while (bunkerIterator.hasNext()) {
+            Bunker bunker = bunkerIterator.next();
+
             for (Missile missile : shooter.getMissileLauncher().missiles) {
                 bunker.handlePossibleCollisionWith(missile);
             }
 
             for (Missile enemyMissile : enemyWave.enemyMissiles) {
                 bunker.handlePossibleCollisionWith(enemyMissile);
+            }
+
+            if (bunker.isCleared()) {
+                bunkerIterator.remove();
             }
         }
     }
