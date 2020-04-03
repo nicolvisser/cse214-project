@@ -88,8 +88,10 @@ public class Enemy extends DefaultCritter {
         }
 
         // -----> for debugging:
-        StdDraw.setPenColor(StdDraw.MAGENTA);
-        collisionCircle.draw();
+        if (Invaders.DEBGGING_ON) {
+            StdDraw.setPenColor(StdDraw.MAGENTA);
+            collisionCircle.draw();
+        }
         //
     }
 

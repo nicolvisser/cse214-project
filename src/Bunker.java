@@ -51,8 +51,10 @@ public class Bunker {
         }
 
         // -----> for debugging:
-        StdDraw.setPenColor(StdDraw.PRINCETON_ORANGE);
-        boundingRect.draw();
+        if (Invaders.DEBGGING_ON) {
+            StdDraw.setPenColor(StdDraw.PRINCETON_ORANGE);
+            boundingRect.draw();
+        }
         //
     }
 

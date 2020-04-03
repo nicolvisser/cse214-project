@@ -11,6 +11,8 @@ import javax.swing.JOptionPane;
  */
 public class Invaders {
 
+    static final boolean DEBGGING_ON = false; // USE THIS TO SHOW DEBUGGING FEAUTURES (bounding areas)
+
     enum DisplayState {
         MAIN_MENU, NEW_GAME, PLAYING, PAUSE, SAVE_GAME, LOAD_GAME, HIGH_SCORES, SETTINGS, CONTROLS, SET_RESOLUTION,
         GAME_OVER, QUIT;

@@ -110,8 +110,10 @@ public class PowerUp extends DefaultCritter {
         }
 
         // ------> for debugging:
-        StdDraw.setPenColor(StdDraw.GRAY);
-        collisionCircle.draw();
+        if (Invaders.DEBGGING_ON) {
+            StdDraw.setPenColor(StdDraw.GRAY);
+            collisionCircle.draw();
+        }
         // <-------
     }
 

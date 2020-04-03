@@ -52,8 +52,10 @@ public class Missile extends DefaultCritter {
         }
 
         // -----> for debugging
-        StdDraw.setPenColor(StdDraw.YELLOW);
-        collisionCircle.draw();
+        if (Invaders.DEBGGING_ON) {
+            StdDraw.setPenColor(StdDraw.YELLOW);
+            collisionCircle.draw();
+        }
         // <-----
     }
 

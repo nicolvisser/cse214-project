@@ -47,8 +47,10 @@ public class EnemyGroup implements Serializable {
     public void draw() {
 
         // ---------> for debugging:
-        StdDraw.setPenColor(StdDraw.PINK);
-        boundingRect.draw();
+        if (Invaders.DEBGGING_ON) {
+            StdDraw.setPenColor(StdDraw.PINK);
+            boundingRect.draw();
+        }
         // <------------------------
 
         if (canvas.intersects(boundingRect)) {

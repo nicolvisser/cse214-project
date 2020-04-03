@@ -153,8 +153,10 @@ public class Shooter extends DefaultCritter {
         }
 
         // ------> for debugging:
-        StdDraw.setPenColor(StdDraw.CYAN);
-        collisionCircle.draw();
+        if (Invaders.DEBGGING_ON) {
+            StdDraw.setPenColor(StdDraw.CYAN);
+            collisionCircle.draw();
+        }
         // <-------
 
     }
