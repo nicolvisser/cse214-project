@@ -2,12 +2,12 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Bunker {
+public class Bunker implements Collidable {
 
-    public class Block extends Particle2D {
+    public class Block extends Particle2D implements Collidable {
         private static final long serialVersionUID = 1L;
-        public Rectangle boundingRect;
-        public Color color;
+        private Rectangle boundingRect;
+        private Color color;
 
         public Block(double x, double y, double width, double height) {
             super(new Vector2D(x, y));
@@ -19,6 +19,21 @@ public class Bunker {
         public void draw() {
             StdDraw.setPenColor(color);
             StdDraw.filledRectangle(position.x, position.y, boundingRect.width / 2, boundingRect.height / 2);
+        }
+
+        @Override
+        public BoundingShape getBoundingShape() {
+            return boundingRect;
+        }
+
+        @Override
+        public boolean isCollidingWith(Collidable other) {
+            return boundingRect.intersects(other.getBoundingShape());
+        }
+
+        @Override
+        public void handlePossibleCollisionWith(Collidable other) {
+            // empty, handled in parent method
         }
     }
 
@@ -58,34 +73,47 @@ public class Bunker {
         //
     }
 
-    public void handlePossibleCollisionWith(Missile missile) {
-        boolean burst = false;
-        int burstRadius = 5;
+    @Override
+    public BoundingShape getBoundingShape() {
+        return boundingRect;
+    }
 
-        if (missile.state == Missile.MissileState.TRAVELLING) { // missile is alive and travelling
+    @Override
+    public boolean isCollidingWith(Collidable other) {
+        return boundingRect.intersects(other.getBoundingShape());
+    }
 
-            if (boundingRect.contains(missile.position)) { // missile center inside bunker
+    @Override
+    public void handlePossibleCollisionWith(Collidable other) {
+        if (other instanceof Missile) {
+            Missile missile = (Missile) other;
 
-                Circle missileBurstCircle = new Circle(missile.position.x, missile.position.y, burstRadius);
+            if (missile.state == Missile.MissileState.TRAVELLING) { // missile is alive and travelling
 
-                Iterator<Block> blockIterator = blocks.iterator();
-                while (blockIterator.hasNext()) {
-                    Block block = blockIterator.next();
+                if (boundingRect.contains(missile.position)) { // if missile center is inside bunker
 
-                    // if missile is not yet bursting, but missile is colliding with block, set
-                    // burst true
-                    if (!burst && missile.getBoundingShape().intersects(block.boundingRect)) {
-                        burst = true;
-                    }
+                    boolean burst = false;
+                    Circle missileBurstCircle = new Circle(missile.position.x, missile.position.y, 5);
 
-                    // if missile is bursting and block intersects burst radius, remove block
-                    if (burst && missileBurstCircle.intersects(block.boundingRect)) {
-                        blockIterator.remove();
-                        missile.takeDamage();
+                    Iterator<Block> blockIterator = blocks.iterator();
+                    while (blockIterator.hasNext()) {
+                        Block block = blockIterator.next();
+
+                        // if missile is not yet bursting, but missile is colliding with block, set
+                        // burst true
+                        if (!burst && missile.getBoundingShape().intersects(block.boundingRect)) {
+                            burst = true;
+                        }
+
+                        // if missile is bursting and block intersects burst radius, remove block
+                        if (burst && missileBurstCircle.intersects(block.boundingRect)) {
+                            blockIterator.remove();
+                            missile.takeDamage();
+                        }
+
                     }
 
                 }
-
             }
         }
     }

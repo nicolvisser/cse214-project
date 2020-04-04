@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 public class Enemy extends DefaultCritter {
 
     enum EnemyState {
@@ -30,23 +28,15 @@ public class Enemy extends DefaultCritter {
                 AnimatedPicture.AnimationType.FWD_BWD_ONCE);
     }
 
-    public int handleCollisionWithMissile(Missile missile) {
-        int points = 0;
-        if ((state == EnemyState.ALIVE) && (missile.state == Missile.MissileState.TRAVELLING)
-                && this.isCollidingWith(missile)) {
-            points += missile.missileDamage; // TODO: Better points system than just missile damage
-            takeDamage(missile.missileDamage);
-            missile.takeDamage();
+    @Override
+    public void handlePossibleCollisionWith(Collidable other) {
+        if (other instanceof Missile) {
+            Missile missile = (Missile) other;
+            if (state == EnemyState.ALIVE && this.isCollidingWith(missile)) {
+                takeDamage(missile.missileDamage);
+                missile.takeDamage();
+            }
         }
-        return points;
-    }
-
-    public int handleCollisionsWithMissiles(ArrayList<Missile> missiles) {
-        int points = 0;
-        for (Missile missile : missiles) {
-            points += handleCollisionWithMissile(missile);
-        }
-        return points;
     }
 
     @Override

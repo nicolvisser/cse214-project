@@ -72,4 +72,10 @@ public class DefaultCritter extends Object2D implements Critter, Collidable {
 
     }
 
+    @Override
+    public void handlePossibleCollisionWith(Collidable other) {
+        // TODO Auto-generated method stub
+
+    }
+
 }

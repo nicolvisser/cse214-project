@@ -141,9 +141,9 @@ public class Turret extends DefaultCritter {
         double lengthOfAimLine = 200;
 
         for (Bunker bunker : bunkers) {
-            if (bunker.boundingRect.intersects(aimRay)) {
+            if (bunker.getBoundingShape().intersects(aimRay)) {
                 for (Bunker.Block block : bunker.blocks) {
-                    Double lengthUntilCollision = aimRay.lengthUntilIntersection(block.boundingRect);
+                    Double lengthUntilCollision = aimRay.lengthUntilIntersection(block.getBoundingShape());
                     if (Double.isFinite(lengthUntilCollision) && lengthUntilCollision < lengthOfAimLine) {
                         lengthOfAimLine = lengthUntilCollision;
                     }

@@ -2,7 +2,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class EnemyWave implements Serializable {
+public class EnemyWave implements Serializable, Collidable {
 
     private static final long serialVersionUID = 1L;
 
@@ -91,14 +91,6 @@ public class EnemyWave implements Serializable {
         }
     }
 
-    public int handlePossibleCollisionWithMissile(Missile missile) {
-        int points = 0;
-        for (EnemyGroup enemyGroup : enemyGroups) {
-            points += enemyGroup.handlePossibleCollisionWithMissile(missile);
-        }
-        return points;
-    }
-
     public boolean checkGameOverConditions(Shooter shooter) {
         for (EnemyGroup enemyGroup : enemyGroups) {
             if (enemyGroup.isCollidingWith(shooter) || enemyGroup.isCollidingWithBottomOfCanvas()) {
@@ -161,6 +153,53 @@ public class EnemyWave implements Serializable {
             missile.velocity = missileDirection.scale(Missile.SPEED);
             enemyMissiles.add(missile);
             StdAudio.play("resources/audio/Gun+1.wav");
+        }
+    }
+
+    @Override
+    public BoundingShape getBoundingShape() {
+        double xmin = Double.POSITIVE_INFINITY;
+        double xmax = Double.NEGATIVE_INFINITY;
+        double ymin = Double.POSITIVE_INFINITY;
+        double ymax = Double.NEGATIVE_INFINITY;
+        for (EnemyGroup enemyGroup : enemyGroups) {
+            BoundingShape enemyGroupBoundingShape = enemyGroup.getBoundingShape();
+            if (enemyGroupBoundingShape instanceof Rectangle) {
+                Rectangle rect = (Rectangle) enemyGroupBoundingShape;
+                xmin = Math.min(xmin, rect.xmin());
+                xmax = Math.max(xmax, rect.xmax());
+                ymin = Math.min(ymin, rect.ymin());
+                ymax = Math.max(ymax, rect.ymax());
+            } else if (enemyGroupBoundingShape instanceof Circle) {
+                Circle circ = (Circle) enemyGroupBoundingShape;
+                xmin = Math.min(xmin, circ.center.x - circ.radius);
+                xmax = Math.max(xmax, circ.center.x + circ.radius);
+                ymin = Math.min(ymin, circ.center.y - circ.radius);
+                ymax = Math.max(ymax, circ.center.y + circ.radius);
+            }
+        }
+        return new Rectangle((xmin + xmax) / 2, (ymin + ymax) / 2, (xmax - xmin), (ymax - ymin));
+    }
+
+    @Override
+    public boolean isCollidingWith(Collidable other) {
+        for (EnemyGroup enemyGroup : enemyGroups) {
+            if (enemyGroup.isCollidingWith(other)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void handlePossibleCollisionWith(Collidable other) {
+        if (other instanceof Missile) {
+            Missile missile = (Missile) other;
+            if (missile.state == Missile.MissileState.TRAVELLING) {
+                for (EnemyGroup enemyGroup : enemyGroups) {
+                    enemyGroup.handlePossibleCollisionWith(missile);
+                }
+            }
         }
     }
 

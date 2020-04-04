@@ -73,7 +73,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
             gameOverFlag = true;
 
         for (Missile shooterMissile : shooter.getTurret().missiles) {
-            score += enemyWave.handlePossibleCollisionWithMissile(shooterMissile);
+            enemyWave.handlePossibleCollisionWith(shooterMissile);
         }
 
         Iterator<Bunker> bunkerIterator = bunkers.iterator();
