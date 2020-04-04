@@ -57,10 +57,6 @@ public class EnemyWave implements Serializable, Collidable {
 
             enemyMissile.render(dt);
 
-            for (Missile shooterMissile : shooterRef.getTurret().missiles) {
-                enemyMissile.handlePossibleCollisionWith(shooterMissile);
-            }
-
             if (enemyMissile.state == Missile.MissileState.DEAD || !canvas.contains(enemyMissile.position)) {
                 enemyMissileIterator.remove();
             }
