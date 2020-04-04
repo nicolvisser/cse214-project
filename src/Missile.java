@@ -14,7 +14,7 @@ public class Missile extends DefaultCritter {
     public int missileDamage;
     public MissileState state;
 
-    private Circle boundingCircle;
+    // private Circle boundingCircle;
 
     private AnimatedPicture explosion;
 
@@ -23,7 +23,8 @@ public class Missile extends DefaultCritter {
         velocity = new Vector2D(SPEED * direction.x, SPEED * direction.y);
         allowRotation = false;
         healthPoints = DEFAULT_HEALTH_POINTS;
-        boundingCircle = (Circle) getBoundingShape(); // cast to circle to use methods in this class
+        // boundingCircle = (Circle) getBoundingShape(); // cast to circle to use
+        // methods in this class
         missileDamage = DEFAULT_MISSILE_DAMAGE;
         state = MissileState.TRAVELLING;
         explosion = new AnimatedPicture("resources/images/explosion", "png", 16,

@@ -19,7 +19,7 @@ public class PowerUp extends DefaultCritter {
     private Shooter shooterOwner;
     private AnimatedPicture animatedPowerUpSprite;
 
-    private Circle boundingCircle;
+    // private Circle boundingCircle;
 
     public PowerUp(Vector2D position, PowerUpType type) {
         super(position.x, position.y, DEFAULT_COLLISION_RADIUS, 0);
@@ -29,7 +29,8 @@ public class PowerUp extends DefaultCritter {
         this.type = type;
         state = PowerUpState.TRAVELLING;
         remainingLifetime = DEFAULT_LIFETIME;
-        boundingCircle = (Circle) getBoundingShape(); // cast to circle to use methods in this class
+        // boundingCircle = (Circle) getBoundingShape(); // cast to circle to use
+        // methods in this class
         String filename = "";
         switch (type) {
             case FAST_ENERGY_GAIN:

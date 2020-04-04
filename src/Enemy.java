@@ -17,14 +17,15 @@ public class Enemy extends DefaultCritter {
 
     private AnimatedPicture explosion;
 
-    private Circle boundingCircle;
+    // private Circle boundingCircle;
 
     public Enemy(Rectangle canvas, Vector2D position, double orientation) {
         super(position.x, position.y, DEFAULT_COLLISION_RADIUS, orientation);
         this.canvas = canvas;
         state = EnemyState.ALIVE;
         healthPoints = DEFAULT_HEALTH_POINTS;
-        boundingCircle = (Circle) getBoundingShape(); // cast to circle to use methods in this class
+        // boundingCircle = (Circle) getBoundingShape(); // cast to circle to use
+        // methods in this class
         explosion = new AnimatedPicture("resources/images/explosion", "png", 16,
                 AnimatedPicture.AnimationType.FWD_BWD_ONCE);
     }
