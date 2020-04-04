@@ -108,11 +108,11 @@ public class InvaderGameState extends KeyListener implements Serializable {
             powerUp.draw();
         }
 
+        shooter.drawAimLine(bunkers, enemyWave);
+
         drawHealthBar((double) shooter.healthPoints / Shooter.DEFAULT_HEALTH_POINTS);
         drawEnergyBar(shooter.energyPoints / Shooter.DEFAULT_ENERGY_POINTS);
         drawScore(score);
-
-        shooter.drawAimLine(bunkers, enemyWave);
 
     }
 
