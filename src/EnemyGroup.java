@@ -15,7 +15,6 @@ public class EnemyGroup implements Serializable {
     Rectangle canvas;
 
     public EnemyGroup(Rectangle canvas, Rectangle boundingRect, int numEnemiesInRow, int numEnemiesInCol) {
-        super();
         this.canvas = canvas; // TODO take out of constructor and give own method (also to other constructors)
         enemies = new ArrayList<>();
 
@@ -25,7 +24,7 @@ public class EnemyGroup implements Serializable {
 
         this.boundingRect = boundingRect;
 
-        int r = Enemy.DEFAULT_COLLISION_RADIUS;
+        double r = Enemy.DEFAULT_COLLISION_RADIUS;
 
         double xSpacing = (boundingRect.width - 2 * r * numEnemiesInRow) / (numEnemiesInRow - 1);
         double ySpacing = (boundingRect.height - 2 * r * numEnemiesInCol) / (numEnemiesInCol - 1);
@@ -71,8 +70,6 @@ public class EnemyGroup implements Serializable {
 
         position.x += dx;
         position.y += dy;
-
-        boundingRect.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
 
         Iterator<Enemy> itr = enemies.iterator();
         while (itr.hasNext()) {

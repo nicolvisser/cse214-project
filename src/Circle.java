@@ -3,6 +3,11 @@ public class Circle implements BoundingShape {
     Vector2D center;
     double radius;
 
+    @Override
+    public Vector2D getPosition() {
+        return center;
+    }
+
     public Circle(double x, double y, double radius) {
         this.center = new Vector2D(x, y);
         this.radius = radius;

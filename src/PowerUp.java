@@ -19,17 +19,17 @@ public class PowerUp extends DefaultCritter {
     private Shooter shooterOwner;
     private AnimatedPicture animatedPowerUpSprite;
 
-    private Circle boundingCircle; // for boundingShape casted as Circle
+    private Circle boundingCircle;
 
     public PowerUp(Vector2D position, PowerUpType type) {
-        this.position = position;
+        super(position.x, position.y, DEFAULT_COLLISION_RADIUS, 0);
         velocity = new Vector2D(0, -50);
         allowRotation = false;
+
         this.type = type;
         state = PowerUpState.TRAVELLING;
         remainingLifetime = DEFAULT_LIFETIME;
-        boundingCircle = (Circle) getBoundingShape();
-        boundingCircle.radius = DEFAULT_COLLISION_RADIUS; // TODO maybe rather use constructor for this?
+        boundingCircle = (Circle) getBoundingShape(); // cast to circle to use methods in this class
         String filename = "";
         switch (type) {
             case FAST_ENERGY_GAIN:
@@ -119,8 +119,6 @@ public class PowerUp extends DefaultCritter {
 
     @Override
     public void render(double dt) {
-
-        boundingCircle.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
 
         switch (state) {
             case TRAVELLING:

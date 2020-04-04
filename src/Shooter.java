@@ -36,12 +36,11 @@ public class Shooter extends DefaultCritter {
     }
 
     public Shooter(Vector2D position, double orientation, Rectangle canvas) {
-        super(position, orientation);
+        super(position.x, position.y, DEFAULT_COLLISION_RADIUS, orientation);
         this.canvas = canvas;
         healthPoints = DEFAULT_HEALTH_POINTS;
         state = ShooterState.ALIVE;
-        boundingCircle = (Circle) getBoundingShape();
-        boundingCircle.radius = DEFAULT_COLLISION_RADIUS; // TODO maybe rather use constructor for this?
+        boundingCircle = (Circle) getBoundingShape(); // cast to circle to use methods in this class
         energyPoints = DEFAULT_ENERGY_POINTS;
         energyGainPerTimeStep = DEFAULT_ENERGY_GAIN_PER_TIMESTEP;
         isThrusterLeftActive = false;
@@ -54,8 +53,6 @@ public class Shooter extends DefaultCritter {
 
     @Override
     public void render(double dt) {
-
-        boundingCircle.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
 
         switch (state) {
             case ALIVE:

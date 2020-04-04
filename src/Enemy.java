@@ -9,7 +9,7 @@ public class Enemy extends DefaultCritter {
     Rectangle canvas;
 
     public static int DEFAULT_HEALTH_POINTS = 100;
-    public static int DEFAULT_COLLISION_RADIUS = 5;
+    public static final int DEFAULT_COLLISION_RADIUS = 5;
 
     private static final long serialVersionUID = 1L;
 
@@ -20,12 +20,11 @@ public class Enemy extends DefaultCritter {
     private Circle boundingCircle;
 
     public Enemy(Rectangle canvas, Vector2D position, double orientation) {
-        super(position, orientation);
+        super(position.x, position.y, DEFAULT_COLLISION_RADIUS, orientation);
         this.canvas = canvas;
         state = EnemyState.ALIVE;
         healthPoints = DEFAULT_HEALTH_POINTS;
-        boundingCircle = (Circle) getBoundingShape();
-        boundingCircle.radius = DEFAULT_COLLISION_RADIUS; // TODO maybe rather use constructor for this?
+        boundingCircle = (Circle) getBoundingShape(); // cast to circle to use methods in this class
         explosion = new AnimatedPicture("resources/images/explosion", "png", 16,
                 AnimatedPicture.AnimationType.FWD_BWD_ONCE);
     }
@@ -51,8 +50,6 @@ public class Enemy extends DefaultCritter {
 
     @Override
     public void render(double dt) {
-
-        boundingCircle.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
 
         switch (state) {
             case ALIVE:

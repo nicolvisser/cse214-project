@@ -16,6 +16,11 @@ public class Rectangle implements BoundingShape {
         this.height = height;
     }
 
+    @Override
+    public Vector2D getPosition() {
+        return center;
+    }
+
     public double xmin() {
         return center.x - width / 2;
     }

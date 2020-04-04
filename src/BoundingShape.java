@@ -1,5 +1,7 @@
 public interface BoundingShape {
 
+    public Vector2D getPosition();
+
     public boolean contains(Vector2D point);
 
     public boolean contains(BoundingShape shape);

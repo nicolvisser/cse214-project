@@ -14,17 +14,16 @@ public class Missile extends DefaultCritter {
     public int missileDamage;
     public MissileState state;
 
-    private Circle boundingCircle; // for boundingShape casted as Circle
+    private Circle boundingCircle;
 
     private AnimatedPicture explosion;
 
     public Missile(Vector2D position, Vector2D direction) {
-        super(position, direction.getPolarAngle());
+        super(position.x, position.y, DEFAULT_COLLISION_RADIUS, direction.getPolarAngle());
         velocity = new Vector2D(SPEED * direction.x, SPEED * direction.y);
         allowRotation = false;
         healthPoints = DEFAULT_HEALTH_POINTS;
-        boundingCircle = (Circle) getBoundingShape();
-        boundingCircle.radius = DEFAULT_COLLISION_RADIUS; // TODO maybe rather use constructor for this?
+        boundingCircle = (Circle) getBoundingShape(); // cast to circle to use methods in this class
         missileDamage = DEFAULT_MISSILE_DAMAGE;
         state = MissileState.TRAVELLING;
         explosion = new AnimatedPicture("resources/images/explosion", "png", 16,
@@ -61,8 +60,6 @@ public class Missile extends DefaultCritter {
 
     @Override
     public void render(double dt) {
-
-        boundingCircle.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
 
         switch (state) {
             case TRAVELLING:

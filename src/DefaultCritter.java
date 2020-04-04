@@ -2,24 +2,34 @@ public class DefaultCritter extends Object2D implements Critter, Collidable {
 
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_HEALTH_POINTS = 100;
-    private static final int DEFAULT_COLLISION_RADIUS = 5;
-
-    public int healthPoints;
 
     private final BoundingShape boundingShape;
+
+    public final Vector2D position; // override and make FINAL
+
+    public int healthPoints;
 
     public boolean allowTranslation;
     public boolean allowRotation;
 
-    public DefaultCritter() {
-        this(new Vector2D(0, 0), 0);
+    public DefaultCritter(double x, double y, double radius, double orientation) {
+        this(new Circle(x, y, radius), orientation);
     }
 
-    public DefaultCritter(Vector2D position, double orientation) {
-        super(position, orientation);
+    public DefaultCritter(double x, double y, double width, double height, double orientation) {
+        this(new Rectangle(x, y, width, height), orientation);
+    }
+
+    private DefaultCritter(BoundingShape shape, double orientation) {
+        super(shape.getPosition(), orientation);
+        position = shape.getPosition();
+        // <--- sets position to shape's position. since position is final in
+        // DefaultCritter, these two should not go out of sync, unless using
+        // super class to change position's reference. IS THIS OKAY PROGRAMMING ?
+
+        boundingShape = shape;
 
         healthPoints = DEFAULT_HEALTH_POINTS;
-        boundingShape = new Circle(position, DEFAULT_COLLISION_RADIUS);
 
         allowTranslation = true;
         allowRotation = true;

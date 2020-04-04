@@ -9,6 +9,7 @@ public class Turret extends DefaultCritter {
     private static final double TURRET_ANGULAR_ACCELERATION_MAGNITUDE = 50;
     private static final double TURRENT_MINIMUM_ANGLE = 0.2;
     private static final double TURRENT_MAXIMUM_ANGLE = Math.PI - 0.2;
+    private static final int DEFAULT_COLLISION_RADIUS = 1; // TODO rather use rectangle for turret
 
     private Rectangle drawArea;
     private Shooter shooterRef;
@@ -25,11 +26,11 @@ public class Turret extends DefaultCritter {
 
     private ArrayList<PowerUp> powerUpsRef;
 
-    public Turret(Rectangle drawArea, Shooter shooterRef) {
-        super(shooterRef.position, Math.PI / 2);
+    public Turret(Rectangle canvas, Shooter shooterRef) {
+        super(shooterRef.position.x, shooterRef.position.y, DEFAULT_COLLISION_RADIUS, Math.PI / 2);
         allowTranslation = false;
 
-        this.drawArea = drawArea;
+        this.drawArea = canvas;
         this.shooterRef = shooterRef;
 
         missiles = new ArrayList<>();
