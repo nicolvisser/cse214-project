@@ -100,10 +100,6 @@ public class MissileLauncher extends DefaultCritter {
             missile.draw();
         }
 
-        // aim line
-        // LineSegment aimLine = new LineSegment(position, lookVector(), 200);
-        // StdDraw.setPenColor(StdDraw.GRAY);
-        // aimLine.draw();
     }
 
     public void startCharging() {
@@ -114,8 +110,7 @@ public class MissileLauncher extends DefaultCritter {
         if (timeSinceLastMissile > reloadTime) {
             // System.out.println("Launched Missile With chargeUpTime: " + chargeUpTime);
             timeSinceLastMissile = 0;
-            Vector2D missileStartPos = new Vector2D(shooterRef.position.x, shooterRef.position.y)
-                    .add(lookVector().scale(12.5));
+            Vector2D missileStartPos = getPositionOfEndOfTurret();
             Missile missile = new Missile(missileStartPos, this.lookVector());
             missiles.add(missile);
             StdAudio.play("resources/audio/Gun+1.wav");
@@ -125,6 +120,10 @@ public class MissileLauncher extends DefaultCritter {
 
     public void addAbilityToEquipPowerUp(ArrayList<PowerUp> powerUpsRef) {
         this.powerUpsRef = powerUpsRef;
+    }
+
+    public Vector2D getPositionOfEndOfTurret() {
+        return new Vector2D(shooterRef.position.x, shooterRef.position.y).add(lookVector().scale(12.5));
     }
 
 }

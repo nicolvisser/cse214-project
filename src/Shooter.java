@@ -200,7 +200,9 @@ public class Shooter extends DefaultCritter {
 
     public void drawAimLine(ArrayList<Bunker> bunkers, EnemyWave enemyWave) {
 
-        Ray aimRay = new Ray(position, missileLauncher.lookVector());
+        Vector2D aimRayStart = missileLauncher.getPositionOfEndOfTurret();
+
+        Ray aimRay = new Ray(aimRayStart, missileLauncher.lookVector());
         double lengthOfAimLine = 200;
 
         for (Bunker bunker : bunkers) {
