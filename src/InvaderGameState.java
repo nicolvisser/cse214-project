@@ -17,7 +17,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
         gameOverFlag = false;
     }
 
-    CollisionListener collisionListener;
+    CollisionHandler collisionHandler;
 
     int score;
 
@@ -54,22 +54,22 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         groundRay = new Ray(new Vector2D(canvas.xmin(), canvas.ymin()), new Vector2D(1, 0));
 
-        collisionListener = new CollisionListener();
-        collisionListener.add(shooters, powerUps);
-        collisionListener.add(shooters, enemyWave.enemyMissiles);
-        collisionListener.add(shooter.getTurret().missiles, enemyWave.enemyMissiles); // TODO: improve
-        collisionListener.add(shooter.getTurret().missiles, powerUps); // TODO: improve
-        collisionListener.add(shooter.getTurret().missiles, bunkers); // TODO: improve
-        collisionListener.add(enemyWave.enemyMissiles, bunkers);
-        collisionListener.add(enemyWave, shooter.getTurret().missiles);
-        collisionListener.add(enemyWave, shooter);
-        collisionListener.add(enemyWave, bunkers);
+        collisionHandler = new CollisionHandler();
+        collisionHandler.add(shooters, powerUps);
+        collisionHandler.add(shooters, enemyWave.enemyMissiles);
+        collisionHandler.add(shooter.getTurret().missiles, enemyWave.enemyMissiles); // TODO: improve
+        collisionHandler.add(shooter.getTurret().missiles, powerUps); // TODO: improve
+        collisionHandler.add(shooter.getTurret().missiles, bunkers); // TODO: improve
+        collisionHandler.add(enemyWave.enemyMissiles, bunkers);
+        collisionHandler.add(enemyWave, shooter.getTurret().missiles);
+        collisionHandler.add(enemyWave, shooter);
+        collisionHandler.add(enemyWave, bunkers);
 
     }
 
     public void render(double dt) {
 
-        collisionListener.handleCollisions();
+        collisionHandler.handleCollisions();
 
         for (Shooter shooter : shooters) {
             shooter.render(dt);

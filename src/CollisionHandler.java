@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class CollisionListener {
+public class CollisionHandler {
 
     private class CollisionPair {
 
@@ -18,7 +18,7 @@ public class CollisionListener {
 
     public ArrayList<CollisionPair> collisionPairs;
 
-    CollisionListener() {
+    CollisionHandler() {
         collisionPairs = new ArrayList<>();
     }
 
