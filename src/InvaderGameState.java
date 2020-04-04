@@ -143,6 +143,9 @@ public class InvaderGameState extends KeyListener implements Serializable {
             case DOWN_ARROW:
                 shooter.activateShield();
                 break;
+            case SPACE:
+                shooter.getTurret().activateLaser();
+                break;
 
             default:
                 break;
@@ -169,6 +172,9 @@ public class InvaderGameState extends KeyListener implements Serializable {
                 break;
             case DOWN_ARROW:
                 shooter.deactivateShield();
+                break;
+            case SPACE:
+                shooter.getTurret().deactivateLaser();
                 break;
 
             default:

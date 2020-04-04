@@ -21,6 +21,8 @@ public class Turret extends DefaultCritter {
     public boolean turretLeftRotateStatus;
     public boolean turretRightRotateStatus;
 
+    public boolean laserIsActive;
+
     private ArrayList<PowerUp> powerUpsRef;
 
     public Turret(Rectangle drawArea, Shooter shooterRef) {
@@ -115,6 +117,14 @@ public class Turret extends DefaultCritter {
         chargeUpTime = 0;
     }
 
+    public void activateLaser() {
+        laserIsActive = true;
+    }
+
+    public void deactivateLaser() {
+        laserIsActive = false;
+    }
+
     public void addAbilityToEquipPowerUp(ArrayList<PowerUp> powerUpsRef) {
         this.powerUpsRef = powerUpsRef;
     }
@@ -123,11 +133,10 @@ public class Turret extends DefaultCritter {
         return new Vector2D(shooterRef.position.x, shooterRef.position.y).add(lookVector().scale(12.5));
     }
 
-    public void drawAimLine(ArrayList<Bunker> bunkers, EnemyWave enemyWave) {
+    public LineSegment getAimLine(ArrayList<Bunker> bunkers, EnemyWave enemyWave) {
+        Vector2D start = getPositionOfEndOfTurret();
 
-        Vector2D aimRayStart = getPositionOfEndOfTurret();
-
-        Ray aimRay = new Ray(aimRayStart, lookVector());
+        Ray aimRay = new Ray(start, lookVector());
         double lengthOfAimLine = 200;
 
         for (Bunker bunker : bunkers) {
@@ -154,9 +163,13 @@ public class Turret extends DefaultCritter {
             }
         }
 
-        StdDraw.setPenColor(StdDraw.GRAY);
-        aimRay.draw(lengthOfAimLine);
+        return new LineSegment(start, lookVector(), lengthOfAimLine);
 
+    }
+
+    public void drawAimLine(ArrayList<Bunker> bunkers, EnemyWave enemyWave) {
+        StdDraw.setPenColor(laserIsActive ? StdDraw.RED : StdDraw.GRAY);
+        getAimLine(bunkers, enemyWave).draw();
     }
 
 }
