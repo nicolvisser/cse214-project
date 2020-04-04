@@ -7,7 +7,7 @@ public class EnemyWave implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Rectangle canvas;
-    private ArrayList<EnemyGroup> enemyGroups;
+    public ArrayList<EnemyGroup> enemyGroups;
     private Shooter shooterRef;
     private double timeUntilNextCounterAttack;
     public ArrayList<Missile> enemyMissiles;

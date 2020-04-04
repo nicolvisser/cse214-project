@@ -198,7 +198,7 @@ public class Shooter extends DefaultCritter {
         }
     }
 
-    public void drawAimLine(ArrayList<Bunker> bunkers) {
+    public void drawAimLine(ArrayList<Bunker> bunkers, EnemyWave enemyWave) {
 
         Ray aimRay = new Ray(position, missileLauncher.lookVector());
         double lengthOfAimLine = 200;
@@ -207,8 +207,21 @@ public class Shooter extends DefaultCritter {
             if (bunker.boundingRect.intersects(aimRay)) {
                 for (Bunker.Block block : bunker.blocks) {
                     Double lengthUntilCollision = aimRay.lengthUntilIntersection(block.boundingRect);
-                    if (lengthUntilCollision > 0 && lengthUntilCollision < lengthOfAimLine) {
+                    if (Double.isFinite(lengthUntilCollision) && lengthUntilCollision < lengthOfAimLine) {
                         lengthOfAimLine = lengthUntilCollision;
+                    }
+                }
+            }
+        }
+
+        for (EnemyGroup enemyGroup : enemyWave.enemyGroups) {
+            if (enemyGroup.boundingRect.intersects(aimRay)) {
+                for (Enemy enemy : enemyGroup.enemies) {
+                    if (enemy.state == Enemy.EnemyState.ALIVE) {
+                        Double lengthUntilCollision = aimRay.lengthUntilIntersection(enemy.collisionCircle);
+                        if (Double.isFinite(lengthUntilCollision) && lengthUntilCollision < lengthOfAimLine) {
+                            lengthOfAimLine = lengthUntilCollision;
+                        }
                     }
                 }
             }
