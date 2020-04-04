@@ -203,6 +203,9 @@ public class Shooter extends DefaultCritter {
             Missile missile = (Missile) other;
             missile.handlePossibleCollisionWith(this);
 
+        } else if (other instanceof Enemy) {
+            healthPoints = 0;
+
         }
     }
 }

@@ -32,10 +32,18 @@ public class Enemy extends DefaultCritter {
     public void handlePossibleCollisionWith(Collidable other) {
         if (other instanceof Missile) {
             Missile missile = (Missile) other;
-            if (state == EnemyState.ALIVE && this.isCollidingWith(missile)) {
+
+            if (missile.state == Missile.MissileState.TRAVELLING && state == EnemyState.ALIVE
+                    && this.isCollidingWith(missile)) {
                 takeDamage(missile.missileDamage);
                 missile.takeDamage();
             }
+
+        } else if (other instanceof Shooter) {
+            Shooter shooter = (Shooter) other;
+
+            shooter.handlePossibleCollisionWith(this);
+
         }
     }
 

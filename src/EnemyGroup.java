@@ -146,14 +146,13 @@ public class EnemyGroup implements Serializable, Collidable {
 
     @Override
     public void handlePossibleCollisionWith(Collidable other) {
-        if (other instanceof Missile) {
-            Missile missile = (Missile) other;
-            if (boundingRect.intersects(missile.getBoundingShape())) {
-                for (Enemy enemy : enemies) {
-                    enemy.handlePossibleCollisionWith(missile);
-                }
+
+        for (Enemy enemy : enemies) {
+            if (enemy.isCollidingWith(other)) {
+
+                enemy.handlePossibleCollisionWith(other);
+
             }
         }
     }
-
 }

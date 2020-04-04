@@ -32,11 +32,6 @@ public class EnemyWave implements Serializable, Collidable {
 
     public void render(double dt) {
         timeUntilNextCounterAttack -= dt;
-
-        if (checkGameOverConditions(shooterRef)) {
-            shooterRef.takeDamage(Integer.MAX_VALUE);
-        }
-
         if (timeUntilNextCounterAttack < 0) {
             counterAttack();
         }
@@ -44,6 +39,7 @@ public class EnemyWave implements Serializable, Collidable {
         Iterator<EnemyGroup> enemyGroupIterator = enemyGroups.iterator();
         while (enemyGroupIterator.hasNext()) {
             EnemyGroup enemyGroup = enemyGroupIterator.next();
+
             enemyGroup.render(dt);
 
             if (enemyGroup.isCleared()) {
@@ -72,15 +68,6 @@ public class EnemyWave implements Serializable, Collidable {
         }
     }
 
-    public boolean checkGameOverConditions(Shooter shooter) {
-        for (EnemyGroup enemyGroup : enemyGroups) {
-            if (enemyGroup.isCollidingWith(shooter) || enemyGroup.isCollidingWithBottomOfCanvas()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public boolean isCleared() {
         return enemyGroups.size() == 0;
     }
@@ -105,7 +92,7 @@ public class EnemyWave implements Serializable, Collidable {
         }
     }
 
-    // Todo: make this more readable
+    // TODO: make this more readable
     public Enemy getRandomEnemyOnCanvas() {
         if (atLeastOneAliveEnemyOnCanvas()) {
             Enemy rEnemy;
@@ -174,15 +161,13 @@ public class EnemyWave implements Serializable, Collidable {
 
     @Override
     public void handlePossibleCollisionWith(Collidable other) {
-        if (other instanceof Missile) {
-            Missile missile = (Missile) other;
-            if (missile.state == Missile.MissileState.TRAVELLING) {
-                for (EnemyGroup enemyGroup : enemyGroups) {
-                    enemyGroup.handlePossibleCollisionWith(missile);
-                }
-            }
 
+        for (EnemyGroup enemyGroup : enemyGroups) {
+            if (enemyGroup.getBoundingShape().intersects(other.getBoundingShape())) {
+
+                enemyGroup.handlePossibleCollisionWith(other);
+
+            }
         }
     }
-
 }
