@@ -1,4 +1,8 @@
 No Name
+3900
+No Name
+3800
+No Name
 3700
 Nicol
 3200
@@ -14,7 +18,3 @@ No Name
 3000
 NICOL
 3000
-No Name
-2300
-JOHN
-2000

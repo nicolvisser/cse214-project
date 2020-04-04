@@ -126,4 +126,40 @@ public class MissileLauncher extends DefaultCritter {
         return new Vector2D(shooterRef.position.x, shooterRef.position.y).add(lookVector().scale(12.5));
     }
 
+    public void drawAimLine(ArrayList<Bunker> bunkers, EnemyWave enemyWave) {
+
+        Vector2D aimRayStart = getPositionOfEndOfTurret();
+
+        Ray aimRay = new Ray(aimRayStart, lookVector());
+        double lengthOfAimLine = 200;
+
+        for (Bunker bunker : bunkers) {
+            if (bunker.boundingRect.intersects(aimRay)) {
+                for (Bunker.Block block : bunker.blocks) {
+                    Double lengthUntilCollision = aimRay.lengthUntilIntersection(block.boundingRect);
+                    if (Double.isFinite(lengthUntilCollision) && lengthUntilCollision < lengthOfAimLine) {
+                        lengthOfAimLine = lengthUntilCollision;
+                    }
+                }
+            }
+        }
+
+        for (EnemyGroup enemyGroup : enemyWave.enemyGroups) {
+            if (enemyGroup.boundingRect.intersects(aimRay)) {
+                for (Enemy enemy : enemyGroup.enemies) {
+                    if (enemy.state == Enemy.EnemyState.ALIVE) {
+                        Double lengthUntilCollision = aimRay.lengthUntilIntersection(enemy.collisionCircle);
+                        if (Double.isFinite(lengthUntilCollision) && lengthUntilCollision < lengthOfAimLine) {
+                            lengthOfAimLine = lengthUntilCollision;
+                        }
+                    }
+                }
+            }
+        }
+
+        StdDraw.setPenColor(StdDraw.GRAY);
+        aimRay.draw(lengthOfAimLine);
+
+    }
+
 }
