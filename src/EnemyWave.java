@@ -57,8 +57,6 @@ public class EnemyWave implements Serializable, Collidable {
 
             enemyMissile.render(dt);
 
-            enemyMissile.handlePossibleCollisionWith(shooterRef);
-
             for (Missile shooterMissile : shooterRef.getTurret().missiles) {
                 enemyMissile.handlePossibleCollisionWith(shooterMissile);
             }
@@ -187,6 +185,7 @@ public class EnemyWave implements Serializable, Collidable {
                     enemyGroup.handlePossibleCollisionWith(missile);
                 }
             }
+
         }
     }
 

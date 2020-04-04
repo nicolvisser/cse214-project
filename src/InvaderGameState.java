@@ -58,6 +58,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
         bunkers.add(new Bunker(new Rectangle(60, -30, 30, 10), 5, 15));
 
         collisionListener.add(shooters, powerUps);
+        collisionListener.add(shooters, enemyWave.enemyMissiles);
 
     }
 

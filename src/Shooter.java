@@ -198,6 +198,11 @@ public class Shooter extends DefaultCritter {
         if (other instanceof PowerUp) {
             PowerUp powerUp = (PowerUp) other;
             powerUp.handlePossibleCollisionWith(this);
+
+        } else if (other instanceof Missile) {
+            Missile missile = (Missile) other;
+            missile.handlePossibleCollisionWith(this);
+
         }
     }
 }
