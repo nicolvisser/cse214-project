@@ -1,4 +1,4 @@
-public class Rectangle implements Shape {
+public class Rectangle implements BoundingShape {
 
     public double width, height;
     public Vector2D center;
@@ -75,6 +75,16 @@ public class Rectangle implements Shape {
         return width == 0 || height == 0;
     }
 
+    @Override
+    public boolean contains(BoundingShape shape) {
+        if (shape instanceof Circle) {
+            return contains((Circle) shape);
+        } else if (shape instanceof Rectangle) {
+            return contains((Rectangle) shape);
+        }
+        return false;
+    }
+
     public boolean contains(double x, double y) {
         return (x >= xmin()) && (x <= xmax()) && (y >= ymin()) && (y <= ymax());
     }
@@ -97,6 +107,21 @@ public class Rectangle implements Shape {
     public boolean intersects(Rectangle other) {
         return !(this.xmin() > other.xmax() || this.xmax() < other.xmin() || this.ymin() > other.ymax()
                 || this.ymax() < other.ymin());
+    }
+
+    @Override
+    public boolean intersects(Ray ray) {
+        return ray.intersects(this);
+    }
+
+    @Override
+    public boolean intersects(BoundingShape shape) {
+        if (shape instanceof Circle) {
+            return intersects((Circle) shape);
+        } else if (shape instanceof Rectangle) {
+            return intersects((Rectangle) shape);
+        }
+        return false;
     }
 
     // see http://www.jeffreythompson.org/collision-detection/circle-rect.php
@@ -140,10 +165,6 @@ public class Rectangle implements Shape {
         } else {
             return zero();
         }
-    }
-
-    public boolean intersects(Ray ray) {
-        return ray.intersects(this);
     }
 
     @Override

@@ -1,4 +1,4 @@
-public class Circle implements Shape {
+public class Circle implements BoundingShape {
 
     Vector2D center;
     double radius;
@@ -25,6 +25,16 @@ public class Circle implements Shape {
         return dx * dx + dy * dy <= radius * radius;
     }
 
+    @Override
+    public boolean contains(BoundingShape shape) {
+        if (shape instanceof Circle) {
+            return contains((Circle) shape);
+        } else if (shape instanceof Rectangle) {
+            return contains((Rectangle) shape);
+        }
+        return false;
+    }
+
     public boolean contains(Circle other) {
         double dx = this.center.x - other.center.x;
         double dy = this.center.y - other.center.y;
@@ -42,15 +52,26 @@ public class Circle implements Shape {
         return radius * radius >= dx * dx + dy * dy;
     }
 
+    @Override
+    public boolean intersects(Ray ray) {
+        return ray.intersects(this); // get code from Ray class instead
+    }
+
+    @Override
+    public boolean intersects(BoundingShape shape) {
+        if (shape instanceof Circle) {
+            return intersects((Circle) shape);
+        } else if (shape instanceof Rectangle) {
+            return intersects((Rectangle) shape);
+        }
+        return false;
+    }
+
     // also includes touching
     public boolean intersects(Circle other) {
         double dx = this.center.x - other.center.x;
         double dy = this.center.y - other.center.y;
         return dx * dx + dy * dy <= (this.radius + other.radius) * (this.radius + other.radius);
-    }
-
-    public boolean intersects(Ray ray) {
-        return ray.intersects(this); // get code from Ray class instead
     }
 
     public boolean intersects(Rectangle rect) {

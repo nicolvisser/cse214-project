@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - TestIntersectionShapeShape",
+            "request": "launch",
+            "mainClass": "TestIntersectionShapeShape",
+            "projectName": "cse214-project_ec900086"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - TestIntersectionRayRectangle",
             "request": "launch",
             "mainClass": "TestIntersectionRayRectangle",
