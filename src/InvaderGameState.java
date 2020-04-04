@@ -43,6 +43,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         shooters.add(shooter);
 
+        
         enemyWave = new EnemyWave(drawArea, shooter);
 
         powerUps = new ArrayList<>();
@@ -59,10 +60,11 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         collisionListener.add(shooters, powerUps);
         collisionListener.add(shooters, enemyWave.enemyMissiles);
-        collisionListener.add(shooters.get(0).getTurret().missiles, enemyWave.enemyMissiles); // TODO: improve
-        collisionListener.add(shooters.get(0).getTurret().missiles, powerUps); // TODO: improve
-        collisionListener.add(shooters.get(0).getTurret().missiles, bunkers); // TODO: improve
+        collisionListener.add(shooter.getTurret().missiles, enemyWave.enemyMissiles); // TODO: improve
+        collisionListener.add(shooter.getTurret().missiles, powerUps); // TODO: improve
+        collisionListener.add(shooter.getTurret().missiles, bunkers); // TODO: improve
         collisionListener.add(enemyWave.enemyMissiles, bunkers);
+        collisionListener.add(enemyWave, shooter.getTurret().missiles);
 
     }
 
@@ -93,12 +95,6 @@ public class InvaderGameState extends KeyListener implements Serializable {
         for (Shooter shooter : shooters) {
             if (shooter.state == Shooter.ShooterState.DEAD) {
                 gameOverFlag = true;
-            }
-        }
-
-        for (Shooter shooter : shooters) {
-            for (Missile shooterMissile : shooter.getTurret().missiles) {
-                enemyWave.handlePossibleCollisionWith(shooterMissile);
             }
         }
 

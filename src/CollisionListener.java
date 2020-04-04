@@ -22,8 +22,26 @@ public class CollisionListener {
         collisionPairs = new ArrayList<>();
     }
 
-    // see
+    // for reason behind '? extends' in constructor arguments see:
     // https://stackoverflow.com/questions/44221882/passing-an-arraylist-of-subclass-to-a-constructor-that-takes-arraylist-of-superc/44221916
+
+    public void add(Collidable object1, Collidable object2) {
+        ArrayList<Collidable> objects1 = new ArrayList<>();
+        objects1.add(object1);
+
+        ArrayList<Collidable> objects2 = new ArrayList<>();
+        objects2.add(object2);
+
+        collisionPairs.add(new CollisionPair(objects1, objects2));
+    }
+
+    public void add(Collidable object1, ArrayList<? extends Collidable> objects2) {
+        ArrayList<Collidable> objects1 = new ArrayList<>();
+        objects1.add(object1);
+
+        collisionPairs.add(new CollisionPair(objects1, objects2));
+    }
+
     public void add(ArrayList<? extends Collidable> objects1, ArrayList<? extends Collidable> objects2) {
         collisionPairs.add(new CollisionPair(objects1, objects2));
     }
