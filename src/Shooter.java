@@ -192,4 +192,12 @@ public class Shooter extends DefaultCritter {
             isShieldActive = false;
         }
     }
+
+    @Override
+    public void handlePossibleCollisionWith(Collidable other) {
+        if (other instanceof PowerUp) {
+            PowerUp powerUp = (PowerUp) other;
+            powerUp.handlePossibleCollisionWith(this);
+        }
+    }
 }
