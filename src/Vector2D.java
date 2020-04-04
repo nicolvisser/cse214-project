@@ -41,6 +41,10 @@ public class Vector2D implements Serializable {
         return new Vector2D(c * x, c * y);
     }
 
+    public double dot(Vector2D other) {
+        return this.x * other.x + this.y * other.y;
+    }
+
     public Double getPolarAngle() {
         return Math.atan2(y, x);
     }

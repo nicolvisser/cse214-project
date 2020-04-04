@@ -6,6 +6,62 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - TestIntersectionRayRectangle",
+            "request": "launch",
+            "mainClass": "TestIntersectionRayRectangle",
+            "projectName": "cse214-project_ec900086"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - TestIntersectionRayCircle",
+            "request": "launch",
+            "mainClass": "TestIntersectionRayCircle",
+            "projectName": "cse214-project_ec900086"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - TestContainmentRectInsideCirc",
+            "request": "launch",
+            "mainClass": "TestContainmentRectInsideCirc",
+            "projectName": "cse214-project_ec900086"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - TestContainmentCircInsideRect",
+            "request": "launch",
+            "mainClass": "TestContainmentCircInsideRect",
+            "projectName": "cse214-project_ec900086"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - TestIntersectionRectangleRectangle",
+            "request": "launch",
+            "mainClass": "TestIntersectionRectangleRectangle",
+            "projectName": "cse214-project_ec900086"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - TestIntersectionRectangleCircle",
+            "request": "launch",
+            "mainClass": "TestIntersectionRectangleCircle",
+            "projectName": "cse214-project_ec900086"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - TestIntersectionCircleCircle",
+            "request": "launch",
+            "mainClass": "TestIntersectionCircleCircle",
+            "projectName": "cse214-project_ec900086"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - TestRayCircIntersection",
+            "request": "launch",
+            "mainClass": "TestRayCircIntersection",
+            "projectName": "cse214-project_ec900086"
+        },
+        {
+            "type": "java",
             "name": "Debug (Launch) - Invaders",
             "request": "launch",
             "mainClass": "Invaders"

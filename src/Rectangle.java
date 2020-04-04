@@ -142,6 +142,10 @@ public class Rectangle implements Shape {
         }
     }
 
+    public boolean intersects(Ray ray) {
+        return ray.intersects(this);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Rectangle) {
@@ -161,62 +165,6 @@ public class Rectangle implements Shape {
     // for debugging and testing
     public void draw() {
         StdDraw.rectangle(center.x, center.y, width / 2, height / 2);
-    }
-
-    // following zacharmarz's answer at
-    // https://gamedev.stackexchange.com/questions/18436/most-efficient-aabb-vs-ray-collision-algorithms
-    public boolean intersects(Ray ray) {
-
-        double t1 = (xmin() - ray.start.x) / ray.direction.x;
-        double t2 = (xmax() - ray.start.x) / ray.direction.x;
-        double t3 = (ymin() - ray.start.y) / ray.direction.y;
-        double t4 = (ymax() - ray.start.y) / ray.direction.y;
-
-        double tmin = Math.max(Math.min(t1, t2), Math.min(t3, t4));
-        double tmax = Math.min(Math.max(t1, t2), Math.max(t3, t4));
-
-        // double lengthOfRayUntilIntersection;
-
-        // if tmax < 0, ray (line) is intersecting AABB, but the whole AABB is behind us
-        if (tmax < 0) {
-            // lengthOfRayUntilIntersection = tmax;
-            return false;
-        }
-
-        // if tmin > tmax, ray doesn't intersect AABB
-        if (tmin > tmax) {
-            // lengthOfRayUntilIntersection = tmax;
-            return false;
-        }
-
-        // lengthOfRayUntilIntersection = tmin;
-        return true;
-    }
-
-    // following zacharmarz's answer at
-    // https://gamedev.stackexchange.com/questions/18436/most-efficient-aabb-vs-ray-collision-algorithms
-    public double lengthOfRayUntilIntersection(Ray ray) {
-
-        double t1 = (xmin() - ray.start.x) / ray.direction.x;
-        double t2 = (xmax() - ray.start.x) / ray.direction.x;
-        double t3 = (ymin() - ray.start.y) / ray.direction.y;
-        double t4 = (ymax() - ray.start.y) / ray.direction.y;
-
-        double tmin = Math.max(Math.min(t1, t2), Math.min(t3, t4));
-        double tmax = Math.min(Math.max(t1, t2), Math.max(t3, t4));
-
-        // if tmax < 0, ray (line) is intersecting AABB, but the whole AABB is behind us
-        if (tmax < 0) {
-            return 0;
-        }
-
-        // if tmin > tmax, ray doesn't intersect AABB
-        if (tmin > tmax) {
-            return 0;
-        }
-
-        // lengthOfRayUntilIntersection = tmin;
-        return tmin;
     }
 
 }

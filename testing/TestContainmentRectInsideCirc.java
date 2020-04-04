@@ -1,5 +1,5 @@
 
-public class TestRectInsideCirc {
+public class TestContainmentRectInsideCirc {
 
     public static void main(String[] args) {
 

@@ -49,29 +49,12 @@ public class Circle implements Shape {
         return dx * dx + dy * dy <= (this.radius + other.radius) * (this.radius + other.radius);
     }
 
-    // see http://www.jeffreythompson.org/collision-detection/circle-rect.php
+    public boolean intersects(Ray ray) {
+        return ray.intersects(this); // get code from Ray class instead
+    }
+
     public boolean intersects(Rectangle rect) {
-        // temporary variables to set edges for testing
-        double testX = center.x;
-        double testY = center.y;
-
-        // which edge is closest?
-        if (center.x < rect.xmin())
-            testX = rect.xmin(); // test left edge
-        else if (center.x > rect.xmax())
-            testX = rect.xmax(); // right edge
-        if (center.y < rect.ymin())
-            testY = rect.ymin(); // bottom edge
-        else if (center.y > rect.ymax())
-            testY = rect.ymax(); // top edge
-
-        // get distance from closest edges
-        double distX = center.x - testX;
-        double distY = center.y - testY;
-        double distance = Math.sqrt((distX * distX) + (distY * distY));
-
-        // if the distance is less than the radius, collision!
-        return distance <= radius;
+        return rect.intersects(this);
     }
 
     public Vector2D getRandomPositionInside() {
@@ -86,12 +69,6 @@ public class Circle implements Shape {
     // for debugging and testing
     public void draw() {
         StdDraw.circle(center.x, center.y, radius);
-    }
-
-    @Override
-    public boolean intersects(Ray ray) {
-        // TODO IMPLEMENT RAY INTERSECTION WITH CIRCLE HERE
-        return false;
     }
 
 }

@@ -206,7 +206,7 @@ public class Shooter extends DefaultCritter {
         for (Bunker bunker : bunkers) {
             if (bunker.boundingRect.intersects(aimRay)) {
                 for (Bunker.Block block : bunker.blocks) {
-                    Double lengthUntilCollision = block.boundingRect.lengthOfRayUntilIntersection(aimRay);
+                    Double lengthUntilCollision = aimRay.lengthUntilIntersection(block.boundingRect);
                     if (lengthUntilCollision > 0 && lengthUntilCollision < lengthOfAimLine) {
                         lengthOfAimLine = lengthUntilCollision;
                     }
