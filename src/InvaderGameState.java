@@ -60,6 +60,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
         collisionListener.add(shooters, powerUps);
         collisionListener.add(shooters, enemyWave.enemyMissiles);
         collisionListener.add(shooters.get(0).getTurret().missiles, enemyWave.enemyMissiles); // TODO: improve
+        collisionListener.add(shooters.get(0).getTurret().missiles, powerUps); // TODO: improve
 
     }
 

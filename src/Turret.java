@@ -81,15 +81,6 @@ public class Turret extends DefaultCritter {
             if (missile.state == Missile.MissileState.DEAD || !drawArea.contains(missile.position)) {
                 missileIterator.remove();
 
-            } else if (missile.state == Missile.MissileState.TRAVELLING && powerUpsRef != null) {
-
-                Iterator<PowerUp> powerUpIterator = powerUpsRef.iterator();
-                while (powerUpIterator.hasNext()) {
-                    PowerUp powerUp = powerUpIterator.next();
-
-                    missile.handlePossibleCollisionWith(powerUp);
-
-                }
             }
         }
     }
