@@ -93,8 +93,11 @@ public class Missile extends DefaultCritter {
 
             if (other instanceof Missile) {
                 Missile otherMissile = (Missile) other;
-                this.takeDamage();
-                otherMissile.takeDamage();
+
+                if (otherMissile.state == MissileState.TRAVELLING) {
+                    this.takeDamage();
+                    otherMissile.takeDamage();
+                }
 
             } else if (other instanceof Shooter) {
                 Shooter shooter = (Shooter) other;
