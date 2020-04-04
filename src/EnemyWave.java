@@ -67,7 +67,7 @@ public class EnemyWave implements Serializable {
                 enemyMissile.takeDamage();
             } else if (enemyMissile.state == Missile.MissileState.TRAVELLING) {
 
-                Iterator<Missile> shooterMissileIterator = shooterRef.getMissileLauncher().missiles.iterator();
+                Iterator<Missile> shooterMissileIterator = shooterRef.getTurret().missiles.iterator();
 
                 while (shooterMissileIterator.hasNext()) {
                     Missile shooterMissile = shooterMissileIterator.next();

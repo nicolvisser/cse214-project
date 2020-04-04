@@ -23,7 +23,7 @@ public class Shooter extends DefaultCritter {
     public ShooterState state;
 
     public Rectangle canvas;
-    private MissileLauncher missileLauncher;
+    private Turret turret;
 
     public boolean isThrusterLeftActive;
     public boolean isThrusterRightActive;
@@ -51,7 +51,7 @@ public class Shooter extends DefaultCritter {
         isShieldActive = false;
         explosionAnimation = new AnimatedPicture("resources/images/explosion", "png", 16,
                 AnimatedPicture.AnimationType.FWD_BWD_ONCE);
-        missileLauncher = new MissileLauncher(canvas, this);
+        turret = new Turret(canvas, this);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class Shooter extends DefaultCritter {
 
         switch (state) {
             case ALIVE:
-                missileLauncher.render(dt);
+                turret.render(dt);
 
                 if (healthPoints <= 0) {
                     StdAudio.play("resources/audio/Explosion+1.wav");
@@ -138,7 +138,7 @@ public class Shooter extends DefaultCritter {
                             getOrientationInDegrees());
                 }
 
-                missileLauncher.draw();
+                turret.draw();
 
                 if (isShieldActive) {
                     StdDraw.picture(position.x, position.y, "resources/images/shield.png", 30, 30, 0);
@@ -173,8 +173,8 @@ public class Shooter extends DefaultCritter {
         isShieldActive = false;
     }
 
-    public MissileLauncher getMissileLauncher() {
-        return missileLauncher;
+    public Turret getTurret() {
+        return turret;
     }
 
     public boolean getShieldState() {

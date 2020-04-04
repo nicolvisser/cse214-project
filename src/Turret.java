@@ -1,10 +1,7 @@
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/**
- * MissileLauncher
- */
-public class MissileLauncher extends DefaultCritter {
+public class Turret extends DefaultCritter {
 
     private static final long serialVersionUID = 1L;
 
@@ -26,7 +23,7 @@ public class MissileLauncher extends DefaultCritter {
 
     private ArrayList<PowerUp> powerUpsRef;
 
-    public MissileLauncher(Rectangle drawArea, Shooter shooterRef) {
+    public Turret(Rectangle drawArea, Shooter shooterRef) {
         super(shooterRef.position, Math.PI / 2);
         allowTranslation = false;
 

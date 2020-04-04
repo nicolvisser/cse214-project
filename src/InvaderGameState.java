@@ -52,7 +52,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
     public void render(double dt) {
 
         shooter.render(dt);
-        shooter.getMissileLauncher().addAbilityToEquipPowerUp(powerUps);
+        shooter.getTurret().addAbilityToEquipPowerUp(powerUps);
 
         Iterator<PowerUp> powerUpIterator = powerUps.iterator();
         while (powerUpIterator.hasNext()) {
@@ -72,7 +72,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
         if (enemyWave.isCleared() || shooter.state == Shooter.ShooterState.DEAD)
             gameOverFlag = true;
 
-        for (Missile shooterMissile : shooter.getMissileLauncher().missiles) {
+        for (Missile shooterMissile : shooter.getTurret().missiles) {
             score += enemyWave.handlePossibleCollisionWithMissile(shooterMissile);
         }
 
@@ -80,7 +80,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
         while (bunkerIterator.hasNext()) {
             Bunker bunker = bunkerIterator.next();
 
-            for (Missile missile : shooter.getMissileLauncher().missiles) {
+            for (Missile missile : shooter.getTurret().missiles) {
                 bunker.handlePossibleCollisionWith(missile);
             }
 
@@ -108,7 +108,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
             powerUp.draw();
         }
 
-        shooter.getMissileLauncher().drawAimLine(bunkers, enemyWave);
+        shooter.getTurret().drawAimLine(bunkers, enemyWave);
 
         drawHealthBar((double) shooter.healthPoints / Shooter.DEFAULT_HEALTH_POINTS);
         drawEnergyBar(shooter.energyPoints / Shooter.DEFAULT_ENERGY_POINTS);
@@ -126,10 +126,10 @@ public class InvaderGameState extends KeyListener implements Serializable {
                 shooter.isThrusterRightActive = true;
                 break;
             case LEFT_ARROW:
-                shooter.getMissileLauncher().turretLeftRotateStatus = true;
+                shooter.getTurret().turretLeftRotateStatus = true;
                 break;
             case RIGHT_ARROW:
-                shooter.getMissileLauncher().turretRightRotateStatus = true;
+                shooter.getTurret().turretRightRotateStatus = true;
                 break;
             case ESC_KEY:
                 pauseFlag = true;
@@ -138,7 +138,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
                 quitFlag = true;
                 break;
             case UP_ARROW:
-                shooter.getMissileLauncher().startCharging();
+                shooter.getTurret().startCharging();
                 break;
             case DOWN_ARROW:
                 shooter.activateShield();
@@ -159,13 +159,13 @@ public class InvaderGameState extends KeyListener implements Serializable {
                 shooter.isThrusterRightActive = false;
                 break;
             case LEFT_ARROW:
-                shooter.getMissileLauncher().turretLeftRotateStatus = false;
+                shooter.getTurret().turretLeftRotateStatus = false;
                 break;
             case RIGHT_ARROW:
-                shooter.getMissileLauncher().turretRightRotateStatus = false;
+                shooter.getTurret().turretRightRotateStatus = false;
                 break;
             case UP_ARROW:
-                shooter.getMissileLauncher().shootMissile();
+                shooter.getTurret().shootMissile();
                 break;
             case DOWN_ARROW:
                 shooter.deactivateShield();
