@@ -34,6 +34,8 @@ public class Shooter extends DefaultCritter {
 
     private AnimatedPicture explosionAnimation;
 
+    private Circle boundingCircle; // boundingShape casted to Circle
+
     enum ShooterState {
         ALIVE, EXPLODING, DEAD;
     }
@@ -43,7 +45,8 @@ public class Shooter extends DefaultCritter {
         this.canvas = canvas;
         healthPoints = DEFAULT_HEALTH_POINTS;
         state = ShooterState.ALIVE;
-        collisionCircle = new Circle(position, DEFAULT_COLLISION_RADIUS);
+        boundingShape = new Circle(position, DEFAULT_COLLISION_RADIUS);
+        boundingCircle = (Circle) boundingShape;
         energyPoints = DEFAULT_ENERGY_POINTS;
         energyGainPerTimeStep = DEFAULT_ENERGY_GAIN_PER_TIMESTEP;
         isThrusterLeftActive = false;
@@ -57,7 +60,7 @@ public class Shooter extends DefaultCritter {
     @Override
     public void render(double dt) {
 
-        collisionCircle.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
+        boundingCircle.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
 
         switch (state) {
             case ALIVE:
@@ -157,7 +160,7 @@ public class Shooter extends DefaultCritter {
         // ------> for debugging:
         if (Invaders.DEBGGING_ON) {
             StdDraw.setPenColor(StdDraw.CYAN);
-            collisionCircle.draw();
+            boundingShape.draw();
         }
         // <-------
 
@@ -184,7 +187,7 @@ public class Shooter extends DefaultCritter {
     public void activateShield() {
         if (!isShieldActive && energyPoints > SHIELD_ENERGY_USAGE_INITIAL) {
             StdAudio.play("resources/audio/shieldUp.wav");
-            collisionCircle.radius = SHIELD_COLLISION_RADIUS;
+            boundingCircle.radius = SHIELD_COLLISION_RADIUS;
             energyPoints -= SHIELD_ENERGY_USAGE_INITIAL;
             isShieldActive = true;
         }
@@ -193,10 +196,9 @@ public class Shooter extends DefaultCritter {
     public void deactivateShield() {
         if (isShieldActive) {
             StdAudio.play("resources/audio/shieldDown.wav");
-            collisionCircle.radius = DEFAULT_COLLISION_RADIUS;
+            boundingCircle.radius = DEFAULT_COLLISION_RADIUS;
             isShieldActive = false;
         }
     }
 
-    
 }

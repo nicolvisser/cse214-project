@@ -154,7 +154,7 @@ public class Turret extends DefaultCritter {
             if (enemyGroup.boundingRect.intersects(aimRay)) {
                 for (Enemy enemy : enemyGroup.enemies) {
                     if (enemy.state == Enemy.EnemyState.ALIVE) {
-                        Double lengthUntilCollision = aimRay.lengthUntilIntersection(enemy.collisionCircle);
+                        Double lengthUntilCollision = aimRay.lengthUntilIntersection(enemy.boundingShape);
                         if (Double.isFinite(lengthUntilCollision) && lengthUntilCollision < lengthOfAimLine) {
                             lengthOfAimLine = lengthUntilCollision;
                         }

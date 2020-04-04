@@ -17,12 +17,15 @@ public class Enemy extends DefaultCritter {
 
     private AnimatedPicture explosion;
 
+    private Circle boundingCircle;
+
     public Enemy(Rectangle canvas, Vector2D position, double orientation) {
         super(position, orientation);
         this.canvas = canvas;
         state = EnemyState.ALIVE;
         healthPoints = DEFAULT_HEALTH_POINTS;
-        collisionCircle = new Circle(position, DEFAULT_COLLISION_RADIUS);
+        boundingShape = new Circle(position, DEFAULT_COLLISION_RADIUS);
+        boundingCircle = (Circle) boundingShape;
         explosion = new AnimatedPicture("resources/images/explosion", "png", 16,
                 AnimatedPicture.AnimationType.FWD_BWD_ONCE);
     }
@@ -49,7 +52,7 @@ public class Enemy extends DefaultCritter {
     @Override
     public void render(double dt) {
 
-        collisionCircle.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
+        boundingCircle.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
 
         switch (state) {
             case ALIVE:
@@ -90,7 +93,7 @@ public class Enemy extends DefaultCritter {
         // -----> for debugging:
         if (Invaders.DEBGGING_ON) {
             StdDraw.setPenColor(StdDraw.MAGENTA);
-            collisionCircle.draw();
+            boundingShape.draw();
         }
         //
     }

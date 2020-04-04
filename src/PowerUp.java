@@ -22,6 +22,8 @@ public class PowerUp extends DefaultCritter {
     private Shooter shooterOwner;
     private AnimatedPicture animatedPowerUpSprite;
 
+    private Circle boundingCircle; // for boundingShape casted as Circle
+
     public PowerUp(Vector2D position, PowerUpType type) {
         this.position = position;
         velocity = new Vector2D(0, -50);
@@ -29,7 +31,8 @@ public class PowerUp extends DefaultCritter {
         this.type = type;
         state = PowerUpState.TRAVELLING;
         remainingLifetime = DEFAULT_LIFETIME;
-        collisionCircle = new Circle(position, DEFAULT_COLLISION_RADIUS);
+        boundingShape = new Circle(position, DEFAULT_COLLISION_RADIUS);
+        boundingCircle = (Circle) boundingShape;
         String filename = "";
         switch (type) {
             case FAST_ENERGY_GAIN:
@@ -112,7 +115,7 @@ public class PowerUp extends DefaultCritter {
         // ------> for debugging:
         if (Invaders.DEBGGING_ON) {
             StdDraw.setPenColor(StdDraw.GRAY);
-            collisionCircle.draw();
+            boundingShape.draw();
         }
         // <-------
     }
@@ -120,7 +123,7 @@ public class PowerUp extends DefaultCritter {
     @Override
     public void render(double dt) {
 
-        collisionCircle.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
+        boundingCircle.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
 
         switch (state) {
             case TRAVELLING:

@@ -17,6 +17,8 @@ public class Missile extends DefaultCritter {
     public int missileDamage;
     public MissileState state;
 
+    private Circle boundingCircle; // for boundingShape casted as Circle
+
     private AnimatedPicture explosion;
 
     public Missile(Vector2D position, Vector2D direction) {
@@ -24,7 +26,8 @@ public class Missile extends DefaultCritter {
         velocity = new Vector2D(SPEED * direction.x, SPEED * direction.y);
         allowRotation = false;
         healthPoints = DEFAULT_HEALTH_POINTS;
-        collisionCircle = new Circle(position, DEFAULT_COLLISION_RADIUS);
+        boundingShape = new Circle(position, DEFAULT_COLLISION_RADIUS);
+        boundingCircle = (Circle) boundingShape;
         missileDamage = DEFAULT_MISSILE_DAMAGE;
         state = MissileState.TRAVELLING;
         explosion = new AnimatedPicture("resources/images/explosion", "png", 16,
@@ -54,7 +57,7 @@ public class Missile extends DefaultCritter {
         // -----> for debugging
         if (Invaders.DEBGGING_ON) {
             StdDraw.setPenColor(StdDraw.YELLOW);
-            collisionCircle.draw();
+            boundingShape.draw();
         }
         // <-----
     }
@@ -62,7 +65,7 @@ public class Missile extends DefaultCritter {
     @Override
     public void render(double dt) {
 
-        collisionCircle.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
+        boundingCircle.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
 
         switch (state) {
             case TRAVELLING:

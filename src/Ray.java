@@ -13,6 +13,15 @@ public class Ray {
         StdDraw.line(start.x, start.y, end.x, end.y);
     }
 
+    public boolean intersects(BoundingShape shape) {
+        if (shape instanceof Rectangle) {
+            return intersects((Rectangle) shape);
+        } else if (shape instanceof Circle) {
+            return intersects((Circle) shape);
+        } else
+            return false;
+    }
+
     public boolean intersects(Rectangle rect) {
         return Double.isFinite(lengthUntilIntersection(rect));
     }
@@ -43,6 +52,15 @@ public class Ray {
         }
 
         return Math.max(0, tmin);
+    }
+
+    public double lengthUntilIntersection(BoundingShape shape) {
+        if (shape instanceof Rectangle) {
+            return lengthUntilIntersection((Rectangle) shape);
+        } else if (shape instanceof Circle) {
+            return lengthUntilIntersection((Circle) shape);
+        } else
+            return Double.POSITIVE_INFINITY;
     }
 
     public double lengthUntilIntersection(Circle circ) {
