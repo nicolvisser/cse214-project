@@ -115,6 +115,23 @@ public class Bunker implements Collidable {
 
                 }
             }
+        } else if (other instanceof Enemy) {
+            Enemy enemy = (Enemy) other;
+
+            if (isCollidingWith(enemy)) {
+
+                Iterator<Block> blockIterator = blocks.iterator();
+                while (blockIterator.hasNext()) {
+                    Block block = blockIterator.next();
+                    if (block.isCollidingWith(enemy)) {
+                        blockIterator.remove();
+                    }
+                }
+            }
+        } else if (other instanceof EnemyWave) {
+            EnemyWave enemyWave = (EnemyWave) other;
+
+            enemyWave.handlePossibleCollisionWith(this);
         }
     }
 }

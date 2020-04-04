@@ -159,11 +159,20 @@ public class EnemyWave implements Serializable, Collidable {
         return false;
     }
 
+    public boolean isCollidingWith(Ray ray) {
+        for (EnemyGroup enemyGroup : enemyGroups) {
+            if (enemyGroup.isCollidingWith(ray)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void handlePossibleCollisionWith(Collidable other) {
 
         for (EnemyGroup enemyGroup : enemyGroups) {
-            if (enemyGroup.getBoundingShape().intersects(other.getBoundingShape())) {
+            if (enemyGroup.isCollidingWith(other)) {
 
                 enemyGroup.handlePossibleCollisionWith(other);
 

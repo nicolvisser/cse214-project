@@ -22,24 +22,23 @@ public class InvaderGameState extends KeyListener implements Serializable {
     int score;
 
     ArrayList<Shooter> shooters;
-
     EnemyWave enemyWave;
-
     ArrayList<PowerUp> powerUps;
-
     ArrayList<Bunker> bunkers;
 
-    public InvaderGameState(Rectangle drawArea) {
+    Ray groundRay;
+
+    public InvaderGameState(Rectangle canvas) {
 
         score = 0;
 
         shooters = new ArrayList<>();
-        Shooter shooter = new Shooter(new Vector2D(0, -75), Math.PI / 2, drawArea);
+        Shooter shooter = new Shooter(new Vector2D(0, -75), Math.PI / 2, canvas);
         shooter.allowRotation = false;
         shooter.getTurret().addAbilityToEquipPowerUp(powerUps);
         shooters.add(shooter);
 
-        enemyWave = new EnemyWave(drawArea, shooter);
+        enemyWave = new EnemyWave(canvas, shooter);
 
         powerUps = new ArrayList<>();
         powerUps.add(new PowerUp(new Vector2D(0, 0), PowerUp.PowerUpType.FAST_RELOAD));
@@ -53,6 +52,8 @@ public class InvaderGameState extends KeyListener implements Serializable {
         bunkers.add(new Bunker(new Rectangle(20, -30, 30, 10), 5, 15));
         bunkers.add(new Bunker(new Rectangle(60, -30, 30, 10), 5, 15));
 
+        groundRay = new Ray(new Vector2D(canvas.xmin(), canvas.ymin()), new Vector2D(1, 0));
+
         collisionListener = new CollisionListener();
         collisionListener.add(shooters, powerUps);
         collisionListener.add(shooters, enemyWave.enemyMissiles);
@@ -62,6 +63,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
         collisionListener.add(enemyWave.enemyMissiles, bunkers);
         collisionListener.add(enemyWave, shooter.getTurret().missiles);
         collisionListener.add(enemyWave, shooter);
+        collisionListener.add(enemyWave, bunkers);
 
     }
 
@@ -78,7 +80,7 @@ public class InvaderGameState extends KeyListener implements Serializable {
         }
 
         enemyWave.render(dt);
-        if (enemyWave.isCleared())
+        if (enemyWave.isCleared() || enemyWave.isCollidingWith(groundRay))
             gameOverFlag = true;
 
         Iterator<PowerUp> powerUpIterator = powerUps.iterator();

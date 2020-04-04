@@ -44,6 +44,10 @@ public class Enemy extends DefaultCritter {
 
             shooter.handlePossibleCollisionWith(this);
 
+        } else if (other instanceof Bunker) {
+            Bunker bunker = (Bunker) other;
+
+            bunker.handlePossibleCollisionWith(this);
         }
     }
 

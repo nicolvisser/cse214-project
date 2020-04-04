@@ -59,7 +59,10 @@ public class DefaultCritter extends Object2D implements Critter, Collidable {
         return this.getBoundingShape().intersects(other.getBoundingShape());
     }
 
-    @Override
+    public boolean isCollidingWith(Ray ray) {
+        return this.getBoundingShape().intersects(ray);
+    }
+
     public void render(double dt) {
         if (allowTranslation)
             renderTranslation(dt);

@@ -89,12 +89,11 @@ public class EnemyGroup implements Serializable, Collidable {
         }
     }
 
-    public boolean isCollidingWithBottomOfCanvas() {
+    public boolean isCollidingWith(Ray ray) {
         // a ray along the bottom of canvas
-        Ray groundRay = new Ray(new Vector2D(canvas.xmin(), canvas.ymin()), new Vector2D(1, 0));
-        if (boundingRect.intersects(groundRay)) {
+        if (boundingRect.intersects(ray)) {
             for (Enemy enemy : enemies) {
-                if (enemy.getBoundingShape().intersects(groundRay)) {
+                if (enemy.isCollidingWith(ray)) {
                     return true;
                 }
             }
@@ -118,18 +117,6 @@ public class EnemyGroup implements Serializable, Collidable {
 
     @Override
     public boolean isCollidingWith(Collidable other) {
-
-        if (other instanceof Shooter) {
-            Shooter shooter = (Shooter) other;
-            if (boundingRect.intersects(shooter.getBoundingShape()))
-                for (Enemy enemy : enemies) {
-                    if (enemy.isCollidingWith(shooter)) {
-                        return true;
-                    }
-                }
-            return false;
-        }
-
         return boundingRect.intersects(other.getBoundingShape());
     }
 
