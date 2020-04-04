@@ -61,6 +61,8 @@ public class InvaderGameState extends KeyListener implements Serializable {
         collisionListener.add(shooters, enemyWave.enemyMissiles);
         collisionListener.add(shooters.get(0).getTurret().missiles, enemyWave.enemyMissiles); // TODO: improve
         collisionListener.add(shooters.get(0).getTurret().missiles, powerUps); // TODO: improve
+        collisionListener.add(shooters.get(0).getTurret().missiles, bunkers); // TODO: improve
+        collisionListener.add(enemyWave.enemyMissiles, bunkers);
 
     }
 
@@ -103,16 +105,6 @@ public class InvaderGameState extends KeyListener implements Serializable {
         Iterator<Bunker> bunkerIterator = bunkers.iterator();
         while (bunkerIterator.hasNext()) {
             Bunker bunker = bunkerIterator.next();
-
-            for (Shooter shooter : shooters) {
-                for (Missile missile : shooter.getTurret().missiles) {
-                    bunker.handlePossibleCollisionWith(missile);
-                }
-            }
-
-            for (Missile enemyMissile : enemyWave.enemyMissiles) {
-                bunker.handlePossibleCollisionWith(enemyMissile);
-            }
 
             if (bunker.isCleared()) {
                 bunkerIterator.remove();

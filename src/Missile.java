@@ -121,6 +121,10 @@ public class Missile extends DefaultCritter {
 
                     }
                 }
+            } else if (other instanceof Bunker) {
+                Bunker bunker = (Bunker) other;
+
+                bunker.handlePossibleCollisionWith(this);
             }
         }
     }
