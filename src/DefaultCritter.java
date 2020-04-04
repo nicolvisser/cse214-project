@@ -1,4 +1,4 @@
-public class DefaultCritter extends Object2D implements Critter {
+public class DefaultCritter extends Object2D implements Critter, Collidable {
 
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_HEALTH_POINTS = 100;
@@ -6,19 +6,13 @@ public class DefaultCritter extends Object2D implements Critter {
 
     public int healthPoints;
 
-    public BoundingShape boundingShape;
+    private final BoundingShape boundingShape;
 
     public boolean allowTranslation;
     public boolean allowRotation;
 
     public DefaultCritter() {
-        super();
-
-        healthPoints = DEFAULT_HEALTH_POINTS;
-        boundingShape = new Circle(position, DEFAULT_COLLISION_RADIUS);
-
-        allowTranslation = true;
-        allowRotation = true;
+        this(new Vector2D(0, 0), 0);
     }
 
     public DefaultCritter(Vector2D position, double orientation) {
@@ -45,8 +39,14 @@ public class DefaultCritter extends Object2D implements Critter {
         boundingShape.draw();
     }
 
-    public boolean isCollidingWith(DefaultCritter other) {
-        return this.boundingShape.intersects(other.boundingShape);
+    @Override
+    public BoundingShape getBoundingShape() {
+        return boundingShape;
+    }
+
+    @Override
+    public boolean isCollidingWith(Collidable other) {
+        return this.getBoundingShape().intersects(other.getBoundingShape());
     }
 
     @Override

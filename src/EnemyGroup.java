@@ -94,7 +94,7 @@ public class EnemyGroup implements Serializable {
 
     public int handlePossibleCollisionWithMissile(Missile missile) {
         int points = 0;
-        if (boundingRect.intersects(missile.boundingShape)) {
+        if (boundingRect.intersects(missile.getBoundingShape())) {
             for (Enemy enemy : enemies) {
                 points += enemy.handleCollisionWithMissile(missile);
             }
@@ -104,7 +104,7 @@ public class EnemyGroup implements Serializable {
 
     public boolean isCollidingWith(Shooter shooter) {
 
-        if (boundingRect.intersects(shooter.boundingShape))
+        if (boundingRect.intersects(shooter.getBoundingShape()))
             for (Enemy enemy : enemies) {
                 if (enemy.isCollidingWith(shooter)) {
                     return true;
@@ -118,7 +118,7 @@ public class EnemyGroup implements Serializable {
         Ray groundRay = new Ray(new Vector2D(canvas.xmin(), canvas.ymin()), new Vector2D(1, 0));
         if (boundingRect.intersects(groundRay)) {
             for (Enemy enemy : enemies) {
-                if (enemy.boundingShape.intersects(groundRay)) {
+                if (enemy.getBoundingShape().intersects(groundRay)) {
                     return true;
                 }
             }

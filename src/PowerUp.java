@@ -28,8 +28,8 @@ public class PowerUp extends DefaultCritter {
         this.type = type;
         state = PowerUpState.TRAVELLING;
         remainingLifetime = DEFAULT_LIFETIME;
-        boundingShape = new Circle(position, DEFAULT_COLLISION_RADIUS);
-        boundingCircle = (Circle) boundingShape;
+        boundingCircle = (Circle) getBoundingShape();
+        boundingCircle.radius = DEFAULT_COLLISION_RADIUS; // TODO maybe rather use constructor for this?
         String filename = "";
         switch (type) {
             case FAST_ENERGY_GAIN:
@@ -112,7 +112,7 @@ public class PowerUp extends DefaultCritter {
         // ------> for debugging:
         if (Invaders.DEBGGING_ON) {
             StdDraw.setPenColor(StdDraw.GRAY);
-            boundingShape.draw();
+            getBoundingShape().draw();
         }
         // <-------
     }

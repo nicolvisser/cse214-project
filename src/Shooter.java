@@ -40,8 +40,8 @@ public class Shooter extends DefaultCritter {
         this.canvas = canvas;
         healthPoints = DEFAULT_HEALTH_POINTS;
         state = ShooterState.ALIVE;
-        boundingShape = new Circle(position, DEFAULT_COLLISION_RADIUS);
-        boundingCircle = (Circle) boundingShape;
+        boundingCircle = (Circle) getBoundingShape();
+        boundingCircle.radius = DEFAULT_COLLISION_RADIUS; // TODO maybe rather use constructor for this?
         energyPoints = DEFAULT_ENERGY_POINTS;
         energyGainPerTimeStep = DEFAULT_ENERGY_GAIN_PER_TIMESTEP;
         isThrusterLeftActive = false;
@@ -155,7 +155,7 @@ public class Shooter extends DefaultCritter {
         // ------> for debugging:
         if (Invaders.DEBGGING_ON) {
             StdDraw.setPenColor(StdDraw.CYAN);
-            boundingShape.draw();
+            getBoundingShape().draw();
         }
         // <-------
 

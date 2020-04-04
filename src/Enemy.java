@@ -24,8 +24,8 @@ public class Enemy extends DefaultCritter {
         this.canvas = canvas;
         state = EnemyState.ALIVE;
         healthPoints = DEFAULT_HEALTH_POINTS;
-        boundingShape = new Circle(position, DEFAULT_COLLISION_RADIUS);
-        boundingCircle = (Circle) boundingShape;
+        boundingCircle = (Circle) getBoundingShape();
+        boundingCircle.radius = DEFAULT_COLLISION_RADIUS; // TODO maybe rather use constructor for this?
         explosion = new AnimatedPicture("resources/images/explosion", "png", 16,
                 AnimatedPicture.AnimationType.FWD_BWD_ONCE);
     }
@@ -93,7 +93,7 @@ public class Enemy extends DefaultCritter {
         // -----> for debugging:
         if (Invaders.DEBGGING_ON) {
             StdDraw.setPenColor(StdDraw.MAGENTA);
-            boundingShape.draw();
+            getBoundingShape().draw();
         }
         //
     }

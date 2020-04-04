@@ -23,8 +23,8 @@ public class Missile extends DefaultCritter {
         velocity = new Vector2D(SPEED * direction.x, SPEED * direction.y);
         allowRotation = false;
         healthPoints = DEFAULT_HEALTH_POINTS;
-        boundingShape = new Circle(position, DEFAULT_COLLISION_RADIUS);
-        boundingCircle = (Circle) boundingShape;
+        boundingCircle = (Circle) getBoundingShape();
+        boundingCircle.radius = DEFAULT_COLLISION_RADIUS; // TODO maybe rather use constructor for this?
         missileDamage = DEFAULT_MISSILE_DAMAGE;
         state = MissileState.TRAVELLING;
         explosion = new AnimatedPicture("resources/images/explosion", "png", 16,
@@ -54,7 +54,7 @@ public class Missile extends DefaultCritter {
         // -----> for debugging
         if (Invaders.DEBGGING_ON) {
             StdDraw.setPenColor(StdDraw.YELLOW);
-            boundingShape.draw();
+            getBoundingShape().draw();
         }
         // <-----
     }

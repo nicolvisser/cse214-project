@@ -74,7 +74,7 @@ public class Bunker {
 
                     // if missile is not yet bursting, but missile is colliding with block, set
                     // burst true
-                    if (!burst && missile.boundingShape.intersects(block.boundingRect)) {
+                    if (!burst && missile.getBoundingShape().intersects(block.boundingRect)) {
                         burst = true;
                     }
 
