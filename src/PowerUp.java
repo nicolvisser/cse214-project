@@ -1,6 +1,3 @@
-/**
- * PowerUp
- */
 public class PowerUp extends DefaultCritter {
 
     enum PowerUpType {

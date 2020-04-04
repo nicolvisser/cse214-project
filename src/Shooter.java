@@ -1,8 +1,3 @@
-import java.util.ArrayList;
-
-/**
- * Shooter
- */
 public class Shooter extends DefaultCritter {
 
     public static final int DEFAULT_HEALTH_POINTS = 300;

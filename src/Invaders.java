@@ -6,9 +6,6 @@ import java.io.ObjectOutputStream;
 
 import javax.swing.JOptionPane;
 
-/**
- * Invaders
- */
 public class Invaders {
 
     static final boolean DEBGGING_ON = true; // USE THIS TO SHOW DEBUGGING FEAUTURES (bounding areas)

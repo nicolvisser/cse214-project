@@ -1,6 +1,3 @@
-/**
- * ControlsScreen
- */
 public class ControlsScreen extends MenuScreen {
 
     static String[] options = { "Back" };

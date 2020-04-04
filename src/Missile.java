@@ -1,6 +1,3 @@
-/**
- * Missile
- */
 public class Missile extends DefaultCritter {
 
     enum MissileState {

@@ -1,6 +1,3 @@
-/**
- * TitleScreen
- */
 public class MenuScreen extends KeyListener {
 
     static final int BUTTON_WIDTH = 100;

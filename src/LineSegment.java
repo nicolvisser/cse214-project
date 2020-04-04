@@ -1,4 +1,3 @@
-
 public class LineSegment {
 
     Vector2D start;

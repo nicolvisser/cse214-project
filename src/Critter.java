@@ -1,6 +1,3 @@
-/**
- * Critter
- */
 public interface Critter {
     public void render(double dt);
 

@@ -1,4 +1,3 @@
-
 public interface BoundingShape {
 
     public boolean contains(Vector2D point);
