@@ -175,4 +175,16 @@ public class PowerUp extends DefaultCritter {
         state = PowerUpState.DEACTIVE;
     }
 
+    @Override
+    public void handlePossibleCollisionWith(Collidable other) {
+        if (state == PowerUpState.TRAVELLING && isCollidingWith(other)) {
+
+            if (other instanceof Shooter) {
+                Shooter shooter = (Shooter) other;
+
+                addEffectTo(shooter);
+
+            }
+        }
+    }
 }

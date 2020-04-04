@@ -192,5 +192,4 @@ public class Shooter extends DefaultCritter {
             isShieldActive = false;
         }
     }
-
 }

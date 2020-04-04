@@ -14,15 +14,18 @@ public class Missile extends DefaultCritter {
     public int missileDamage;
     public MissileState state;
 
+    public DefaultCritter owner;
+
     // private Circle boundingCircle;
 
     private AnimatedPicture explosion;
 
-    public Missile(Vector2D position, Vector2D direction) {
+    public Missile(Vector2D position, Vector2D direction, DefaultCritter owner) {
         super(position.x, position.y, DEFAULT_COLLISION_RADIUS, direction.getPolarAngle());
         velocity = new Vector2D(SPEED * direction.x, SPEED * direction.y);
         allowRotation = false;
         healthPoints = DEFAULT_HEALTH_POINTS;
+        this.owner = owner;
         // boundingCircle = (Circle) getBoundingShape(); // cast to circle to use
         // methods in this class
         missileDamage = DEFAULT_MISSILE_DAMAGE;
@@ -81,6 +84,44 @@ public class Missile extends DefaultCritter {
 
             case DEAD:
                 break;
+        }
+    }
+
+    @Override
+    public void handlePossibleCollisionWith(Collidable other) {
+        if (state == MissileState.TRAVELLING && isCollidingWith(other)) {
+
+            if (other instanceof Missile) {
+                Missile otherMissile = (Missile) other;
+                this.takeDamage();
+                otherMissile.takeDamage();
+
+            } else if (other instanceof Shooter) {
+                Shooter shooter = (Shooter) other;
+
+                if (shooter.getShieldState()) {
+                    this.takeDamage();
+                    StdAudio.play("resources/audio/shieldUp.wav");
+
+                } else {
+                    this.takeDamage();
+                    shooter.takeDamage(missileDamage);
+
+                }
+
+            } else if (other instanceof PowerUp) {
+                PowerUp powerUp = (PowerUp) other;
+
+                if (powerUp.state == PowerUp.PowerUpState.TRAVELLING) {
+
+                    if (owner instanceof Shooter) {
+                        Shooter shooter = (Shooter) owner;
+
+                        powerUp.addEffectTo(shooter);
+
+                    }
+                }
+            }
         }
     }
 }

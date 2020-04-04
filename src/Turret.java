@@ -12,7 +12,7 @@ public class Turret extends DefaultCritter {
     private static final int DEFAULT_COLLISION_RADIUS = 1; // TODO rather use rectangle for turret
 
     private Rectangle drawArea;
-    private Shooter shooterRef;
+    public Shooter shooterRef;
 
     public ArrayList<Missile> missiles;
     public double reloadTime;
@@ -75,16 +75,20 @@ public class Turret extends DefaultCritter {
         Iterator<Missile> missileIterator = missiles.iterator();
         while (missileIterator.hasNext()) {
             Missile missile = missileIterator.next();
+
             missile.render(dt);
+
             if (missile.state == Missile.MissileState.DEAD || !drawArea.contains(missile.position)) {
                 missileIterator.remove();
+
             } else if (missile.state == Missile.MissileState.TRAVELLING && powerUpsRef != null) {
+
                 Iterator<PowerUp> powerUpIterator = powerUpsRef.iterator();
                 while (powerUpIterator.hasNext()) {
                     PowerUp powerUp = powerUpIterator.next();
-                    if (powerUp.state == PowerUp.PowerUpState.TRAVELLING && missile.isCollidingWith(powerUp)) {
-                        powerUp.addEffectTo(shooterRef);
-                    }
+
+                    missile.handlePossibleCollisionWith(powerUp);
+
                 }
             }
         }
@@ -111,7 +115,7 @@ public class Turret extends DefaultCritter {
             // System.out.println("Launched Missile With chargeUpTime: " + chargeUpTime);
             timeSinceLastMissile = 0;
             Vector2D missileStartPos = getPositionOfEndOfTurret();
-            Missile missile = new Missile(missileStartPos, this.lookVector());
+            Missile missile = new Missile(missileStartPos, this.lookVector(), shooterRef);
             missiles.add(missile);
             StdAudio.play("resources/audio/Gun+1.wav");
         }

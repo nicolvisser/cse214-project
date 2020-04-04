@@ -57,13 +57,13 @@ public class InvaderGameState extends KeyListener implements Serializable {
         Iterator<PowerUp> powerUpIterator = powerUps.iterator();
         while (powerUpIterator.hasNext()) {
             PowerUp powerUp = powerUpIterator.next();
+
+            powerUp.render(dt);
+
+            powerUp.handlePossibleCollisionWith(shooter);
+
             if (powerUp.state == PowerUp.PowerUpState.DEACTIVE) {
                 powerUpIterator.remove();
-            } else {
-                powerUp.render(dt);
-                if (shooter.isCollidingWith(powerUp)) {
-                    powerUp.addEffectTo(shooter);
-                }
             }
         }
 

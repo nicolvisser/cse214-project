@@ -54,30 +54,17 @@ public class EnemyWave implements Serializable, Collidable {
         Iterator<Missile> enemyMissileIterator = enemyMissiles.iterator();
         while (enemyMissileIterator.hasNext()) {
             Missile enemyMissile = enemyMissileIterator.next();
+
             enemyMissile.render(dt);
+
+            enemyMissile.handlePossibleCollisionWith(shooterRef);
+
+            for (Missile shooterMissile : shooterRef.getTurret().missiles) {
+                enemyMissile.handlePossibleCollisionWith(shooterMissile);
+            }
+
             if (enemyMissile.state == Missile.MissileState.DEAD || !canvas.contains(enemyMissile.position)) {
                 enemyMissileIterator.remove();
-            } else if (enemyMissile.state == Missile.MissileState.TRAVELLING
-                    && enemyMissile.isCollidingWith(shooterRef)) {
-                if (shooterRef.getShieldState() == false) {
-                    shooterRef.takeDamage(enemyMissile.missileDamage);
-                } else {
-                    StdAudio.play("resources/audio/shieldUp.wav");
-                }
-                enemyMissile.takeDamage();
-            } else if (enemyMissile.state == Missile.MissileState.TRAVELLING) {
-
-                Iterator<Missile> shooterMissileIterator = shooterRef.getTurret().missiles.iterator();
-
-                while (shooterMissileIterator.hasNext()) {
-                    Missile shooterMissile = shooterMissileIterator.next();
-                    if (shooterMissile.state == Missile.MissileState.TRAVELLING
-                            && enemyMissile.isCollidingWith(shooterMissile)) {
-                        shooterMissile.takeDamage();
-                        enemyMissile.takeDamage();
-                    }
-                }
-
             }
         }
     }
@@ -148,7 +135,7 @@ public class EnemyWave implements Serializable, Collidable {
         if (attackingEnemy != null) {
             Vector2D missileSpawnLocation = new Vector2D(attackingEnemy.position.x, attackingEnemy.position.y);
             Vector2D missileDirection = shooterRef.positionRelativeTo(attackingEnemy).normalize();
-            Missile missile = new Missile(missileSpawnLocation, missileDirection);
+            Missile missile = new Missile(missileSpawnLocation, missileDirection, attackingEnemy);
             StdDraw.filledCircle(missileSpawnLocation.x, missileSpawnLocation.y, 5);
             missile.velocity = missileDirection.scale(Missile.SPEED);
             enemyMissiles.add(missile);
