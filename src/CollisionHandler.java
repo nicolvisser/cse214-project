@@ -44,13 +44,16 @@ public class CollisionHandler {
     }
 
     public void handleCollisions() {
+        //// long numberOfCollisionTests = 0;
         for (CollisionPair collisionPair : collisionPairs) {
             for (Collidable obj1 : collisionPair.objects1) {
                 for (Collidable obj2 : collisionPair.objects2) {
+                    //// numberOfCollisionTests++;
                     obj1.handlePossibleCollisionWith(obj2);
                 }
             }
         }
+        //// System.out.println(numberOfCollisionTests);
     }
 
 }

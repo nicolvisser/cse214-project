@@ -6,6 +6,8 @@ import java.util.Iterator;
 
 public class SceneHandler {
 
+    //// long frameNumber = 0;
+
     ArrayList<ArrayList<? extends SceneItem>> listOfListOfItems;
 
     public SceneHandler() {
@@ -24,14 +26,17 @@ public class SceneHandler {
 
     public void render(double dt) {
 
-        for (ArrayList<? extends SceneItem> listOfItems : listOfListOfItems) {
+        //// frameNumber++;
 
+        for (ArrayList<? extends SceneItem> listOfItems : listOfListOfItems) {
 
             Iterator<? extends SceneItem> sceneItemIterator = listOfItems.iterator();
 
             while (sceneItemIterator.hasNext()) {
                 SceneItem item = sceneItemIterator.next();
 
+                //// System.out.println("Frame " + frameNumber + ": Rendering " +
+                //// item.getClass());
                 item.render(dt);
 
                 if (item.mayBeRemovedFromScene()) {

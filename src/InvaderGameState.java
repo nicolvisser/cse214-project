@@ -59,7 +59,6 @@ public class InvaderGameState extends KeyListener implements Serializable {
         sceneHandler.add(enemyWave);
         sceneHandler.add(powerUps);
         sceneHandler.add(bunkers);
-        sceneHandler.add(shooters);
 
         collisionHandler = new CollisionHandler();
         collisionHandler.add(shooters, powerUps);
@@ -115,8 +114,11 @@ public class InvaderGameState extends KeyListener implements Serializable {
             shooter.getTurret().drawAimLine(bunkers, enemyWave);
         }
 
-        drawHealthBar((double) shooters.get(0).healthPoints / Shooter.DEFAULT_HEALTH_POINTS);
-        drawEnergyBar(shooters.get(0).energyPoints / Shooter.DEFAULT_ENERGY_POINTS);
+        if (shooters.size() == 1) {
+            drawHealthBar((double) shooters.get(0).healthPoints / Shooter.DEFAULT_HEALTH_POINTS);
+            drawEnergyBar(shooters.get(0).energyPoints / Shooter.DEFAULT_ENERGY_POINTS);
+        }
+
         drawScore(score);
 
     }
