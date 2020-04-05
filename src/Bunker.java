@@ -1,13 +1,16 @@
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Bunker {
+public class Bunker implements Collidable, SceneItem, Serializable {
 
-    private class Block extends Particle2D {
+    private static final long serialVersionUID = 1L;
+
+    public class Block extends Particle2D implements Collidable {
         private static final long serialVersionUID = 1L;
         private Rectangle boundingRect;
-        public Color color;
+        private Color color;
 
         public Block(double x, double y, double width, double height) {
             super(new Vector2D(x, y));
@@ -19,6 +22,21 @@ public class Bunker {
         public void draw() {
             StdDraw.setPenColor(color);
             StdDraw.filledRectangle(position.x, position.y, boundingRect.width / 2, boundingRect.height / 2);
+        }
+
+        @Override
+        public BoundingShape getBoundingShape() {
+            return boundingRect;
+        }
+
+        @Override
+        public boolean isCollidingWith(Collidable other) {
+            return boundingRect.intersects(other.getBoundingShape());
+        }
+
+        @Override
+        public void handlePossibleCollisionWith(Collidable other) {
+            // empty, handled in parent method
         }
     }
 
@@ -33,8 +51,8 @@ public class Bunker {
         double blockHeight = (boundingRect.height - (numRows - 1) * spacing) / numRows;
 
         for (double x = boundingRect.xmin() + blockWidth / 2; x < boundingRect.xmax(); x += blockWidth + spacing) {
-            for (double y = boundingRect.ymin() + blockHeight / 2; y < boundingRect.ymax(); y += blockHeight
-                    + spacing) {
+            for (double y = boundingRect.ymin() + blockHeight / 2; y < boundingRect
+                    .ymax(); y += (blockHeight + spacing)) {
                 Block block = new Block(x, y, blockWidth, blockHeight);
                 blocks.add(block);
             }
@@ -58,35 +76,75 @@ public class Bunker {
         //
     }
 
-    public void handlePossibleCollisionWith(Missile missile) {
-        boolean burst = false;
-        int burstRadius = 5;
+    @Override
+    public BoundingShape getBoundingShape() {
+        return boundingRect;
+    }
 
-        if (missile.state == Missile.MissileState.TRAVELLING) { // missile is alive and travelling
+    @Override
+    public boolean isCollidingWith(Collidable other) {
+        return boundingRect.intersects(other.getBoundingShape());
+    }
 
-            if (boundingRect.contains(missile.position)) { // missile center inside bunker
+    @Override
+    public void handlePossibleCollisionWith(Collidable other) {
+        if (other instanceof Missile) {
+            Missile missile = (Missile) other;
 
-                Circle missileBurstCircle = new Circle(missile.position.x, missile.position.y, burstRadius);
+            if (missile.state == Missile.MissileState.TRAVELLING) { // missile is alive and travelling
+
+                if (boundingRect.contains(missile.position)) { // if missile center is inside bunker
+
+                    boolean burst = false;
+                    Circle missileBurstCircle = new Circle(missile.position.x, missile.position.y, 5);
+
+                    Iterator<Block> blockIterator = blocks.iterator();
+                    while (blockIterator.hasNext()) {
+                        Block block = blockIterator.next();
+
+                        // if missile is not yet bursting, but missile is colliding with block, set
+                        // burst true
+                        if (!burst && missile.getBoundingShape().intersects(block.boundingRect)) {
+                            burst = true;
+                        }
+
+                        // if missile is bursting and block intersects burst radius, remove block
+                        if (burst && missileBurstCircle.intersects(block.boundingRect)) {
+                            blockIterator.remove();
+                            missile.takeDamage();
+                        }
+
+                    }
+
+                }
+            }
+        } else if (other instanceof Enemy) {
+            Enemy enemy = (Enemy) other;
+
+            if (isCollidingWith(enemy)) {
 
                 Iterator<Block> blockIterator = blocks.iterator();
                 while (blockIterator.hasNext()) {
                     Block block = blockIterator.next();
-
-                    // if missile is not yet bursting, but missile is colliding with block, set
-                    // burst true
-                    if (!burst && missile.collisionCircle.intersects(block.boundingRect)) {
-                        burst = true;
-                    }
-
-                    // if missile is bursting and block intersects burst radius, remove block
-                    if (burst && missileBurstCircle.intersects(block.boundingRect)) {
+                    if (block.isCollidingWith(enemy)) {
                         blockIterator.remove();
-                        missile.takeDamage();
                     }
-
                 }
-
             }
+        } else if (other instanceof EnemyWave) {
+            EnemyWave enemyWave = (EnemyWave) other;
+
+            enemyWave.handlePossibleCollisionWith(this);
         }
+    }
+
+    @Override
+    public void render(double dt) {
+        // do nothing (static)
+    }
+
+    @Override
+    public boolean mayBeRemovedFromScene() {
+        return isCleared();
     }
 }

@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 public class Enemy extends DefaultCritter {
 
     enum EnemyState {
@@ -9,7 +7,7 @@ public class Enemy extends DefaultCritter {
     Rectangle canvas;
 
     public static int DEFAULT_HEALTH_POINTS = 100;
-    public static int DEFAULT_COLLISION_RADIUS = 5;
+    public static final int DEFAULT_COLLISION_RADIUS = 5;
 
     private static final long serialVersionUID = 1L;
 
@@ -17,47 +15,52 @@ public class Enemy extends DefaultCritter {
 
     private AnimatedPicture explosion;
 
+    // private Circle boundingCircle;
+
     public Enemy(Rectangle canvas, Vector2D position, double orientation) {
-        super(position, orientation);
+        super(position.x, position.y, DEFAULT_COLLISION_RADIUS, orientation);
         this.canvas = canvas;
         state = EnemyState.ALIVE;
         healthPoints = DEFAULT_HEALTH_POINTS;
-        collisionCircle = new Circle(position, DEFAULT_COLLISION_RADIUS);
+        // boundingCircle = (Circle) getBoundingShape(); // cast to circle to use
+        // methods in this class
         explosion = new AnimatedPicture("resources/images/explosion", "png", 16,
                 AnimatedPicture.AnimationType.FWD_BWD_ONCE);
     }
 
-    public int handleCollisionWithMissile(Missile missile) {
-        int points = 0;
-        if ((state == EnemyState.ALIVE) && (missile.state == Missile.MissileState.TRAVELLING)
-                && this.isCollidingWith(missile)) {
-            points += missile.missileDamage; // TODO: Better points system than just missile damage
-            takeDamage(missile.missileDamage);
-            missile.takeDamage();
-        }
-        return points;
-    }
+    @Override
+    public void handlePossibleCollisionWith(Collidable other) {
+        if (other instanceof Missile) {
+            Missile missile = (Missile) other;
 
-    public int handleCollisionsWithMissiles(ArrayList<Missile> missiles) {
-        int points = 0;
-        for (Missile missile : missiles) {
-            points += handleCollisionWithMissile(missile);
+            if (missile.state == Missile.MissileState.TRAVELLING && state == EnemyState.ALIVE
+                    && this.isCollidingWith(missile)) {
+                takeDamage(missile.missileDamage);
+                missile.takeDamage();
+            }
+
+        } else if (other instanceof Shooter) {
+            Shooter shooter = (Shooter) other;
+
+            shooter.handlePossibleCollisionWith(this);
+
+        } else if (other instanceof Bunker) {
+            Bunker bunker = (Bunker) other;
+
+            bunker.handlePossibleCollisionWith(this);
         }
-        return points;
     }
 
     @Override
     public void render(double dt) {
 
-        collisionCircle.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
-
         switch (state) {
             case ALIVE:
+                super.render(dt);
                 if (healthPoints <= 0) {
                     state = EnemyState.EXPLODING;
                     break;
                 }
-                super.render(dt);
                 break;
 
             case EXPLODING:
@@ -90,9 +93,14 @@ public class Enemy extends DefaultCritter {
         // -----> for debugging:
         if (Invaders.DEBGGING_ON) {
             StdDraw.setPenColor(StdDraw.MAGENTA);
-            collisionCircle.draw();
+            getBoundingShape().draw();
         }
         //
+    }
+
+    @Override
+    public boolean mayBeRemovedFromScene() {
+        return state == EnemyState.DEAD;
     }
 
 }

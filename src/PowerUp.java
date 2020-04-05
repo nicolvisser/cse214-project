@@ -1,6 +1,3 @@
-/**
- * PowerUp
- */
 public class PowerUp extends DefaultCritter {
 
     enum PowerUpType {
@@ -22,14 +19,18 @@ public class PowerUp extends DefaultCritter {
     private Shooter shooterOwner;
     private AnimatedPicture animatedPowerUpSprite;
 
+    // private Circle boundingCircle;
+
     public PowerUp(Vector2D position, PowerUpType type) {
-        this.position = position;
+        super(position.x, position.y, DEFAULT_COLLISION_RADIUS, 0);
         velocity = new Vector2D(0, -50);
         allowRotation = false;
+
         this.type = type;
         state = PowerUpState.TRAVELLING;
         remainingLifetime = DEFAULT_LIFETIME;
-        collisionCircle = new Circle(position, DEFAULT_COLLISION_RADIUS);
+        // boundingCircle = (Circle) getBoundingShape(); // cast to circle to use
+        // methods in this class
         String filename = "";
         switch (type) {
             case FAST_ENERGY_GAIN:
@@ -112,15 +113,13 @@ public class PowerUp extends DefaultCritter {
         // ------> for debugging:
         if (Invaders.DEBGGING_ON) {
             StdDraw.setPenColor(StdDraw.GRAY);
-            collisionCircle.draw();
+            getBoundingShape().draw();
         }
         // <-------
     }
 
     @Override
     public void render(double dt) {
-
-        collisionCircle.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
 
         switch (state) {
             case TRAVELLING:
@@ -151,7 +150,7 @@ public class PowerUp extends DefaultCritter {
             case GREEN:
                 break;
             case FAST_RELOAD:
-                shooter.getMissileLauncher().reloadTime = MissileLauncher.DEFAULT_RELOAD_TIME / 2;
+                shooter.getTurret().reloadTime = Turret.DEFAULT_RELOAD_TIME / 2;
                 break;
         }
 
@@ -169,11 +168,33 @@ public class PowerUp extends DefaultCritter {
             case GREEN:
                 break;
             case FAST_RELOAD:
-                shooterOwner.getMissileLauncher().reloadTime = MissileLauncher.DEFAULT_RELOAD_TIME;
+                shooterOwner.getTurret().reloadTime = Turret.DEFAULT_RELOAD_TIME;
                 break;
         }
 
         state = PowerUpState.DEACTIVE;
     }
 
+    @Override
+    public void handlePossibleCollisionWith(Collidable other) {
+        if (state == PowerUpState.TRAVELLING && isCollidingWith(other)) {
+
+            if (other instanceof Shooter) {
+                Shooter shooter = (Shooter) other;
+
+                addEffectTo(shooter);
+
+            } else if (other instanceof Missile) {
+                Missile missile = (Missile) other;
+
+                missile.handlePossibleCollisionWith(this);
+
+            }
+        }
+    }
+
+    @Override
+    public boolean mayBeRemovedFromScene() {
+        return state == PowerUpState.DEACTIVE;
+    }
 }

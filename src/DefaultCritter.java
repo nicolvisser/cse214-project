@@ -1,35 +1,35 @@
-/**
- * DefaultCritter
- */
-public class DefaultCritter extends Object2D implements Critter {
+public class DefaultCritter extends Object2D implements SceneItem, Collidable {
 
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_HEALTH_POINTS = 100;
-    private static final int DEFAULT_COLLISION_RADIUS = 5;
+
+    private final BoundingShape boundingShape;
+
+    public final Vector2D position; // override and make FINAL
 
     public int healthPoints;
-
-    public Circle collisionCircle;
 
     public boolean allowTranslation;
     public boolean allowRotation;
 
-    public DefaultCritter() {
-        super();
-
-        healthPoints = DEFAULT_HEALTH_POINTS;
-        collisionCircle = new Circle(position, DEFAULT_COLLISION_RADIUS); // ! possible error if position of circle and
-                                                                         // object gets out of sync
-
-        allowTranslation = true;
-        allowRotation = true;
+    public DefaultCritter(double x, double y, double radius, double orientation) {
+        this(new Circle(x, y, radius), orientation);
     }
 
-    public DefaultCritter(Vector2D position, double orientation) {
-        super(position, orientation);
+    public DefaultCritter(double x, double y, double width, double height, double orientation) {
+        this(new Rectangle(x, y, width, height), orientation);
+    }
+
+    private DefaultCritter(BoundingShape shape, double orientation) {
+        super(shape.getPosition(), orientation);
+        position = shape.getPosition();
+        // <--- sets position to shape's position. since position is final in
+        // DefaultCritter, these two should not go out of sync, unless using
+        // super class to change position's reference. IS THIS OKAY PROGRAMMING ?
+
+        boundingShape = shape;
 
         healthPoints = DEFAULT_HEALTH_POINTS;
-        collisionCircle = new Circle(position, DEFAULT_COLLISION_RADIUS);
 
         allowTranslation = true;
         allowRotation = true;
@@ -42,18 +42,27 @@ public class DefaultCritter extends Object2D implements Critter {
     // draw simple representation of DefaultCritter for debugging / testing
     public void draw() {
         StdDraw.setPenColor(StdDraw.RED);
-        // draw line for line of sight
+        // draw line of sight
         Vector2D aimTarget = position.add(lookVector().scale(100));
         StdDraw.line(position.x, position.y, aimTarget.x, aimTarget.y);
-        // draw circle for body
-        collisionCircle.draw();
-    }
-
-    public boolean isCollidingWith(DefaultCritter other) {
-        return this.collisionCircle.intersects(other.collisionCircle);
+        // draw bounding shape
+        boundingShape.draw();
     }
 
     @Override
+    public BoundingShape getBoundingShape() {
+        return boundingShape;
+    }
+
+    @Override
+    public boolean isCollidingWith(Collidable other) {
+        return this.getBoundingShape().intersects(other.getBoundingShape());
+    }
+
+    public boolean isCollidingWith(Ray ray) {
+        return this.getBoundingShape().intersects(ray);
+    }
+
     public void render(double dt) {
         if (allowTranslation)
             renderTranslation(dt);
@@ -62,8 +71,14 @@ public class DefaultCritter extends Object2D implements Critter {
     }
 
     @Override
-    public void prepareToSaveState() {
+    public void handlePossibleCollisionWith(Collidable other) {
+        // need to override in child classes
+    }
 
+    @Override
+    public boolean mayBeRemovedFromScene() {
+        // need to override in child classes
+        return false;
     }
 
 }

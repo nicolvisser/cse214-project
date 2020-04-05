@@ -12,3 +12,7 @@ Thumbs.db
 
 # Java Documentation
 javadocs/
+
+# Excel
+~$*.xls*
+*.xlk

@@ -1,8 +1,2 @@
-// TODO: Fix sound issue when game starts
+// TODO: Fix sound issue when game starts, (I THINK IT IS BECAUSE IT IS AN 8 BIT WAV FILE)
 // TODO: Add some encryption to highscores.txt OR save as binary code
-
-
-// TODO: Better rotation of turret / crosshair / lookvector or something
-
-
-// TODO: FIX UNINTENTIONAL FLICKERING OF HEALTH BAR IF SHOOTER DIES

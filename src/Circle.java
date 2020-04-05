@@ -1,7 +1,16 @@
-public class Circle implements Shape {
+import java.io.Serializable;
 
-    Vector2D center;
-    double radius;
+public class Circle implements BoundingShape, Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    public Vector2D center;
+    public double radius;
+
+    @Override
+    public Vector2D getPosition() {
+        return center;
+    }
 
     public Circle(double x, double y, double radius) {
         this.center = new Vector2D(x, y);
@@ -25,6 +34,16 @@ public class Circle implements Shape {
         return dx * dx + dy * dy <= radius * radius;
     }
 
+    @Override
+    public boolean contains(BoundingShape shape) {
+        if (shape instanceof Circle) {
+            return contains((Circle) shape);
+        } else if (shape instanceof Rectangle) {
+            return contains((Rectangle) shape);
+        }
+        return false;
+    }
+
     public boolean contains(Circle other) {
         double dx = this.center.x - other.center.x;
         double dy = this.center.y - other.center.y;
@@ -42,6 +61,21 @@ public class Circle implements Shape {
         return radius * radius >= dx * dx + dy * dy;
     }
 
+    @Override
+    public boolean intersects(Ray ray) {
+        return ray.intersects(this); // get code from Ray class instead
+    }
+
+    @Override
+    public boolean intersects(BoundingShape shape) {
+        if (shape instanceof Circle) {
+            return intersects((Circle) shape);
+        } else if (shape instanceof Rectangle) {
+            return intersects((Rectangle) shape);
+        }
+        return false;
+    }
+
     // also includes touching
     public boolean intersects(Circle other) {
         double dx = this.center.x - other.center.x;
@@ -49,29 +83,8 @@ public class Circle implements Shape {
         return dx * dx + dy * dy <= (this.radius + other.radius) * (this.radius + other.radius);
     }
 
-    // see http://www.jeffreythompson.org/collision-detection/circle-rect.php
     public boolean intersects(Rectangle rect) {
-        // temporary variables to set edges for testing
-        double testX = center.x;
-        double testY = center.y;
-
-        // which edge is closest?
-        if (center.x < rect.xmin())
-            testX = rect.xmin(); // test left edge
-        else if (center.x > rect.xmax())
-            testX = rect.xmax(); // right edge
-        if (center.y < rect.ymin())
-            testY = rect.ymin(); // bottom edge
-        else if (center.y > rect.ymax())
-            testY = rect.ymax(); // top edge
-
-        // get distance from closest edges
-        double distX = center.x - testX;
-        double distY = center.y - testY;
-        double distance = Math.sqrt((distX * distX) + (distY * distY));
-
-        // if the distance is less than the radius, collision!
-        return distance <= radius;
+        return rect.intersects(this);
     }
 
     public Vector2D getRandomPositionInside() {
@@ -86,12 +99,6 @@ public class Circle implements Shape {
     // for debugging and testing
     public void draw() {
         StdDraw.circle(center.x, center.y, radius);
-    }
-
-    @Override
-    public boolean intersects(Ray ray) {
-        // TODO IMPLEMENT RAY INTERSECTION WITH CIRCLE HERE
-        return false;
     }
 
 }

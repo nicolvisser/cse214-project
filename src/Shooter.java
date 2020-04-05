@@ -1,6 +1,3 @@
-/**
- * Shooter
- */
 public class Shooter extends DefaultCritter {
 
     public static final int DEFAULT_HEALTH_POINTS = 300;
@@ -21,7 +18,7 @@ public class Shooter extends DefaultCritter {
     public ShooterState state;
 
     public Rectangle canvas;
-    private MissileLauncher missileLauncher;
+    private Turret turret;
 
     public boolean isThrusterLeftActive;
     public boolean isThrusterRightActive;
@@ -32,16 +29,18 @@ public class Shooter extends DefaultCritter {
 
     private AnimatedPicture explosionAnimation;
 
+    private Circle boundingCircle; // boundingShape casted to Circle
+
     enum ShooterState {
         ALIVE, EXPLODING, DEAD;
     }
 
     public Shooter(Vector2D position, double orientation, Rectangle canvas) {
-        super(position, orientation);
+        super(position.x, position.y, DEFAULT_COLLISION_RADIUS, orientation);
         this.canvas = canvas;
         healthPoints = DEFAULT_HEALTH_POINTS;
         state = ShooterState.ALIVE;
-        collisionCircle = new Circle(position, DEFAULT_COLLISION_RADIUS);
+        boundingCircle = (Circle) getBoundingShape(); // cast to circle to use methods in this class
         energyPoints = DEFAULT_ENERGY_POINTS;
         energyGainPerTimeStep = DEFAULT_ENERGY_GAIN_PER_TIMESTEP;
         isThrusterLeftActive = false;
@@ -49,17 +48,15 @@ public class Shooter extends DefaultCritter {
         isShieldActive = false;
         explosionAnimation = new AnimatedPicture("resources/images/explosion", "png", 16,
                 AnimatedPicture.AnimationType.FWD_BWD_ONCE);
-        missileLauncher = new MissileLauncher(canvas, this);
+        turret = new Turret(canvas, this);
     }
 
     @Override
     public void render(double dt) {
 
-        collisionCircle.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
-
         switch (state) {
             case ALIVE:
-                missileLauncher.render(dt);
+                turret.render(dt);
 
                 if (healthPoints <= 0) {
                     StdAudio.play("resources/audio/Explosion+1.wav");
@@ -136,7 +133,7 @@ public class Shooter extends DefaultCritter {
                             getOrientationInDegrees());
                 }
 
-                missileLauncher.draw();
+                turret.draw();
 
                 if (isShieldActive) {
                     StdDraw.picture(position.x, position.y, "resources/images/shield.png", 30, 30, 0);
@@ -155,13 +152,12 @@ public class Shooter extends DefaultCritter {
         // ------> for debugging:
         if (Invaders.DEBGGING_ON) {
             StdDraw.setPenColor(StdDraw.CYAN);
-            collisionCircle.draw();
+            getBoundingShape().draw();
         }
         // <-------
 
     }
 
-    @Override
     public void prepareToSaveState() {
         // dont save these statuses:
         // otherwise for example if shield was active at time of save, it remains active
@@ -171,8 +167,8 @@ public class Shooter extends DefaultCritter {
         isShieldActive = false;
     }
 
-    public MissileLauncher getMissileLauncher() {
-        return missileLauncher;
+    public Turret getTurret() {
+        return turret;
     }
 
     public boolean getShieldState() {
@@ -182,7 +178,7 @@ public class Shooter extends DefaultCritter {
     public void activateShield() {
         if (!isShieldActive && energyPoints > SHIELD_ENERGY_USAGE_INITIAL) {
             StdAudio.play("resources/audio/shieldUp.wav");
-            collisionCircle.radius = SHIELD_COLLISION_RADIUS;
+            boundingCircle.radius = SHIELD_COLLISION_RADIUS;
             energyPoints -= SHIELD_ENERGY_USAGE_INITIAL;
             isShieldActive = true;
         }
@@ -191,8 +187,29 @@ public class Shooter extends DefaultCritter {
     public void deactivateShield() {
         if (isShieldActive) {
             StdAudio.play("resources/audio/shieldDown.wav");
-            collisionCircle.radius = DEFAULT_COLLISION_RADIUS;
+            boundingCircle.radius = DEFAULT_COLLISION_RADIUS;
             isShieldActive = false;
         }
+    }
+
+    @Override
+    public void handlePossibleCollisionWith(Collidable other) {
+        if (other instanceof PowerUp) {
+            PowerUp powerUp = (PowerUp) other;
+            powerUp.handlePossibleCollisionWith(this);
+
+        } else if (other instanceof Missile) {
+            Missile missile = (Missile) other;
+            missile.handlePossibleCollisionWith(this);
+
+        } else if (other instanceof Enemy) {
+            healthPoints = 0;
+
+        }
+    }
+
+    @Override
+    public boolean mayBeRemovedFromScene() {
+        return state == ShooterState.DEAD;
     }
 }

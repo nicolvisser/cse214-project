@@ -1,10 +1,7 @@
 import java.util.ArrayList;
 import java.util.Iterator;
 
-/**
- * MissileLauncher
- */
-public class MissileLauncher extends DefaultCritter {
+public class Turret extends DefaultCritter {
 
     private static final long serialVersionUID = 1L;
 
@@ -12,9 +9,10 @@ public class MissileLauncher extends DefaultCritter {
     private static final double TURRET_ANGULAR_ACCELERATION_MAGNITUDE = 50;
     private static final double TURRENT_MINIMUM_ANGLE = 0.2;
     private static final double TURRENT_MAXIMUM_ANGLE = Math.PI - 0.2;
+    private static final int DEFAULT_COLLISION_RADIUS = 1; // TODO rather use rectangle for turret
 
     private Rectangle drawArea;
-    private Shooter shooterRef;
+    public Shooter shooterRef;
 
     public ArrayList<Missile> missiles;
     public double reloadTime;
@@ -24,13 +22,13 @@ public class MissileLauncher extends DefaultCritter {
     public boolean turretLeftRotateStatus;
     public boolean turretRightRotateStatus;
 
-    private ArrayList<PowerUp> powerUpsRef;
+    public boolean laserIsActive;
 
-    public MissileLauncher(Rectangle drawArea, Shooter shooterRef) {
-        super(shooterRef.position, Math.PI / 2);
+    public Turret(Rectangle canvas, Shooter shooterRef) {
+        super(shooterRef.position.x, shooterRef.position.y, DEFAULT_COLLISION_RADIUS, Math.PI / 2);
         allowTranslation = false;
 
-        this.drawArea = drawArea;
+        this.drawArea = canvas;
         this.shooterRef = shooterRef;
 
         missiles = new ArrayList<>();
@@ -75,17 +73,12 @@ public class MissileLauncher extends DefaultCritter {
         Iterator<Missile> missileIterator = missiles.iterator();
         while (missileIterator.hasNext()) {
             Missile missile = missileIterator.next();
+
             missile.render(dt);
+
             if (missile.state == Missile.MissileState.DEAD || !drawArea.contains(missile.position)) {
                 missileIterator.remove();
-            } else if (missile.state == Missile.MissileState.TRAVELLING && powerUpsRef != null) {
-                Iterator<PowerUp> powerUpIterator = powerUpsRef.iterator();
-                while (powerUpIterator.hasNext()) {
-                    PowerUp powerUp = powerUpIterator.next();
-                    if (powerUp.state == PowerUp.PowerUpState.TRAVELLING && missile.isCollidingWith(powerUp)) {
-                        powerUp.addEffectTo(shooterRef);
-                    }
-                }
+
             }
         }
     }
@@ -99,6 +92,7 @@ public class MissileLauncher extends DefaultCritter {
         for (Missile missile : missiles) {
             missile.draw();
         }
+
     }
 
     public void startCharging() {
@@ -109,17 +103,68 @@ public class MissileLauncher extends DefaultCritter {
         if (timeSinceLastMissile > reloadTime) {
             // System.out.println("Launched Missile With chargeUpTime: " + chargeUpTime);
             timeSinceLastMissile = 0;
-            Vector2D missileStartPos = new Vector2D(shooterRef.position.x, shooterRef.position.y)
-                    .add(lookVector().scale(12.5));
-            Missile missile = new Missile(missileStartPos, this.lookVector());
+            Vector2D missileStartPos = getPositionOfEndOfTurret();
+            Missile missile = new Missile(missileStartPos, this.lookVector(), shooterRef);
             missiles.add(missile);
             StdAudio.play("resources/audio/Gun+1.wav");
         }
         chargeUpTime = 0;
     }
 
-    public void addAbilityToEquipPowerUp(ArrayList<PowerUp> powerUpsRef) {
-        this.powerUpsRef = powerUpsRef;
+    public void activateLaser() {
+        laserIsActive = true;
+    }
+
+    public void deactivateLaser() {
+        laserIsActive = false;
+    }
+
+    public Vector2D getPositionOfEndOfTurret() {
+        return new Vector2D(shooterRef.position.x, shooterRef.position.y).add(lookVector().scale(12.5));
+    }
+
+    public LineSegment getAimLine(ArrayList<Bunker> bunkers, EnemyWave enemyWave) {
+        Vector2D start = getPositionOfEndOfTurret();
+
+        Ray aimRay = new Ray(start, lookVector());
+        double lengthOfAimLine = 200;
+
+        for (Bunker bunker : bunkers) {
+            if (bunker.getBoundingShape().intersects(aimRay)) {
+                for (Bunker.Block block : bunker.blocks) {
+                    Double lengthUntilCollision = aimRay.lengthUntilIntersection(block.getBoundingShape());
+                    if (Double.isFinite(lengthUntilCollision) && lengthUntilCollision < lengthOfAimLine) {
+                        lengthOfAimLine = lengthUntilCollision;
+                    }
+                }
+            }
+        }
+
+        for (EnemyGroup enemyGroup : enemyWave.enemyGroups) {
+            if (enemyGroup.boundingRect.intersects(aimRay)) {
+                for (Enemy enemy : enemyGroup.enemies) {
+                    if (enemy.state == Enemy.EnemyState.ALIVE) {
+                        Double lengthUntilCollision = aimRay.lengthUntilIntersection(enemy.getBoundingShape());
+                        if (Double.isFinite(lengthUntilCollision) && lengthUntilCollision < lengthOfAimLine) {
+                            lengthOfAimLine = lengthUntilCollision;
+                        }
+                    }
+                }
+            }
+        }
+
+        return new LineSegment(start, lookVector(), lengthOfAimLine);
+
+    }
+
+    public void drawAimLine(ArrayList<Bunker> bunkers, EnemyWave enemyWave) {
+        StdDraw.setPenColor(laserIsActive ? StdDraw.RED : StdDraw.GRAY);
+        getAimLine(bunkers, enemyWave).draw();
+    }
+
+    @Override
+    public boolean mayBeRemovedFromScene() {
+        return shooterRef.mayBeRemovedFromScene();
     }
 
 }

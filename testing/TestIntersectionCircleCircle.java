@@ -1,4 +1,4 @@
-public class TestCircRectCollision {
+public class TestIntersectionCircleCircle {
 
     public static void main(String[] args) {
 
@@ -6,22 +6,20 @@ public class TestCircRectCollision {
         StdDraw.setXscale(-10, 10);
         StdDraw.setYscale(-10, 10);
 
-        Rectangle r = new Rectangle(0, 0, 5, 5);
+        Circle c1 = new Circle(0, 0, 5);
 
         while (true) {
 
             StdDraw.setPenColor(StdDraw.BLACK);
-            r.draw();
+            c1.draw();
 
-            Circle c = new Circle(StdDraw.mouseX(), StdDraw.mouseY(), 3);
-            c.draw();
-
-            StdOut.println(c.intersects(r));
+            Circle c2 = new Circle(StdDraw.mouseX(), StdDraw.mouseY(), 3);
+            c2.draw();
 
             StdDraw.show();
             StdDraw.pause(30);
             StdDraw.clear();
-            if (c.intersects(r)) {
+            if (c1.intersects(c2)) {
                 StdDraw.setPenColor(StdDraw.RED);
                 StdDraw.filledRectangle(0, 0, 10, 10);
             }

@@ -7,10 +7,9 @@ public class KeyListener {
     }
 
     enum KeyboardKey {
-        ESC_KEY(27), A_KEY(65), D_KEY(68), Q_KEY(81), LEFT_ARROW(37), RIGHT_ARROW(39), UP_ARROW(38), DOWN_ARROW(40),
-        ENTER_KEY(10);
-
-        int i = KeyEvent.VK_1;
+        ESC_KEY(KeyEvent.VK_ESCAPE), A_KEY(KeyEvent.VK_A), D_KEY(KeyEvent.VK_D), Q_KEY(KeyEvent.VK_Q),
+        LEFT_ARROW(KeyEvent.VK_LEFT), RIGHT_ARROW(KeyEvent.VK_RIGHT), UP_ARROW(KeyEvent.VK_UP),
+        DOWN_ARROW(KeyEvent.VK_DOWN), ENTER_KEY(KeyEvent.VK_ENTER), SPACE(KeyEvent.VK_SPACE);
 
         public int keyCode;
         public boolean isDown;

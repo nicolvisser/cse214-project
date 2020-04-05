@@ -1,4 +1,3 @@
-
 public class LineSegment {
 
     Vector2D start;
@@ -14,7 +13,7 @@ public class LineSegment {
         this.end = start.add(direction.scale(length));
     }
 
-    public void draw(double length) {
+    public void draw() {
         StdDraw.line(start.x, start.y, end.x, end.y);
     }
 

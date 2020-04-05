@@ -2,7 +2,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class EnemyGroup implements Serializable {
+public class EnemyGroup implements Serializable, Collidable {
 
     private static final long serialVersionUID = 1L;
 
@@ -15,7 +15,6 @@ public class EnemyGroup implements Serializable {
     Rectangle canvas;
 
     public EnemyGroup(Rectangle canvas, Rectangle boundingRect, int numEnemiesInRow, int numEnemiesInCol) {
-        super();
         this.canvas = canvas; // TODO take out of constructor and give own method (also to other constructors)
         enemies = new ArrayList<>();
 
@@ -25,7 +24,7 @@ public class EnemyGroup implements Serializable {
 
         this.boundingRect = boundingRect;
 
-        int r = Enemy.DEFAULT_COLLISION_RADIUS;
+        double r = Enemy.DEFAULT_COLLISION_RADIUS;
 
         double xSpacing = (boundingRect.width - 2 * r * numEnemiesInRow) / (numEnemiesInRow - 1);
         double ySpacing = (boundingRect.height - 2 * r * numEnemiesInCol) / (numEnemiesInCol - 1);
@@ -72,8 +71,6 @@ public class EnemyGroup implements Serializable {
         position.x += dx;
         position.y += dy;
 
-        boundingRect.center = position; // TODO: Stop forcing these to be equal, and use some other mechanism
-
         Iterator<Enemy> itr = enemies.iterator();
         while (itr.hasNext()) {
             Enemy enemy = itr.next();
@@ -92,40 +89,34 @@ public class EnemyGroup implements Serializable {
         }
     }
 
-    public int handlePossibleCollisionWithMissile(Missile missile) {
-        int points = 0;
-        if (boundingRect.intersects(missile.collisionCircle)) {
-            for (Enemy enemy : enemies) {
-                points += enemy.handleCollisionWithMissile(missile);
-            }
-        }
-        return points;
-    }
-
-    public boolean isCollidingWith(Shooter shooter) {
-
-        if (boundingRect.intersects(shooter.collisionCircle))
-            for (Enemy enemy : enemies) {
-                if (enemy.isCollidingWith(shooter)) {
-                    return true;
-                }
-            }
-        return false;
-    }
-
-    public boolean isCollidingWithBottomOfCanvas() {
+    public boolean isCollidingWith(Ray ray) {
         // a ray along the bottom of canvas
-        Ray groundRay = new Ray(new Vector2D(canvas.xmin(), canvas.ymin()), new Vector2D(1, 0));
-        if (boundingRect.intersects(groundRay)) {
+        if (boundingRect.intersects(ray)) {
             for (Enemy enemy : enemies) {
-                // TODO: replace with circle.intersects(line) after you implemented that method
-                // -->
-                if (enemy.position.y - enemy.collisionCircle.radius < canvas.xmin()) {
+                if (enemy.isCollidingWith(ray)) {
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    public Enemy getRandomVisibleEnemy() {
+        ArrayList<Enemy> visibleEnemies = new ArrayList<>();
+        if (boundingRect.intersects(canvas)) {
+            Rectangle visibleBoundingRect = boundingRect.intersection(canvas);
+            for (Enemy enemy : enemies) {
+                if (visibleBoundingRect.intersects(enemy.getBoundingShape())) {
+                    visibleEnemies.add(enemy);
+                }
+            }
+        }
+        int numVisibleEnemies = visibleEnemies.size();
+        if (numVisibleEnemies > 0) {
+            return visibleEnemies.get((int) (Math.random() * numVisibleEnemies));
+        } else {
+            return null;
+        }
     }
 
     public Enemy getRandomEnemy() {
@@ -137,4 +128,36 @@ public class EnemyGroup implements Serializable {
         }
     }
 
+    @Override
+    public BoundingShape getBoundingShape() {
+        return boundingRect;
+    }
+
+    @Override
+    public boolean isCollidingWith(Collidable other) {
+        return boundingRect.intersects(other.getBoundingShape());
+    }
+
+    public boolean isCollidingWith(Shooter shooter) {
+
+        if (boundingRect.intersects(shooter.getBoundingShape()))
+            for (Enemy enemy : enemies) {
+                if (enemy.isCollidingWith(shooter)) {
+                    return true;
+                }
+            }
+        return false;
+    }
+
+    @Override
+    public void handlePossibleCollisionWith(Collidable other) {
+
+        for (Enemy enemy : enemies) {
+            if (enemy.isCollidingWith(other)) {
+
+                enemy.handlePossibleCollisionWith(other);
+
+            }
+        }
+    }
 }
