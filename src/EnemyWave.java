@@ -83,36 +83,20 @@ public class EnemyWave implements Serializable, Collidable, SceneItem {
         return false;
     }
 
-    public EnemyGroup getRandomEnemyGroup() {
-        if (isCleared()) {
-            return null;
-        } else {
-            int randomIndex = (int) (Math.random() * enemyGroups.size());
-            return enemyGroups.get(randomIndex);
+    public Enemy getAttackingEnemy() {
+        Enemy attackingEnemy = null;
+        for (EnemyGroup enemyGroup : enemyGroups) {
+            attackingEnemy = enemyGroup.getRandomVisibleEnemy();
+            if (attackingEnemy != null) {
+                break;
+            }
         }
-    }
-
-    // TODO: make this more readable
-    public Enemy getRandomEnemyOnCanvas() {
-        if (atLeastOneAliveEnemyOnCanvas()) {
-            Enemy rEnemy;
-            do {
-                EnemyGroup rGroup = getRandomEnemyGroup();
-                if (rGroup == null) {
-                    rEnemy = null;
-                } else {
-                    rEnemy = rGroup.getRandomEnemy();
-                }
-            } while (rEnemy == null || !canvas.contains(rEnemy.position) || rEnemy.state != Enemy.EnemyState.ALIVE);
-            return rEnemy;
-        } else {
-            return null;
-        }
+        return attackingEnemy;
     }
 
     public void counterAttack() {
         timeUntilNextCounterAttack = 1;
-        Enemy attackingEnemy = getRandomEnemyOnCanvas();
+        Enemy attackingEnemy = getAttackingEnemy();
         if (attackingEnemy != null) {
             Vector2D missileSpawnLocation = new Vector2D(attackingEnemy.position.x, attackingEnemy.position.y);
             Vector2D missileDirection = shooterRef.positionRelativeTo(attackingEnemy).normalize();

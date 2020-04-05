@@ -101,6 +101,24 @@ public class EnemyGroup implements Serializable, Collidable {
         return false;
     }
 
+    public Enemy getRandomVisibleEnemy() {
+        ArrayList<Enemy> visibleEnemies = new ArrayList<>();
+        if (boundingRect.intersects(canvas)) {
+            Rectangle visibleBoundingRect = boundingRect.intersection(canvas);
+            for (Enemy enemy : enemies) {
+                if (visibleBoundingRect.intersects(enemy.getBoundingShape())) {
+                    visibleEnemies.add(enemy);
+                }
+            }
+        }
+        int numVisibleEnemies = visibleEnemies.size();
+        if (numVisibleEnemies > 0) {
+            return visibleEnemies.get((int) (Math.random() * numVisibleEnemies));
+        } else {
+            return null;
+        }
+    }
+
     public Enemy getRandomEnemy() {
         if (isCleared()) {
             return null;
