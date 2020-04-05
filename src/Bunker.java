@@ -2,7 +2,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Bunker implements Collidable {
+public class Bunker implements Collidable, SceneItem {
 
     public class Block extends Particle2D implements Collidable {
         private static final long serialVersionUID = 1L;
@@ -133,5 +133,15 @@ public class Bunker implements Collidable {
 
             enemyWave.handlePossibleCollisionWith(this);
         }
+    }
+
+    @Override
+    public void render(double dt) {
+        // do nothing (static)
+    }
+
+    @Override
+    public boolean mayBeRemovedFromScene() {
+        return isCleared();
     }
 }

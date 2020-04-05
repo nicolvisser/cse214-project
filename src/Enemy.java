@@ -56,11 +56,11 @@ public class Enemy extends DefaultCritter {
 
         switch (state) {
             case ALIVE:
+                super.render(dt);
                 if (healthPoints <= 0) {
                     state = EnemyState.EXPLODING;
                     break;
                 }
-                super.render(dt);
                 break;
 
             case EXPLODING:
@@ -96,6 +96,11 @@ public class Enemy extends DefaultCritter {
             getBoundingShape().draw();
         }
         //
+    }
+
+    @Override
+    public boolean mayBeRemovedFromScene() {
+        return state == EnemyState.DEAD;
     }
 
 }

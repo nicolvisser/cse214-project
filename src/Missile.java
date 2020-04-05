@@ -131,4 +131,9 @@ public class Missile extends DefaultCritter {
             }
         }
     }
+
+    @Override
+    public boolean mayBeRemovedFromScene() {
+        return state == MissileState.DEAD;
+    }
 }

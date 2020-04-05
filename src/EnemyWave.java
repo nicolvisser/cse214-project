@@ -2,7 +2,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class EnemyWave implements Serializable, Collidable {
+public class EnemyWave implements Serializable, Collidable, SceneItem {
 
     private static final long serialVersionUID = 1L;
 
@@ -178,5 +178,10 @@ public class EnemyWave implements Serializable, Collidable {
 
             }
         }
+    }
+
+    @Override
+    public boolean mayBeRemovedFromScene() {
+        return isCleared();
     }
 }

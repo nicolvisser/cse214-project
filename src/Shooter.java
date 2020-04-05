@@ -158,7 +158,6 @@ public class Shooter extends DefaultCritter {
 
     }
 
-    @Override
     public void prepareToSaveState() {
         // dont save these statuses:
         // otherwise for example if shield was active at time of save, it remains active
@@ -207,5 +206,10 @@ public class Shooter extends DefaultCritter {
             healthPoints = 0;
 
         }
+    }
+
+    @Override
+    public boolean mayBeRemovedFromScene() {
+        return state == ShooterState.DEAD;
     }
 }

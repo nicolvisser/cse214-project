@@ -192,4 +192,9 @@ public class PowerUp extends DefaultCritter {
             }
         }
     }
+
+    @Override
+    public boolean mayBeRemovedFromScene() {
+        return state == PowerUpState.DEACTIVE;
+    }
 }

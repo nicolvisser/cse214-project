@@ -1,4 +1,4 @@
-public class DefaultCritter extends Object2D implements Critter, Collidable {
+public class DefaultCritter extends Object2D implements SceneItem, Collidable {
 
     private static final long serialVersionUID = 1L;
     private static final int DEFAULT_HEALTH_POINTS = 100;
@@ -71,14 +71,14 @@ public class DefaultCritter extends Object2D implements Critter, Collidable {
     }
 
     @Override
-    public void prepareToSaveState() {
-
+    public void handlePossibleCollisionWith(Collidable other) {
+        // need to override in child classes
     }
 
     @Override
-    public void handlePossibleCollisionWith(Collidable other) {
-        // TODO Auto-generated method stub
-
+    public boolean mayBeRemovedFromScene() {
+        // need to override in child classes
+        return false;
     }
 
 }

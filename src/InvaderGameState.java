@@ -18,24 +18,26 @@ public class InvaderGameState extends KeyListener implements Serializable {
     }
 
     CollisionHandler collisionHandler;
+    SceneHandler sceneHandler;
 
     int score;
 
-    ArrayList<Shooter> shooters;
-    EnemyWave enemyWave;
-    ArrayList<PowerUp> powerUps;
-    ArrayList<Bunker> bunkers;
+    private final ArrayList<Shooter> shooters;
+    private final EnemyWave enemyWave;
+    private final ArrayList<PowerUp> powerUps;
+    private final ArrayList<Bunker> bunkers;
 
-    Ray groundRay;
+    private final Ray groundRay;
 
     public InvaderGameState(Rectangle canvas) {
 
         score = 0;
 
+        groundRay = new Ray(new Vector2D(canvas.xmin(), canvas.ymin()), new Vector2D(1, 0));
+
         shooters = new ArrayList<>();
         Shooter shooter = new Shooter(new Vector2D(0, -75), Math.PI / 2, canvas);
         shooter.allowRotation = false;
-        shooter.getTurret().addAbilityToEquipPowerUp(powerUps);
         shooters.add(shooter);
 
         enemyWave = new EnemyWave(canvas, shooter);
@@ -52,7 +54,12 @@ public class InvaderGameState extends KeyListener implements Serializable {
         bunkers.add(new Bunker(new Rectangle(20, -30, 30, 10), 5, 15));
         bunkers.add(new Bunker(new Rectangle(60, -30, 30, 10), 5, 15));
 
-        groundRay = new Ray(new Vector2D(canvas.xmin(), canvas.ymin()), new Vector2D(1, 0));
+        sceneHandler = new SceneHandler();
+        sceneHandler.add(shooters);
+        sceneHandler.add(enemyWave);
+        sceneHandler.add(powerUps);
+        sceneHandler.add(bunkers);
+        sceneHandler.add(shooters);
 
         collisionHandler = new CollisionHandler();
         collisionHandler.add(shooters, powerUps);
@@ -71,24 +78,20 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
         collisionHandler.handleCollisions();
 
-        for (Shooter shooter : shooters) {
-            shooter.render(dt);
+        sceneHandler.render(dt);
 
+        for (Shooter shooter : shooters) {
             if (shooter.state == Shooter.ShooterState.DEAD) {
                 gameOverFlag = true;
             }
         }
 
-        enemyWave.render(dt);
         if (enemyWave.isCleared() || enemyWave.isCollidingWith(groundRay))
             gameOverFlag = true;
 
         Iterator<PowerUp> powerUpIterator = powerUps.iterator();
         while (powerUpIterator.hasNext()) {
             PowerUp powerUp = powerUpIterator.next();
-
-            powerUp.render(dt);
-
             if (powerUp.state == PowerUp.PowerUpState.DEACTIVE) {
                 powerUpIterator.remove();
             }
@@ -106,19 +109,10 @@ public class InvaderGameState extends KeyListener implements Serializable {
 
     public void draw() {
 
+        sceneHandler.draw();
+
         for (Shooter shooter : shooters) {
-            shooter.draw();
             shooter.getTurret().drawAimLine(bunkers, enemyWave);
-        }
-
-        enemyWave.draw();
-
-        for (PowerUp powerUp : powerUps) {
-            powerUp.draw();
-        }
-
-        for (Bunker bunker : bunkers) {
-            bunker.draw();
         }
 
         drawHealthBar((double) shooters.get(0).healthPoints / Shooter.DEFAULT_HEALTH_POINTS);
@@ -227,7 +221,10 @@ public class InvaderGameState extends KeyListener implements Serializable {
     }
 
     public Vector2D getShooterVelocity() {
-        return shooters.get(0).velocity;
+        if (shooters.size() > 0) {
+            return shooters.get(0).velocity;
+        } else {
+            return new Vector2D(0, 0);
+        }
     }
-
 }

@@ -24,8 +24,6 @@ public class Turret extends DefaultCritter {
 
     public boolean laserIsActive;
 
-    private ArrayList<PowerUp> powerUpsRef;
-
     public Turret(Rectangle canvas, Shooter shooterRef) {
         super(shooterRef.position.x, shooterRef.position.y, DEFAULT_COLLISION_RADIUS, Math.PI / 2);
         allowTranslation = false;
@@ -121,10 +119,6 @@ public class Turret extends DefaultCritter {
         laserIsActive = false;
     }
 
-    public void addAbilityToEquipPowerUp(ArrayList<PowerUp> powerUpsRef) {
-        this.powerUpsRef = powerUpsRef;
-    }
-
     public Vector2D getPositionOfEndOfTurret() {
         return new Vector2D(shooterRef.position.x, shooterRef.position.y).add(lookVector().scale(12.5));
     }
@@ -166,6 +160,11 @@ public class Turret extends DefaultCritter {
     public void drawAimLine(ArrayList<Bunker> bunkers, EnemyWave enemyWave) {
         StdDraw.setPenColor(laserIsActive ? StdDraw.RED : StdDraw.GRAY);
         getAimLine(bunkers, enemyWave).draw();
+    }
+
+    @Override
+    public boolean mayBeRemovedFromScene() {
+        return shooterRef.mayBeRemovedFromScene();
     }
 
 }
