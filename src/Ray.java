@@ -1,4 +1,9 @@
-public class Ray {
+import java.io.Serializable;
+
+public class Ray implements Serializable {
+
+
+    private static final long serialVersionUID = 1L;
 
     Vector2D start;
     Vector2D direction;

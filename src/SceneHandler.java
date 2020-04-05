@@ -1,14 +1,16 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 // for reason behind '? extends' in constructor arguments see:
 // https://stackoverflow.com/questions/44221882/passing-an-arraylist-of-subclass-to-a-constructor-that-takes-arraylist-of-superc/44221916
 
-public class SceneHandler {
+public class SceneHandler implements Serializable {
 
-    //// long frameNumber = 0;
+    private static final long serialVersionUID = 1L;
 
-    ArrayList<ArrayList<? extends SceneItem>> listOfListOfItems;
+    private ArrayList<ArrayList<? extends SceneItem>> listOfListOfItems;
+    //// private long frameNumber = 0;
 
     public SceneHandler() {
         listOfListOfItems = new ArrayList<>();

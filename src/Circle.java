@@ -1,7 +1,11 @@
-public class Circle implements BoundingShape {
+import java.io.Serializable;
 
-    Vector2D center;
-    double radius;
+public class Circle implements BoundingShape, Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    public Vector2D center;
+    public double radius;
 
     @Override
     public Vector2D getPosition() {

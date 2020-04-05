@@ -1,10 +1,15 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
 // for reason behind '? extends' in constructor arguments see:
 // https://stackoverflow.com/questions/44221882/passing-an-arraylist-of-subclass-to-a-constructor-that-takes-arraylist-of-superc/44221916
-public class CollisionHandler {
+public class CollisionHandler implements Serializable {
 
-    private class CollisionPair {
+    private static final long serialVersionUID = 1L;
+
+    private class CollisionPair implements Serializable  {
+
+        private static final long serialVersionUID = 1L;
 
         ArrayList<? extends Collidable> objects1;
         ArrayList<? extends Collidable> objects2;
