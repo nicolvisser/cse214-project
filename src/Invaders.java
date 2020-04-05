@@ -219,7 +219,12 @@ public class Invaders {
                         case 2: // slot 3
                         case 3: // slot 4
                             int slot = saveGameScreen.selectedOption + 1;
-                            saveInvaderGameState(slot);
+                            if (saveInvaderGameState(slot)) {
+                                saveGameScreen.resetHiglight();
+                                currentDisplayState = DisplayState.PLAYING;
+                            } else {
+                                saveGameScreen.setSubtitle("Failed to save game in slot " + slot + ".");
+                            }
                             saveGameScreen.resetSelection();
                             break;
 
@@ -464,7 +469,7 @@ public class Invaders {
         }
     }
 
-    static void saveInvaderGameState(int slot) {
+    static boolean saveInvaderGameState(int slot) {
         loadedInvaderGameState.resetFlags(); // so as not to save true flags in game state
         try {
             // delete old savegame (if any) of this slot first:
@@ -481,10 +486,11 @@ public class Invaders {
             out.writeObject(loadedInvaderGameState);
             out.close();
             System.out.println("New savegame, " + filename + ", created successfully.");
-            currentDisplayState = DisplayState.PLAYING;
+            return true;
         } catch (Exception e1) {
-            // TODO Show message if game failed to saves
-            e1.printStackTrace();
+            return false;
+            // e1.printStackTrace();
+            // dealt with error message for user inside gameloop using return value
         }
 
     }
